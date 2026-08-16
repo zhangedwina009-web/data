@@ -21,6 +21,7 @@ from note_narration import (  # noqa: E402
     compose_from_ebook_kid,
     compose_from_ebook_section,
 )
+from note_paths import TAX_DIR, TAX_DIR_LABEL, tax_slug  # noqa: E402
 from note_shell import build_course_sidebar, chapters_from_note  # noqa: E402
 from build_notes_index import main as rebuild_notes_index  # noqa: E402
 from convert_ebook_md_to_html import (  # noqa: E402
@@ -31,7 +32,6 @@ from convert_ebook_md_to_html import (  # noqa: E402
     main as convert_ebook_main,
 )
 
-TAX_DIR = ROOT / "notes" / "簡單開公司"
 STRUCT_DIR = ROOT / "_structured"
 EBOOK_NARR_CACHE = EBOOK_OUT / "_narrations.json"
 
@@ -68,36 +68,36 @@ def enrich_tax_notes(*, force: bool = True) -> int:
                 json.dumps(note, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
-        items.append((path.stem, note))
+        items.append((tax_slug(path.stem), path.stem, note))
 
     TAX_DIR.mkdir(parents=True, exist_ok=True)
     books = [
         {
-            "file": f"{stem}.html",
-            "title": note.get("title") or stem,
+            "file": f"{slug}.html",
+            "title": note.get("title") or full_stem,
             "chapters": chapters_from_note(note),
         }
-        for stem, note in items
+        for slug, full_stem, note in items
     ]
-    for stem, note in items:
-        active = f"{stem}.html"
+    for slug, full_stem, note in items:
+        active = f"{slug}.html"
         sidebar = build_course_sidebar(
-            brand="簡單開公司",
+            brand=TAX_DIR_LABEL,
             brand_sub="課程目錄",
             books=books,
             active_file=active,
             home_href="../index.html",
         )
         save_note_from_data(
-            stem,
+            slug,
             note,
             out_dir=TAX_DIR,
             sidebar_html=sidebar,
-            course_brand="簡單開公司",
+            course_brand=TAX_DIR_LABEL,
             active_file=active,
             books=books,
         )
-        print("OK tax", stem)
+        print("OK tax", slug)
 
     if books:
         first = books[0]["file"]

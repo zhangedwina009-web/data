@@ -27,9 +27,11 @@ from note_narration import (
     render_narration_panel,
 )
 
+from note_paths import EBOOK_DIR, EBOOK_DIR_LABEL, ebook_slug
+
 ROOT = Path(__file__).resolve().parent
 SRC_DIR = Path(r"T:\電子書截圖\公司治理\md")
-OUT_DIR = ROOT / "notes" / "公司治理"
+OUT_DIR = EBOOK_DIR
 NARR_CACHE = OUT_DIR / "_narrations.json"
 
 
@@ -1428,19 +1430,32 @@ body.side-open-mobile .backdrop{{display:block;}}
 
 
 def main() -> int:
+    import shutil
+
     if not SRC_DIR.is_dir():
         print(f"missing: {SRC_DIR}")
         return 1
     files = sorted(SRC_DIR.glob("*.md"), key=_chapter_sort_key)
+
+    legacy = ROOT / "notes" / "公司治理"
+    if legacy.is_dir() and legacy.resolve() != OUT_DIR.resolve():
+        old_cache = legacy / "_narrations.json"
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        if old_cache.is_file() and not NARR_CACHE.is_file():
+            shutil.copy2(old_cache, NARR_CACHE)
+            print("migrated narrations cache")
+        shutil.rmtree(legacy)
+        print("removed legacy", legacy)
+
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     parsed: list[tuple[str, str, list[dict], str]] = []
     narr_cache = _load_narration_cache()
-    for path in files:
+    for i, path in enumerate(files, 1):
         text = path.read_text(encoding="utf-8")
         title, sections, preface = _parse_sections(text)
         _apply_narration_cache(sections, narr_cache)
-        out_name = f"{path.stem}.html"
+        out_name = f"{ebook_slug(path.stem, i)}.html"
         parsed.append((title, out_name, sections, preface))
 
     books = [(t, n, secs) for t, n, secs, _ in parsed]
@@ -1457,6 +1472,13 @@ def main() -> int:
             encoding="utf-8",
         )
         print("OK index.html ->", first)
+
+    # 清掉舊的中文檔名 html
+    for old in OUT_DIR.glob("*.html"):
+        if old.name == "index.html":
+            continue
+        if not re.fullmatch(r"ch\d{2}\.html", old.name):
+            old.unlink(missing_ok=True)
 
     for title, out_name, sections, preface in parsed:
         chips = _extract_chips(title, sections)

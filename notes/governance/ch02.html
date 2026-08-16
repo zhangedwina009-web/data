@@ -1,0 +1,2404 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>第 2 章 公司董事會議事辦法之解析</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/theme/mermaid.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-alpine-dark.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+.viz-toolkit-badge{display:inline-flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 1rem;}
+.viz-pill{font-size:.68rem;font-weight:750;padding:.18rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(18,24,33,.85);}
+.viz-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+  align-items:stretch;
+}
+@media (min-width:768px){
+  .viz-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media (min-width:1200px){
+  .viz-grid.viz-grid-dense{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+.viz-cell{
+  margin:0;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(16,22,30,.92);
+  max-width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.viz-cell-wide{grid-column:1 / -1;}
+.viz-panel-h,.viz-cell-h{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:720;
+}
+.viz-lib{font-size:.7rem;font-weight:800;padding:.15rem .45rem;border-radius:999px;background:rgba(94,200,255,.16);color:var(--cyan);}
+.viz-body,.viz-cell-b{padding:.75rem .85rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.viz-box{min-height:clamp(180px,42vw,260px);width:100%;max-width:100%;position:relative;}
+.viz-box-sm{min-height:clamp(160px,38vw,220px);}
+.viz-box-lg{min-height:clamp(220px,48vw,340px);}
+.viz-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0;}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.tabulator,.tabulator-header,.tabulator-row{background:transparent !important;color:var(--text) !important;}
+.tabulator{border:1px solid rgba(255,255,255,.08) !important;border-radius:10px;overflow:hidden;max-width:100%;}
+.gridjs-wrapper{overflow-x:auto !important;max-width:100%;}
+.gridjs-th,.gridjs-td{background:#121821 !important;border-color:rgba(255,255,255,.1) !important;color:#e8eef7 !important;}
+table.dataTable{color:var(--text);width:100% !important;}
+.ag-theme-alpine-dark{--ag-background-color:#121821;--ag-header-background-color:#0d1520;height:clamp(220px,50vw,300px);width:100%;max-width:100%;}
+.markmap-host{position:relative;width:100%;max-width:100%;height:clamp(280px,58vw,420px);border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;overflow:hidden;}
+.markmap-host .markmap{position:relative;width:100%;height:100%;}
+.markmap-host .markmap > svg,
+.markmap > svg{width:100% !important;height:100% !important;min-height:260px;display:block;}
+.cy-host,.vis-host{height:clamp(240px,55vw,340px);width:100%;max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;}
+.vis-timeline{border:0 !important;background:transparent !important;width:100% !important;}
+.vis-item{background:rgba(94,200,255,.25) !important;border-color:rgba(94,200,255,.55) !important;color:#e8eef7 !important;font-size:12px !important;}
+.d3-host{height:clamp(220px,50vw,300px);width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;}
+.d3-host text{fill:#c9d7ea;font-size:11px;}
+.d3-host .link{stroke:rgba(94,200,255,.35);}
+.d3-host .node circle{fill:#5ec8ff;}
+.mermaid-host{padding:.5rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#0a0e14;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.mermaid-host .mermaid,.mermaid-host svg{max-width:100%;}
+@media (max-width:767px){
+  .viz-cell-b{padding:.65rem .7rem .85rem;}
+  .viz-cell-h{padding:.55rem .7rem;font-size:.92rem;}
+  .viz-toolkit-badge{gap:.28rem;}
+  .viz-pill{font-size:.62rem;padding:.14rem .42rem;}
+  .tabulator .tabulator-header-filter input{font-size:12px;}
+}
+@media (max-width:420px){
+  .markmap-host{height:260px;}
+  .cy-host,.vis-host{height:220px;}
+}
+.narration-box{
+  margin:.85rem 0 1.1rem;border:1px solid rgba(110,231,245,.28);border-radius:14px;
+  background:linear-gradient(135deg,rgba(110,231,245,.08),rgba(16,22,30,.95));
+  overflow:hidden;
+}
+.narration-box > summary{
+  list-style:none;cursor:pointer;padding:.7rem .9rem;font-weight:750;
+  display:flex;align-items:center;gap:.45rem;color:#e8eef7;
+}
+.narration-box > summary::-webkit-details-marker{display:none;}
+.narration-box > summary::before{content:"▸";color:var(--sky,#6ee7f5);}
+.narration-box[open] > summary::before{content:"▾";}
+.narration-badge{
+  font-size:.7rem;font-weight:800;padding:.14rem .45rem;border-radius:999px;
+  background:rgba(110,231,245,.18);color:var(--sky,#6ee7f5);
+}
+.narration-body{padding:0 .9rem 1rem;}
+.narration-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 .65rem;
+}
+.narration-toolbar button{
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  background:rgba(18,24,33,.9);color:#e8eef7;padding:.32rem .75rem;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+}
+.narration-toolbar button.main{
+  background:linear-gradient(135deg,rgba(94,200,255,.9),rgba(62,224,162,.75));
+  color:#071018;border:0;
+}
+.narration-toolbar button:hover{filter:brightness(1.08);}
+.narration-toolbar button:disabled{opacity:.45;cursor:not-allowed;}
+.narration-rate{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);}
+.narration-rate input{width:90px;accent-color:#5ec8ff;}
+.narration-voice{
+  display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);
+  flex:1 1 220px;min-width:180px;
+}
+.narration-voice select{
+  flex:1;min-width:0;max-width:100%;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  background:rgba(18,24,33,.95);color:#e8eef7;
+  padding:.28rem .7rem;font-size:.78rem;
+}
+.narration-hint{font-size:.72rem;color:var(--muted,#9fb0c6);margin:.15rem 0 .45rem;line-height:1.45;}
+.narration-status{font-size:.78rem;color:var(--mint,#3ee0a2);min-height:1.1em;}
+.narration-script{
+  white-space:pre-wrap;line-height:1.75;color:#d7e2f0;font-size:.92rem;
+  padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(110,231,245,.25);
+  background:rgba(10,14,20,.72);max-height:280px;overflow:auto;-webkit-overflow-scrolling:touch;
+}
+.narration-script.is-speaking{border-color:rgba(62,224,162,.55);box-shadow:inset 3px 0 0 var(--mint,#3ee0a2);}
+@media (max-width:560px){
+  .narration-toolbar{gap:.35rem;}
+  .narration-voice{flex-basis:100%;}
+  .narration-script{max-height:220px;font-size:.88rem;}
+}
+:root{
+  --bg:#0b0f14; --text:#e8eef7; --muted:#9fb0c6;
+  --cyan:#5ec8ff; --mint:#3ee0a2; --amber:#ffc857; --coral:#ff7b72;
+  --violet:#c3a6ff; --sky:#6ee7f5; --side-w:320px; --side-blue:#0d2137;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;}
+body{
+  background:
+    radial-gradient(1100px 480px at 8% -8%, rgba(94,200,255,.12), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgba(195,166,255,.10), transparent 50%),
+    var(--bg);
+  color:var(--text);
+}
+
+.layout{min-height:100vh;}
+.sidebar{
+  position:fixed; inset:0 auto 0 0; width:min(var(--side-w), 88vw); z-index:40;
+  background:linear-gradient(180deg, #0a2744 0%, var(--side-blue) 40%, #0b1a2a 100%);
+  border-right:1px solid rgba(94,200,255,.18);
+  display:flex; flex-direction:column;
+  transform:translateX(0); transition:transform .22s ease;
+  box-shadow:8px 0 28px rgba(0,0,0,.25);
+}
+body.side-collapsed .sidebar{transform:translateX(-105%);}
+.side-scroll{overflow:auto; -webkit-overflow-scrolling:touch; padding:.85rem .75rem 5rem; flex:1;}
+.side-brand-block{padding:.35rem .45rem 0.85rem; border-bottom:1px solid rgba(94,200,255,.15); margin-bottom:.75rem;}
+.side-brand{font-weight:850; font-size:1.05rem; color:#fff; letter-spacing:.04em;}
+.side-sub{font-size:.75rem; color:rgba(158,200,230,.85); margin-top:.15rem;}
+.side-home{
+  display:inline-flex; margin-top:.55rem; font-size:.78rem; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+}
+.side-home:hover{color:#fff;}
+.chap-drop{
+  border:1px solid rgba(94,200,255,.14); border-radius:12px;
+  background:rgba(8,24,40,.72); margin:0 0 .45rem; overflow:hidden;
+}
+.chap-drop.active-chap{border-color:rgba(94,200,255,.45); box-shadow:inset 3px 0 0 var(--cyan);}
+.chap-drop > summary{
+  list-style:none; cursor:pointer; padding:.55rem .65rem;
+  display:flex; align-items:center; gap:.35rem;
+  font-size:.84rem; font-weight:750; color:#e8f4ff;
+}
+.chap-drop > summary::-webkit-details-marker{display:none;}
+.chap-drop > summary::before{content:"▸"; color:rgba(158,200,230,.7); width:1rem; flex:0 0 auto;}
+.chap-drop[open] > summary::before{content:"▾"; color:var(--cyan);}
+.chap-sum-link{color:inherit; text-decoration:none; flex:1; min-width:0; word-break:break-word;}
+.chap-sum-link:hover{color:var(--cyan);}
+.toc-kids{padding:0 .35rem .55rem .35rem; display:flex; flex-direction:column; gap:.08rem;}
+.toc-h3{
+  display:flex; align-items:flex-start; gap:.4rem; text-decoration:none; color:rgba(200,220,235,.88);
+  font-size:.78rem; padding:.32rem .45rem; border-radius:8px; line-height:1.35;
+}
+.toc-h3:hover{background:rgba(94,200,255,.12); color:#fff;}
+.toc-sub{padding-left:1.15rem; font-size:.74rem; color:rgba(170,195,215,.8);}
+.toc-mark{flex:0 0 auto; width:1.1rem; text-align:center; color:var(--cyan); font-size:.85rem;}
+.toc-sub .toc-mark{color:var(--amber); font-size:.78rem;}
+.toc-text{flex:1; min-width:0; overflow-wrap:anywhere;}
+.edge-toggle{
+  position:fixed; left:calc(min(var(--side-w), 88vw) - 16px); top:max(12px, env(safe-area-inset-top));
+  z-index:50; width:32px; height:32px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(13,33,55,.95); color:#fff; cursor:pointer;
+  display:grid; place-items:center; transition:left .22s ease, opacity .2s ease;
+}
+body.side-collapsed .edge-toggle{display:none;}
+.burger-fab{
+  display:none; position:fixed;
+  left:max(12px, env(safe-area-inset-left));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:55; width:42px; height:42px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(94,200,255,.45),rgba(62,224,162,.32));
+  color:#071018; font-size:1.1rem; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+body.side-collapsed .burger-fab{display:grid; place-items:center;}
+.content{margin-left:min(var(--side-w), 88vw); min-width:0; width:auto; transition:margin-left .22s ease;}
+body.side-collapsed .content{margin-left:0;}
+.wrap{max-width:980px; margin:0 auto; padding:1.25rem 1.15rem 3.2rem; overflow-x:clip;}
+body.side-collapsed .wrap{padding-top:4.2rem;}
+.meta-line{color:var(--muted); font-size:.82rem; margin-bottom:.9rem;}
+.backdrop{display:none; position:fixed; inset:0; z-index:35; background:rgba(0,0,0,.45);}
+body.side-open-mobile .backdrop{display:block;}
+
+@media (max-width:1100px){
+  :root{ --side-w:280px; }
+  .milestone-track{grid-template-columns:repeat(auto-fit,minmax(132px,1fr));}
+}
+@media (max-width:900px){
+  .sidebar{
+    width:min(86vw, 320px);
+    transform:translateX(-105%);
+    box-shadow:12px 0 40px rgba(0,0,0,.45);
+  }
+  body.side-open-mobile .sidebar{transform:translateX(0);}
+  body.side-collapsed .sidebar{transform:translateX(-105%);}
+  /* 開啟時必須蓋過 collapsed，否則漢堡按了側欄仍關著 */
+  body.side-collapsed.side-open-mobile .sidebar{transform:translateX(0);}
+  .content{margin-left:0 !important; width:100%;}
+  .edge-toggle{display:none !important;}
+  .burger-fab{display:grid !important; place-items:center;}
+  body.side-open-mobile .burger-fab{opacity:1;}
+  .wrap{
+    padding:4.4rem max(.85rem, env(safe-area-inset-right))
+            calc(2.5rem + env(safe-area-inset-bottom))
+            max(.85rem, env(safe-area-inset-left));
+  }
+  .note-title{font-size:clamp(1.2rem, 5.5vw, 1.65rem);}
+  .lecture-nav{
+    display:flex; flex-wrap:nowrap; gap:.35rem;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:.35rem; margin-bottom:.75rem;
+    scrollbar-width:thin;
+  }
+  .lecture-nav .nav-item{flex:0 0 auto;}
+  .lecture-nav .nav-link{padding:.38rem .75rem; font-size:.82rem; white-space:nowrap;}
+  .lecture-tab-content{padding:.85rem .7rem 1.1rem; border-radius:12px;}
+  .milestone-track{grid-template-columns:1fr 1fr; gap:.55rem;}
+  .path-cards{grid-template-columns:1fr;}
+  .sec-head{align-items:flex-start;}
+  .sec-title{font-size:1.05rem; line-height:1.35;}
+  .sec-num{flex:0 0 auto;}
+  .struct-table td:first-child{white-space:normal; min-width:4.5rem;}
+  .struct-table table{font-size:.8rem;}
+  .struct-cap{flex-wrap:wrap; font-size:.86rem;}
+  .row.g-3 > [class*="col-"]{flex:0 0 100%; max-width:100%;}
+  .ans-row{flex-direction:column;}
+  .ans-box{width:100%;}
+}
+@media (max-width:560px){
+  .milestone-track{grid-template-columns:1fr;}
+  .chip-row{gap:.35rem;}
+  .tag-chip{font-size:.72rem; padding:.22rem .55rem;}
+  .summary-chip{padding:.65rem .75rem; font-size:.9rem;}
+  .unit-badge{font-size:.7rem;}
+  .ms-desc,.path-desc{font-size:.74rem;}
+  .table-responsive{margin:0 -.15rem; border-radius:0 0 12px 12px;}
+  .struct-table .table th,.struct-table .table td{padding:.4rem .45rem;}
+}
+@media (min-width:901px){
+  body.side-open-mobile .backdrop{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.content,.edge-toggle{transition:none;}
+}
+@media print{
+  .sidebar,.burger-fab,.edge-toggle,.backdrop,.lecture-nav{display:none !important;}
+  .content{margin-left:0 !important;}
+  .wrap{padding:0; max-width:100%;}
+  .tab-pane{display:block !important; opacity:1 !important;}
+}
+
+.lecture-hero{margin-bottom:1rem;}
+.unit-badge{display:inline-block;font-size:.75rem;font-weight:800;padding:.28rem .7rem;border-radius:999px;background:linear-gradient(135deg,rgba(94,200,255,.25),rgba(195,166,255,.25));border:1px solid rgba(255,255,255,.1);margin-bottom:.55rem;}
+.note-title{font-weight:780;line-height:1.28;font-size:clamp(1.4rem,3vw,1.95rem);margin:0 0 .7rem;}
+.chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 1rem;}
+.tag-chip{display:inline-flex;align-items:center;padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:650;border:1px solid transparent;background:rgba(18,24,33,.95);}
+.chip-cyan{border-color:rgba(94,200,255,.4);box-shadow:inset 3px 0 0 var(--cyan);}
+.chip-mint{border-color:rgba(62,224,162,.4);box-shadow:inset 3px 0 0 var(--mint);}
+.chip-amber{border-color:rgba(255,200,87,.4);box-shadow:inset 3px 0 0 var(--amber);}
+.chip-coral{border-color:rgba(255,123,114,.4);box-shadow:inset 3px 0 0 var(--coral);}
+.chip-violet{border-color:rgba(195,166,255,.4);box-shadow:inset 3px 0 0 var(--violet);}
+.chip-sky{border-color:rgba(110,231,245,.4);box-shadow:inset 3px 0 0 var(--sky);}
+.summary-chips{display:flex;flex-direction:column;gap:.55rem;}
+.summary-chip{border-radius:12px;padding:.75rem .95rem;border:1px solid transparent;background:rgba(18,24,33,.9);line-height:1.55;}
+.panel{background:rgba(18,24,33,.88);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;}
+.panel-mint{border-left:4px solid var(--mint);}
+.section-kicker{font-size:.75rem;font-weight:800;letter-spacing:.08em;color:var(--cyan);margin-bottom:.25rem;}
+.section-title{font-size:1.1rem;font-weight:720;margin-bottom:.7rem;}
+.tab-hint{color:var(--muted);font-size:.9rem;}
+.milestone-wrap{margin:0 0 1.2rem;}
+.milestone-track{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;}
+.milestone-link{display:flex;flex-direction:column;gap:.3rem;height:100%;padding:.8rem .85rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.92);border:1px solid rgba(255,255,255,.08);}
+.milestone-link:hover{border-color:rgba(94,200,255,.45);color:inherit;}
+.ms-dot{width:1.6rem;height:1.6rem;border-radius:999px;display:grid;place-items:center;font-size:.78rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.ms-label{font-weight:720;font-size:.92rem;}
+.ms-desc{font-size:.76rem;color:var(--muted);line-height:1.4;}
+.path-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;}
+.path-card{display:block;padding:1rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.path-card:hover{border-color:rgba(195,166,255,.5);color:inherit;}
+.path-idx{font-size:.75rem;font-weight:800;color:var(--violet);}
+.path-title{font-weight:720;margin:.25rem 0;}
+.path-desc{font-size:.82rem;color:var(--muted);}
+.path-go{margin-top:.5rem;font-size:.82rem;color:var(--cyan);}
+.lecture-nav{gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lecture-nav .nav-link{border-radius:999px;color:var(--muted);background:rgba(18,24,33,.8);border:1px solid rgba(255,255,255,.08);padding:.4rem .9rem;}
+.lecture-nav .nav-link.active{color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));border-color:transparent;font-weight:750;}
+.lecture-tab-content{background:rgba(12,16,22,.45);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.1rem 1rem 1.4rem;}
+.sec-block{padding:1rem 0 1.35rem;border-bottom:1px solid rgba(255,255,255,.06);scroll-margin-top:1.2rem;}
+.sec-block:last-child{border-bottom:0;}
+.sec-kicker{font-size:.72rem;font-weight:800;color:var(--amber);letter-spacing:.04em;margin-bottom:.3rem;}
+.sec-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.45rem;}
+.sec-num{display:inline-grid;place-items:center;min-width:1.85rem;height:1.85rem;border-radius:999px;font-size:.9rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));flex:0 0 auto;}
+.sec-title{margin:0;font-size:1.15rem;font-weight:720;}
+.subhead{font-size:1rem;font-weight:700;margin:1rem 0 .45rem;color:var(--sky);scroll-margin-top:1.2rem;}
+.sec-body p,.sec-body li,.sub-sec p,.sub-sec li{line-height:1.75;color:#d7e2f0;overflow-wrap:anywhere;}
+.sec-body table,.sub-sec table{width:100%;margin:1rem 0;border-collapse:collapse;font-size:.88rem;}
+.sec-body th,.sec-body td,.sub-sec th,.sub-sec td{border:1px solid rgba(255,255,255,.12);padding:.45rem .55rem;}
+.sec-body th,.sub-sec th{background:rgba(94,200,255,.12);}
+.sec-body blockquote,.sub-sec blockquote{border-left:3px solid var(--violet);margin:1rem 0;padding:.4rem .9rem;color:var(--muted);background:rgba(195,166,255,.06);}
+.kp-box{margin:.75rem 0 .2rem;padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(94,200,255,.35);background:rgba(94,200,255,.06);}
+.callout{border-radius:14px;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.08);background:rgba(16,22,30,.92);margin:.7rem 0;}
+.callout-label{font-size:.75rem;font-weight:800;letter-spacing:.06em;margin-bottom:.3rem;color:var(--cyan);}
+.callout-warn{border-color:rgba(255,200,87,.45);background:linear-gradient(135deg,rgba(255,200,87,.14),rgba(16,22,30,.95));}
+.callout-warn .callout-label{color:var(--amber);}
+.quick-card{padding:1rem;border-radius:14px;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);height:100%;}
+.quick-kicker{font-size:.72rem;font-weight:800;color:var(--cyan);}
+.ans-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:.35rem 0 .7rem;}
+.ans-btn{border-radius:10px;border:1px solid rgba(195,166,255,.4);background:rgba(195,166,255,.12);color:var(--violet);font-size:.82rem;font-weight:700;padding:.35rem .7rem;}
+.ans-box{flex:1 1 180px;min-height:2.2rem;display:flex;align-items:center;padding:.4rem .7rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0a0e14;font-family:ui-monospace,Consolas,monospace;}
+.ans-text{color:var(--mint);overflow-wrap:anywhere;}
+.ans-box.is-masked .ans-text{-webkit-text-security:disc;text-security:disc;color:var(--muted);user-select:none;}
+.struct-table{margin:1rem 0 1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:rgba(16,22,30,.92);}
+.struct-cap{display:flex;align-items:center;gap:.55rem;padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;font-size:.92rem;}
+.struct-badge{font-size:.72rem;font-weight:800;padding:.18rem .5rem;border-radius:999px;letter-spacing:.04em;}
+.table-timeline .struct-badge{background:rgba(94,200,255,.18);color:var(--cyan);}
+.table-compare .struct-badge{background:rgba(195,166,255,.18);color:var(--violet);}
+.table-evolve .struct-badge{background:rgba(62,224,162,.16);color:var(--mint);}
+.struct-table .table-responsive{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.struct-table table{margin:0;--bs-table-bg:transparent;--bs-table-color:var(--text);font-size:.88rem;min-width:100%;}
+.struct-table thead th{background:rgba(94,200,255,.1);color:#e8eef7;}
+.table-compare thead th{background:rgba(195,166,255,.12);}
+.table-evolve thead th{background:rgba(62,224,162,.1);}
+.struct-table td:first-child{font-weight:700;color:var(--amber);vertical-align:top;}
+.table-compare td:first-child{color:var(--violet);}
+.table-evolve td:first-child{color:var(--mint);}
+.structs-wrap .struct-table{margin-bottom:1.35rem;}
+</style>
+</head>
+<body>
+<div class="backdrop" id="side-backdrop" hidden></div>
+<button type="button" class="burger-fab" id="burger-fab" title="打開目錄" aria-label="打開目錄">☰</button>
+<button type="button" class="edge-toggle" id="edge-toggle" title="收起目錄" aria-label="收起目錄">‹</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="左側目錄">
+    <div class="side-scroll"><div class="side-brand-block"><div class="side-brand">公司治理</div><div class="side-sub">詳盡學習講義</div><a class="side-home" href="../index.html">← 筆記首頁</a></div>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch01.html">第1章 台灣公司治理之導論</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch01.html#1-1-前言" data-nav-jump="ch01.html"><span class="toc-mark">◆</span><span class="toc-text">1.1 | 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-2-國際公司治理之發展與趨勢" data-nav-jump="ch01.html"><span class="toc-mark">◇</span><span class="toc-text">1.2 | 國際公司治理之發展與趨勢</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-3-台灣公司治理之發展" data-nav-jump="ch01.html"><span class="toc-mark">›</span><span class="toc-text">1.3 | 台灣公司治理之發展</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-4-台灣公司治理之挑戰與前瞻" data-nav-jump="ch01.html"><span class="toc-mark">▹</span><span class="toc-text">1.4 | 台灣公司治理之挑戰與前瞻</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-1-近期金融事件之挑戰與省思" data-nav-jump="ch01.html"><span class="toc-mark">●</span><span class="toc-text">1.4.1 近期金融事件之挑戰與省思</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-2-2018年公司治理藍圖" data-nav-jump="ch01.html"><span class="toc-mark">○</span><span class="toc-text">1.4.2 2018年公司治理藍圖</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-3-推動建置商業法院" data-nav-jump="ch01.html"><span class="toc-mark">■</span><span class="toc-text">1.4.3 推動建置商業法院</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-4-董事績效評估制度" data-nav-jump="ch01.html"><span class="toc-mark">□</span><span class="toc-text">1.4.4 董事績效評估制度</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-5-引導家族企業結合良好公司治理" data-nav-jump="ch01.html"><span class="toc-mark">✦</span><span class="toc-text">1.4.5 引導家族企業結合良好公司治理</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-6-董事成員多元化" data-nav-jump="ch01.html"><span class="toc-mark">✧</span><span class="toc-text">1.4.6 董事成員多元化</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-5-公司治理未來發展" data-nav-jump="ch01.html"><span class="toc-mark">●</span><span class="toc-text">1.5 | 公司治理未來發展</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-6-公司治理-3-0-永續發展藍圖" data-nav-jump="ch01.html"><span class="toc-mark">○</span><span class="toc-text">1.6 | 公司治理 3.0-永續發展藍圖</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-7-上市櫃公司永續發展行動方案-2023年" data-nav-jump="ch01.html"><span class="toc-mark">■</span><span class="toc-text">1.7 | 上市櫃公司永續發展行動方案 (2023年)</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-8-結語" data-nav-jump="ch01.html"><span class="toc-mark">□</span><span class="toc-text">1.8 | 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-9-練習題" data-nav-jump="ch01.html"><span class="toc-mark">✦</span><span class="toc-text">1.9 | 練習題</span></a>
+</div></details>
+<details class="chap-drop active-chap" open>
+<summary><a class="chap-sum-link" href="ch02.html">第 2 章 公司董事會議事辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch02.html#2-1-前言" data-nav-jump="ch02.html"><span class="toc-mark">◆</span><span class="toc-text">2.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-2-公開發行公司董事會議事辦法" data-nav-jump="ch02.html"><span class="toc-mark">◇</span><span class="toc-text">2.2 公開發行公司董事會議事辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-1-董事會議事規範" data-nav-jump="ch02.html"><span class="toc-mark">›</span><span class="toc-text">2.2.1 董事會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-2-設立議事事務專責機構" data-nav-jump="ch02.html"><span class="toc-mark">▹</span><span class="toc-text">2.2.2 設立議事事務專責機構</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-3-董事會議事召集" data-nav-jump="ch02.html"><span class="toc-mark">●</span><span class="toc-text">2.2.3 董事會議事召集</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-4-董事會開會時間地點" data-nav-jump="ch02.html"><span class="toc-mark">○</span><span class="toc-text">2.2.4 董事會開會時間地點</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-5-董事會議事內容" data-nav-jump="ch02.html"><span class="toc-mark">■</span><span class="toc-text">2.2.5 董事會議事內容</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-6-董事會會議進行及程序等相關規定" data-nav-jump="ch02.html"><span class="toc-mark">□</span><span class="toc-text">2.2.6 董事會會議進行及程序等相關規定</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-7-董事利益迴避" data-nav-jump="ch02.html"><span class="toc-mark">✦</span><span class="toc-text">2.2.7 董事利益迴避</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-8-董事會議事錄" data-nav-jump="ch02.html"><span class="toc-mark">✧</span><span class="toc-text">2.2.8 董事會議事錄</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-9-公告申報" data-nav-jump="ch02.html"><span class="toc-mark">◆</span><span class="toc-text">2.2.9 公告申報</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-10-其他事項" data-nav-jump="ch02.html"><span class="toc-mark">◇</span><span class="toc-text">2.2.10 其他事項</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-3-董事會議事實務小百科" data-nav-jump="ch02.html"><span class="toc-mark">›</span><span class="toc-text">2.3 董事會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-4-結語" data-nav-jump="ch02.html"><span class="toc-mark">▹</span><span class="toc-text">2.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-5-練習題" data-nav-jump="ch02.html"><span class="toc-mark">●</span><span class="toc-text">2.5 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch03.html">第3章 審計委員會行使職權辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch03.html#3-2-國際間審計委員會制度概況" data-nav-jump="ch03.html"><span class="toc-mark">◆</span><span class="toc-text">3.2 國際間審計委員會制度概況</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#美國" data-nav-jump="ch03.html"><span class="toc-mark">◇</span><span class="toc-text">美國</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#德國" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">德國</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#日本" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">日本</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#韓國" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">韓國</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-3-我國審計委員會制度及發展沿革" data-nav-jump="ch03.html"><span class="toc-mark">◇</span><span class="toc-text">3.3 我國審計委員會制度及發展沿革</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-3-1-審計委員會緣起" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">3.3.1 審計委員會緣起</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-3-2-審計委員會發展沿革" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.3.2 審計委員會發展沿革</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-4-我國審計委員會制度相關規範" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">3.4 我國審計委員會制度相關規範</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-1-審計委員會之設置及組成" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.4.1 審計委員會之設置及組成</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-2-審計委員會之職責" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">3.4.2 審計委員會之職責</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-3-審計委員會會議" data-nav-jump="ch03.html"><span class="toc-mark">○</span><span class="toc-text">3.4.3 審計委員會會議</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-4-審計委員會會議其他事項及實務運作" data-nav-jump="ch03.html"><span class="toc-mark">■</span><span class="toc-text">3.4.4 審計委員會會議其他事項及實務運作</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-5-審計委員會議事實務小百科" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.5 審計委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-6-結語" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">3.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-7-練習題" data-nav-jump="ch03.html"><span class="toc-mark">○</span><span class="toc-text">3.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch04.html">第4章 薪資報酬委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch04.html#4-1-前言" data-nav-jump="ch04.html"><span class="toc-mark">◆</span><span class="toc-text">4.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-2-國際發展現況" data-nav-jump="ch04.html"><span class="toc-mark">◇</span><span class="toc-text">4.2 國際發展現況</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-3-股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法" data-nav-jump="ch04.html"><span class="toc-mark">›</span><span class="toc-text">4.3 股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-1-適用範圍" data-nav-jump="ch04.html"><span class="toc-mark">▹</span><span class="toc-text">4.3.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-2-組織規程訂定" data-nav-jump="ch04.html"><span class="toc-mark">●</span><span class="toc-text">4.3.2 組織規程訂定</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-3-委員會成員組成" data-nav-jump="ch04.html"><span class="toc-mark">○</span><span class="toc-text">4.3.3 委員會成員組成</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-4-委員會職權行使" data-nav-jump="ch04.html"><span class="toc-mark">■</span><span class="toc-text">4.3.4 委員會職權行使</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-5-委員會議事規範" data-nav-jump="ch04.html"><span class="toc-mark">□</span><span class="toc-text">4.3.5 委員會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-6-薪資報酬委員會與董事會決議" data-nav-jump="ch04.html"><span class="toc-mark">✦</span><span class="toc-text">4.3.6 薪資報酬委員會與董事會決議</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-4-薪資報酬委員會議事實務小百科" data-nav-jump="ch04.html"><span class="toc-mark">▹</span><span class="toc-text">4.4 薪資報酬委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-5-結語" data-nav-jump="ch04.html"><span class="toc-mark">●</span><span class="toc-text">4.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-6-練習題" data-nav-jump="ch04.html"><span class="toc-mark">○</span><span class="toc-text">4.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch05.html">第5章 併購特別委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch05.html#5-1-前言" data-nav-jump="ch05.html"><span class="toc-mark">◆</span><span class="toc-text">5.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-2-國際併購手法" data-nav-jump="ch05.html"><span class="toc-mark">◇</span><span class="toc-text">5.2 國際併購手法</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-3-企業併購法及併購特別委員會行使職權辦法" data-nav-jump="ch05.html"><span class="toc-mark">›</span><span class="toc-text">5.3 企業併購法及併購特別委員會行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch05.html#5-3-1-企業併購法" data-nav-jump="ch05.html"><span class="toc-mark">▹</span><span class="toc-text">5.3.1 企業併購法</span></a>
+<a class="toc-h3 toc-sub" href="ch05.html#5-3-2-併購特別委員會" data-nav-jump="ch05.html"><span class="toc-mark">●</span><span class="toc-text">5.3.2 併購特別委員會</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-4-併購特別委員會實務小百科" data-nav-jump="ch05.html"><span class="toc-mark">▹</span><span class="toc-text">5.4 併購特別委員會實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-5-結語" data-nav-jump="ch05.html"><span class="toc-mark">●</span><span class="toc-text">5.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-6-練習題" data-nav-jump="ch05.html"><span class="toc-mark">○</span><span class="toc-text">5.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch06.html">第6章 資訊揭露制度與法制之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch06.html#6-1-前言" data-nav-jump="ch06.html"><span class="toc-mark">◆</span><span class="toc-text">6.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-2-公開發行公司資訊揭露原則" data-nav-jump="ch06.html"><span class="toc-mark">◇</span><span class="toc-text">6.2 公開發行公司資訊揭露原則</span></a>
+<a class="toc-h3 toc-sub" href="ch06.html#6-2-1-定期揭露事項" data-nav-jump="ch06.html"><span class="toc-mark">›</span><span class="toc-text">6.2.1 定期揭露事項</span></a>
+<a class="toc-h3 toc-sub" href="ch06.html#6-2-2-不定期揭露之重大事項" data-nav-jump="ch06.html"><span class="toc-mark">▹</span><span class="toc-text">6.2.2 不定期揭露之重大事項</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-3-法制規範與責任" data-nav-jump="ch06.html"><span class="toc-mark">›</span><span class="toc-text">6.3 法制規範與責任</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-4-公開發行公司應建立之機制" data-nav-jump="ch06.html"><span class="toc-mark">▹</span><span class="toc-text">6.4 公開發行公司應建立之機制</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-5-資訊揭露實務小百科" data-nav-jump="ch06.html"><span class="toc-mark">●</span><span class="toc-text">6.5 資訊揭露實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-6-結語" data-nav-jump="ch06.html"><span class="toc-mark">○</span><span class="toc-text">6.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-7-練習題" data-nav-jump="ch06.html"><span class="toc-mark">■</span><span class="toc-text">6.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch07.html">第7章 內線交易之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch07.html#7-1-前言" data-nav-jump="ch07.html"><span class="toc-mark">◆</span><span class="toc-text">7.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-2-構成要件-5個-w" data-nav-jump="ch07.html"><span class="toc-mark">◇</span><span class="toc-text">7.2 構成要件-5個 W</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-1-why-為什麼要禁止內線交易" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">7.2.1 WHY:為什麼要禁止內線交易</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-2-who-內線交易的受規範對象" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.2 WHO:內線交易的受規範對象</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-3-how-怎樣會構成內線交易" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.2.3 HOW:怎樣會構成內線交易</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-4-what-規範的買賣標的及重大消息" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.2.4 WHAT:規範的買賣標的及重大消息</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-3-刑事責任與民事責任" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">7.3 刑事責任與民事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#內線交易法律責任" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">內線交易法律責任</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-4-法院判決實務" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.4 法院判決實務</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-4-1-案例事實" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.4.1 案例事實</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-4-2-法院見解" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.4.2 法院見解</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-5-如何避免誤觸內線交易" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.5 如何避免誤觸內線交易</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-6-內線交易實務小百科" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.6 內線交易實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-7-結語" data-nav-jump="ch07.html"><span class="toc-mark">■</span><span class="toc-text">7.7 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-8-練習題" data-nav-jump="ch07.html"><span class="toc-mark">□</span><span class="toc-text">7.8 練習題</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#1-內線交易規範的買賣標的為何" data-nav-jump="ch07.html"><span class="toc-mark">✦</span><span class="toc-text">1. 內線交易規範的買賣標的為何</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="ch07.html"><span class="toc-mark">✧</span><span class="toc-text">2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="ch07.html"><span class="toc-mark">◆</span><span class="toc-text">3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#4-什麼是-公司有重大影響其支付本息能力之消息" data-nav-jump="ch07.html"><span class="toc-mark">◇</span><span class="toc-text">4. 什麼是「公司有重大影響其支付本息能力之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#5-重大消息之-公開方式" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">5. 重大消息之「公開方式」</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-5-when-內線交易的禁止交易期間" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.5 WHEN:內線交易的禁止交易期間</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#刑事責任" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">刑事責任</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#民事責任" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">民事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-3-1-刑事責任" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.3.1 刑事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-3-2-民事責任" data-nav-jump="ch07.html"><span class="toc-mark">■</span><span class="toc-text">7.3.2 民事責任</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch08.html">第 8 章 股東會及委託書使用之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch08.html#8-1-前言" data-nav-jump="ch08.html"><span class="toc-mark">◆</span><span class="toc-text">8.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-2-股東會議事規則參考範例" data-nav-jump="ch08.html"><span class="toc-mark">◇</span><span class="toc-text">8.2 股東會議事規則參考範例</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-1-股東會召集及開會通知" data-nav-jump="ch08.html"><span class="toc-mark">›</span><span class="toc-text">8.2.1 股東會召集及開會通知</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-2-召開股東會地點-時間及開會時間之原則" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.2.2 召開股東會地點、時間及開會時間之原則</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-3-股東會議事手冊-資料公告及簽名簿等文件之備置" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-4-股東會主席及列席人員" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.2.4 股東會主席及列席人員</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-5-股東會開會過程錄音或錄影之存證" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.2.5 股東會開會過程錄音或錄影之存證</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-6-議案討論及股東發言" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.2.6 議案討論及股東發言</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-7-表決股數之計算-電子投票-股東會視訊會議" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.2.7 表決股數之計算、電子投票、股東會視訊會議</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-8-議事錄及公告" data-nav-jump="ch08.html"><span class="toc-mark">✧</span><span class="toc-text">8.2.8 議事錄及公告</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-9-休息及續行集會" data-nav-jump="ch08.html"><span class="toc-mark">◆</span><span class="toc-text">8.2.9 休息及續行集會</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-3-出席股東會使用委託書規則" data-nav-jump="ch08.html"><span class="toc-mark">›</span><span class="toc-text">8.3 出席股東會使用委託書規則</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-1-委託書之徵求與非屬徵求" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.3.1 委託書之徵求與非屬徵求</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-2-徵求人之資格條件及代理股數" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.3.2 徵求人之資格條件及代理股數</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-3-委託書徵求資訊之揭露" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.3.3 委託書徵求資訊之揭露</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-4-委託書使用及取得方式之限制" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.3.4 委託書使用及取得方式之限制</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-5-違反委託書規則之效果" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.3.5 違反委託書規則之效果</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-6-委託書規則最新修正重點" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.3.6 委託書規則最新修正重點</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-4-股東會召集-會場實務及會後辦理事項" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.4 股東會召集、會場實務及會後辦理事項</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-1-股東會召集" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.4.1 股東會召集</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-2-股東會會場實務" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.4.2 股東會會場實務</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-3-股東會會後辦理事項" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.4.3 股東會會後辦理事項</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-5-獨立董事之提名及選舉" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.5 獨立董事之提名及選舉</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-1-強制設立" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.5.1 強制設立</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-2-獨立董事之提名方式" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.5.2 獨立董事之提名方式</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-3-獨立董事之選舉方式" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.5.3 獨立董事之選舉方式</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-6-常見違規案例" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.6 常見違規案例</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-7-股東會及委託書使用實務小百科" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.7 股東會及委託書使用實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-8-結語" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.8 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-9-練習題" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.9 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch09.html">第 9 章 上市上櫃公司治理實務守則之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch09.html#9-1-前言" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">9.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-2-上市上櫃公司治理實務守則" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9.2 上市上櫃公司治理實務守則</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-1-公司治理之原則" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">9.2.1 公司治理之原則</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-2-建立內部控制制度" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">9.2.2 建立內部控制制度</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-3-公司治理主管" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">9.2.3 公司治理主管</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-4-保障股東權益" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">9.2.4 保障股東權益</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-3-上市上櫃公司治理實務守則實務小百科" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">9.3 上市上櫃公司治理實務守則實務小百科</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#1-由證券交易所及櫃檯買賣中心共同制定之-上市上櫃公司治理實務守則-法律效果為何-上市-櫃-公司可採何種規範形式以建置其公司治理機制" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">1. 由證券交易所及櫃檯買賣中心共同制定之「上市上櫃公司治理實務守則」法律效果為何？上市(櫃)公司可採何種規範形式以建置其公司治理機制？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#2-公司治理主管需要董事會委任嗎-其薪資是否需提到薪資報酬委員會討論-得否由其他職位兼任-兼任者之原職位如已經董事會任命-其兼任公司治理主管是否需再經董事會決議" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">2. 公司治理主管需要董事會委任嗎？其薪資是否需提到薪資報酬委員會討論？得否由其他職位兼任？兼任者之原職位如已經董事會任命，其兼任公司治理主管是否需再經董事會決議？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#3-集團公司指派同一人擔任公司治理主管可不可以" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">3. 集團公司指派同一人擔任公司治理主管可不可以?</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#4-公司治理主管之進修範圍-時數為何" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">4. 公司治理主管之進修範圍、時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#5-上市上櫃公司治理實務守則-第-13-條之-1-及第-13-條之-2-所定上市上櫃公司建立與股東之互動機制-應如何落實" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">5. 「上市上櫃公司治理實務守則」第 13 條之 1 及第 13 條之 2 所定上市上櫃公司建立與股東之互動機制，應如何落實？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#6-上市-櫃-公司選任董事時-應考量之事項為何" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">6. 上市(櫃)公司選任董事時，應考量之事項為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#7-獨立董事是否得由法人或其代表人擔任-是否可兼任其他公司之董事-監察人或經理人" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">7. 獨立董事是否得由法人或其代表人擔任？是否可兼任其他公司之董事、監察人或經理人？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#8-上市-櫃-公司對董事會績效之評估範圍-評估內容宜包含哪些構面-自何時須開始進行評鑑" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">8. 上市(櫃)公司對董事會績效之評估範圍？評估內容宜包含哪些構面？自何時須開始進行評鑑？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#10-法人說明會之資訊揭露規定" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">10. 法人說明會之資訊揭露規定？</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-4-結語" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">9.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-5-練習題" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">9.5 練習題</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#1-依上市上櫃公司治理實務守則-董事會成員組成應考量多元化-兼任公司經理人之董事不宜逾董事席次比例" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 依上市上櫃公司治理實務守則，董事會成員組成應考量多元化，兼任公司經理人之董事不宜逾董事席次比例？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#2-依證券交易法第-26-條之-3-規定-公開發行公司董事間至少應有多少席次-不得具有配偶或二親等以內之親屬關係" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 依證券交易法第 26 條之 3 規定，公開發行公司董事間至少應有多少席次，不得具有配偶或二親等以內之親屬關係？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#3-依上市上櫃公司治理實務守則-獨立董事應具備專業知識-其持股應予限制-除應依相關法令規定辦理外-不宜同時擔任超過幾家上市上櫃公司之董事-含獨立董事-或監察人" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 依上市上櫃公司治理實務守則，獨立董事應具備專業知識，其持股應予限制，除應依相關法令規定辦理外，不宜同時擔任超過幾家上市上櫃公司之董事（含獨立董事）或監察人？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#4-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">4. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#5-依上市上櫃公司治理實務守則-上市上櫃公司董事因故解任-致不足幾人者-公司應於最近一次股東會補選之-但董事缺額達章程所定席次三分之一者-公司應自事實發生之日起幾日內-召開股東臨時會補選之" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">5. 依上市上櫃公司治理實務守則，上市上櫃公司董事因故解任，致不足幾人者，公司應於最近一次股東會補選之。但董事缺額達章程所定席次三分之一者，公司應自事實發生之日起幾日內，召開股東臨時會補選之？</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-鼓勵股東參與公司治理" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 鼓勵股東參與公司治理：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-建立與股東互動機制" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 建立與股東互動機制：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-公司與關係人間之公司治理關係" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 公司與關係人間之公司治理關係：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-5-強化董事會職能" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">9.2.5 強化董事會職能</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-董事會結構" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">1. 董事會結構：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-獨立董事制度" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">2. 獨立董事制度：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-功能性委員會" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">3. 功能性委員會：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-6-尊重利害關係人權益" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9.2.6 尊重利害關係人權益</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-應與公司之利害關係人保持溝通並維護權益-第-51-條" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">1. 應與公司之利害關係人保持溝通並維護權益（第 51 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-對於往來銀行及其他債權人-應提供充足之資訊-第-52-條" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">2. 對於往來銀行及其他債權人，應提供充足之資訊（第 52 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-建立員工溝通管道-第-53-條" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">3. 建立員工溝通管道（第 53 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#4-公司之社會責任-第-54-條" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">4. 公司之社會責任（第 54 條）：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-7-提升資訊透明度" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">9.2.7 提升資訊透明度</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-資訊公開及網路申報系統-第-55-條" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 資訊公開及網路申報系統（第 55 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-設置發言人-第-56-條" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 設置發言人（第 56 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-架設公司治理網站-第-57-條" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 架設公司治理網站（第 57 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#4-召開法人說明會" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">4. 召開法人說明會：</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch10.html">第 10 永續發展之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch10.html#10-1" data-nav-jump="ch10.html"><span class="toc-mark">◆</span><span class="toc-text">10.1</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-2-永續發展之演進歷程" data-nav-jump="ch10.html"><span class="toc-mark">◇</span><span class="toc-text">10.2 永續發展之演進歷程</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-3-金管會推動永續發展相關措施" data-nav-jump="ch10.html"><span class="toc-mark">›</span><span class="toc-text">10.3 金管會推動永續發展相關措施</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-4-上市上櫃公司永續發展實務守則" data-nav-jump="ch10.html"><span class="toc-mark">▹</span><span class="toc-text">10.4 上市上櫃公司永續發展實務守則</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-1-適用範圍" data-nav-jump="ch10.html"><span class="toc-mark">●</span><span class="toc-text">10.4.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-2-實踐永續發展之效益" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.4.2 實踐永續發展之效益</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-3-永續發展之實踐原則" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.4.3 永續發展之實踐原則</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-4-永續發展政策之訂定程序" data-nav-jump="ch10.html"><span class="toc-mark">□</span><span class="toc-text">10.4.4 永續發展政策之訂定程序</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-5-實踐永續發展" data-nav-jump="ch10.html"><span class="toc-mark">✦</span><span class="toc-text">10.4.5 實踐永續發展</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-5-永續發展資訊揭露之相關規範" data-nav-jump="ch10.html"><span class="toc-mark">●</span><span class="toc-text">10.5 永續發展資訊揭露之相關規範</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-5-1-年報及公開說明書揭露推動永續發展執行情形" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.5.1 年報及公開說明書揭露推動永續發展執行情形</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-5-2-上市-櫃-公司編製與申報永續報告書作業辦法" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.5.2 上市(櫃)公司編製與申報永續報告書作業辦法</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-6-永續發展實務小百科" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.6 永續發展實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-7" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.7</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-8-練習題" data-nav-jump="ch10.html"><span class="toc-mark">□</span><span class="toc-text">10.8 練習題</span></a>
+</div></details></div>
+  </aside>
+  <div class="content">
+    <main class="wrap">
+      <p class="meta-line">公司治理講義 · 全套視覺化 · 里程碑／Tabs／Chips · 2026-08-17 00:53</p>
+      
+<div class="lecture-tabs">
+  <ul class="nav nav-pills lecture-nav" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button" role="tab">總覽</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-charts-btn" data-bs-toggle="pill" data-bs-target="#tab-charts" type="button" role="tab">圖表</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-path-btn" data-bs-toggle="pill" data-bs-target="#tab-path" type="button" role="tab">學習路徑</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-lecture-btn" data-bs-toggle="pill" data-bs-target="#tab-lecture" type="button" role="tab">章節講義</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick" type="button" role="tab">速查卡片</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quiz-btn" data-bs-toggle="pill" data-bs-target="#tab-quiz" type="button" role="tab">練習</button></li>
+  </ul>
+  <div class="tab-content lecture-tab-content">
+    <div class="tab-pane fade show active" id="tab-overview" role="tabpanel"><header class="lecture-hero"><span class="unit-badge">公司治理 · 詳盡講義</span><h1 class='note-title'>第 2 章 公司董事會議事辦法之解析</h1><div class="chip-row">
+<span class="tag-chip chip-cyan">公司治理</span>
+<span class="tag-chip chip-mint">董事</span>
+<span class="tag-chip chip-amber">練習題</span>
+</div></header><section class="milestone-wrap" aria-label="學習里程碑">
+<div class="section-kicker">學習路徑</div>
+<h2 class="section-title">本章里程碑</h2>
+<ol class="milestone-track">
+<li class="milestone-item"><a class="milestone-link" href="#2-1-前言" data-jump-lecture><span class="ms-dot">1</span><span class="ms-label">前言</span><span class="ms-desc">管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#2-2-公開發行公司董事會議事辦法" data-jump-lecture><span class="ms-dot">2</span><span class="ms-label">公開發行公司董事會議事辦法</span><span class="ms-desc">依據證券交易法第26條之3第8項授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#2-3-董事會議事實務小百科" data-jump-lecture><span class="ms-dot">3</span><span class="ms-label">董事會議事實務小百科</span><span class="ms-desc">1. 董事會議事辦法第3條第2項規定，董事會之召集，應載明召集事由，於7日前通知各董事及監察人。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#2-4-結語" data-jump-lecture><span class="ms-dot">4</span><span class="ms-label">結語</span><span class="ms-desc">董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理…</span></a></li>
+</ol></section><section class="panel panel-mint mb-3"><h2 class="section-title">學習目標</h2><ul class="mb-0"><li>能說明「前言」的重點</li><li>能說明「公開發行公司董事會議事辦法」的重點</li><li>能說明「董事會議事實務小百科」的重點</li><li>能說明「結語」的重點</li><li>能完成本章練習題並核對解答</li></ul></section><section class="mb-3"><h2 class="section-title">重點摘要</h2><div class="summary-chips"><div class="summary-chip chip-cyan">管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營績效的推手，經濟合作暨開發組織（OECD）於2010年發布之「亞洲公司治理白皮書」全球金融風暴六大原…</div><div class="summary-chip chip-mint">依據證券交易法第26條之3第8項授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下：</div><div class="summary-chip chip-amber">1. 董事會議事辦法第3條第2項規定，董事會之召集，應載明召集事由，於7日前通知各董事及監察人。</div><div class="summary-chip chip-coral">董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理能否有效落實，除法令規範外，最重要仍是董事及經營階層是否正直、誠信與專業，因而有待公司確實強化董事及…</div></div></section><p class="tab-hint">建議路徑：總覽 → 圖表（時序／對照／演進）→ 學習路徑 → 章節講義 → 速查 → 練習。</p><div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>本章時序速覽（完整見「圖表」分頁）</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>2006年3月</td>
+<td>28日訂定發布「公開發行公司董事會議事辦法」，以利公開發行公司遵循辦理，俾落實並發揮其董事會之職能，以提高公司治理之績效</td>
+</tr>
+<tr>
+<td>2006年3月</td>
+<td>28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下</td>
+</tr>
+<tr>
+<td>2008年1月</td>
+<td>11日起多次修正「公開發行公司董事會議事辦法」，俾使公開發行公司董事會議事有效運作，並便利公開發行公司遵循</td>
+</tr>
+<tr>
+<td>2008年1月</td>
+<td>11日爰刪除原董事會延後開會時間限制（延後時間合計不得超過1小時），並對延後2次仍不足額者，修正主席得依辦法第3條第2項規定之程序重行召集</td>
+</tr>
+<tr>
+<td>2010年</td>
+<td>發布之「亞洲公司治理白皮書」全球金融風暴六大原則亦直指強化董事會職能為首要，因此董事會功能是否能有效發揮，實為企業經營重要之議題，亦為推動公司治理重要環節</td>
+</tr>
+<tr>
+<td>2017年7月</td>
+<td>28日修正辦法第7條第5項規定，明定公司設有獨立董事者，應有至少一席獨立董事親自出席董事會；對於辦法第7條第1項應提董事會決議事項，應有全體獨立董事出席董事會</td>
+</tr>
+</tbody></table></div></div></div>
+    <div class="tab-pane fade" id="tab-charts" role="tabpanel"><div class="structs-wrap"><div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>全章時序總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>2006年3月</td>
+<td>28日訂定發布「公開發行公司董事會議事辦法」，以利公開發行公司遵循辦理，俾落實並發揮其董事會之職能，以提高公司治理之績效</td>
+</tr>
+<tr>
+<td>2006年3月</td>
+<td>28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下</td>
+</tr>
+<tr>
+<td>2008年1月</td>
+<td>11日起多次修正「公開發行公司董事會議事辦法」，俾使公開發行公司董事會議事有效運作，並便利公開發行公司遵循</td>
+</tr>
+<tr>
+<td>2008年1月</td>
+<td>11日爰刪除原董事會延後開會時間限制（延後時間合計不得超過1小時），並對延後2次仍不足額者，修正主席得依辦法第3條第2項規定之程序重行召集</td>
+</tr>
+<tr>
+<td>2010年</td>
+<td>發布之「亞洲公司治理白皮書」全球金融風暴六大原則亦直指強化董事會職能為首要，因此董事會功能是否能有效發揮，實為企業經營重要之議題，亦為推動公司治理重要環節</td>
+</tr>
+<tr>
+<td>2017年7月</td>
+<td>28日修正辦法第7條第5項規定，明定公司設有獨立董事者，應有至少一席獨立董事親自出席董事會；對於辦法第7條第1項應提董事會決議事項，應有全體獨立董事出席董事會</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 1</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>1. 召集頻率</td>
+<td>為強化公司治理，董事會應至少每季召開一次，並於議事規範明定之。（第3條第1項）</td>
+</tr>
+<tr>
+<td>2. 召集通知</td>
+<td>(1)董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。（第3條第2項）</td>
+</tr>
+<tr>
+<td>3. 應於召集事由列舉之事項</td>
+<td>為強化董事會功能，規範應提董事會討論事項（第7條第1項各款之事項），應在召集事由中列舉，不得以臨時動議提出。（第3條第4項）</td>
+</tr>
+<tr>
+<td>4. 召集人</td>
+<td>(1)董事會由董事長召集並擔任主席。但每屆第一次董事會，由股東會所得選票代表選舉權最多之董事召集，會議主席由該召集權人擔任之，召集權人有二人以上時，應互推一人擔任之。（第10條第1項）</td>
+</tr>
+<tr>
+<td>1. 定期性董事會</td>
+<td>為使董事會議事內容完備，參酌實務運作及公開發行公司建立內部控制制度處理準則，內部稽核主管應列席董事會報告規定，明定定期性董事會議事內容至少包括下列事項：（如為緊急情事召集之非定期性董事會，則未規範其議事內容）（第6條）</td>
+</tr>
+<tr>
+<td>(1)報告事項</td>
+<td>A上次會議紀錄及執行情形。</td>
+</tr>
+<tr>
+<td>(2)討論事項</td>
+<td>A上次會議保留之討論事項。</td>
+</tr>
+<tr>
+<td>2. 應提董事會討論事項</td>
+<td>(1)公司之營運計畫：包括公司年度之經營方針、預期銷售數量及其依據及重要之產銷政策等財務業務計畫。</td>
+</tr>
+<tr>
+<td>A關係人</td>
+<td>指證券發行人財務報告編製準則所規範之關係人。</td>
+</tr>
+<tr>
+<td>B對非關係人之重大捐贈</td>
+<td>指每筆捐贈金額或一年內（以本次董事會召開日期為基準，往前追溯推算一年，已提董事會決議通過部分免再計入）累積對同一對象捐贈金額達新臺幣一億元以上，或達最近年度經會計師簽證之財務報告營業收入淨額百分之一或實收資本額百分之五（外國公司股票無面額或每股面額非屬新臺幣十元者，以股東權益百分</td>
+</tr>
+<tr>
+<td>3. 董事會重大議案討論</td>
+<td>董事會討論重大議案，獨立董事均應出席或委由其他獨立董事代理出席；非重大議案應有至少一席獨立董事親自出席董事會。（第7條）</td>
+</tr>
+<tr>
+<td>1. 董事出席</td>
+<td>(1)董事應親自出席董事會，如不能親自出席，得依公司章程規定委託其他董事代理出席；董事委託其他董事代理出席董事會時，應於每次出具委託書，並列舉召集事由之授權範圍，惟代理人以受1人之委託為限。</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 2</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>解答 按董事會議事辦法第3條第1項及第2項規定</td>
+<td>「董事會應至少每季召開1次，並於議事規範明定之。……但有緊急情事時，得隨時召集之。」，公司如已於所訂董事會議事規範明定公司定期召開董事會之頻率，且符合上開董事會應至少每季召開一次之規定，即屬定期性董事會。</td>
+</tr>
+<tr>
+<td>解答 (1) 依董事會議事辦法第3條規定</td>
+<td>「董事會之召集，……，於七日前通知各董事及監察人。但有緊急情事時，得隨時召集之。」，故緊急情事召集之董事會亦應通知各董事及監察人。</td>
+</tr>
+<tr>
+<td>(2) 按董事會議事辦法第17條第1項規定</td>
+<td>「董事會之議事，應作成議事錄，議事錄應詳實記載下列事項：……四、列席者之姓名及職稱。…」，前揭規定雖未明定應設置簽名簿供列席者簽到，惟議事錄應詳實記載列席者之姓名及職稱，為避免日後發生爭議，辦理議事事務單位仍宜設置簽名簿供列席者簽到，以供日後查考。</td>
+</tr>
+<tr>
+<td>解答 (1) 董事會議事規範內容不全</td>
+<td>A未將部分「公開發行公司董事會議事辦法」規定事項納入議事規範，如未明訂「董事會應指定之議事單位」、「董事會議事內容」、「應提董事會討論事項」、「議事錄應記載內容」、「監票及計票方式」、「不得以臨時動議提出事項」、「延期審議」、「延後開會」、「暫停開會」、「不記入表決權之董事」及「</td>
+</tr>
+<tr>
+<td>(2) 作業程序不完備</td>
+<td>A董事會之召集，未於7日前（自通知翌日起至開會前1日止共7日）將召集通知或足夠之會議資料寄送各董事、監察人。</td>
+</tr>
+<tr>
+<td>(3) 議事內容不完整</td>
+<td>A定期性董事會之議事內容，未包括「上次會議紀錄及執行情形」、「重要財務業務報告」、「內部稽核業務報告」及「上次會議紀錄及執行情形」等事項。</td>
+</tr>
+<tr>
+<td>(4) 議事錄記載不全</td>
+<td>董事會議事錄未詳實記載「會議屆次（或年次）」、「董事出席狀況，包括出席、請假及缺席者之姓名與人數」、「列席者之姓名及職稱」、「董事、監察人、專家及其他人員發言摘要、反對或保留意見」等事項。</td>
+</tr>
+<tr>
+<td>(5) 其他</td>
+<td>A董事出具委託書未列示日期。</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>演進／架構總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>召集頻率：</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>召集通知：</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>應於召集事由列舉之事項：</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>召集人：</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>定期性董事會：</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>應提董事會討論事項：</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>董事會重大議案討論：</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>董事出席：</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>議事進行：</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>議案表決：</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>錄音錄影：</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>董事會議事錄應記載事項：（第17條第1項）</td>
+</tr>
+</tbody></table></div></div></div>
+<div class="structs-wrap viz-root" id="viz-root">
+  <p class="tab-hint mb-2">以下僅顯示本章有資料的圖表；每張圖獨立一格，可分別操作。</p>
+  <div class="viz-toolkit-badge"><span class="viz-pill">markmap</span><span class="viz-pill">Tabulator</span><span class="viz-pill">Chart.js</span><span class="viz-pill">ECharts</span><span class="viz-pill">vis-timeline</span><span class="viz-pill">Plotly</span><span class="viz-pill">Grid.js</span><span class="viz-pill">Mermaid</span><span class="viz-pill">D3</span><span class="viz-pill">Cytoscape</span><span class="viz-pill">vis-network</span></div>
+  <script type="application/json" id="note-viz-data">{"title": "第 2 章 公司董事會議事辦法之解析", "timeline": [{"when": "2006年3月", "what": "28日訂定發布「公開發行公司董事會議事辦法」，以利公開發行公司遵循辦理，俾落實並發揮其董事會之職能，以提高公司治理之績效"}, {"when": "2006年3月", "what": "28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下"}, {"when": "2008年1月", "what": "11日起多次修正「公開發行公司董事會議事辦法」，俾使公開發行公司董事會議事有效運作，並便利公開發行公司遵循"}, {"when": "2008年1月", "what": "11日爰刪除原董事會延後開會時間限制（延後時間合計不得超過1小時），並對延後2次仍不足額者，修正主席得依辦法第3條第2項規定之程序重行召集"}, {"when": "2010年", "what": "發布之「亞洲公司治理白皮書」全球金融風暴六大原則亦直指強化董事會職能為首要，因此董事會功能是否能有效發揮，實為企業經營重要之議題，亦為推動公司治理重要環節"}, {"when": "2017年7月", "what": "28日修正辦法第7條第5項規定，明定公司設有獨立董事者，應有至少一席獨立董事親自出席董事會；對於辦法第7條第1項應提董事會決議事項，應有全體獨立董事出席董事會"}], "compares": [{"headers": ["項目", "說明／對照"], "rows": [["1. 召集頻率", "為強化公司治理，董事會應至少每季召開一次，並於議事規範明定之。（第3條第1項）"], ["2. 召集通知", "(1)董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。（第3條第2項）"], ["3. 應於召集事由列舉之事項", "為強化董事會功能，規範應提董事會討論事項（第7條第1項各款之事項），應在召集事由中列舉，不得以臨時動議提出。（第3條第4項）"], ["4. 召集人", "(1)董事會由董事長召集並擔任主席。但每屆第一次董事會，由股東會所得選票代表選舉權最多之董事召集，會議主席由該召集權人擔任之，召集權人有二人以上時，應互推一人擔任之。（第10條第1項）"], ["1. 定期性董事會", "為使董事會議事內容完備，參酌實務運作及公開發行公司建立內部控制制度處理準則，內部稽核主管應列席董事會報告規定，明定定期性董事會議事內容至少包括下列事項：（如為緊急情事召集之非定期性董事會，則未規範其議事內容）（第6條）"], ["(1)報告事項", "A上次會議紀錄及執行情形。"], ["(2)討論事項", "A上次會議保留之討論事項。"], ["2. 應提董事會討論事項", "(1)公司之營運計畫：包括公司年度之經營方針、預期銷售數量及其依據及重要之產銷政策等財務業務計畫。"], ["A關係人", "指證券發行人財務報告編製準則所規範之關係人。"], ["B對非關係人之重大捐贈", "指每筆捐贈金額或一年內（以本次董事會召開日期為基準，往前追溯推算一年，已提董事會決議通過部分免再計入）累積對同一對象捐贈金額達新臺幣一億元以上，或達最近年度經會計師簽證之財務報告營業收入淨額百分之一或實收資本額百分之五（外國公司股票無面額或每股面額非屬新臺幣十元者，以股東權益百分"], ["3. 董事會重大議案討論", "董事會討論重大議案，獨立董事均應出席或委由其他獨立董事代理出席；非重大議案應有至少一席獨立董事親自出席董事會。（第7條）"], ["1. 董事出席", "(1)董事應親自出席董事會，如不能親自出席，得依公司章程規定委託其他董事代理出席；董事委託其他董事代理出席董事會時，應於每次出具委託書，並列舉召集事由之授權範圍，惟代理人以受1人之委託為限。"]]}, {"headers": ["項目", "說明／對照"], "rows": [["解答 按董事會議事辦法第3條第1項及第2項規定", "「董事會應至少每季召開1次，並於議事規範明定之。……但有緊急情事時，得隨時召集之。」，公司如已於所訂董事會議事規範明定公司定期召開董事會之頻率，且符合上開董事會應至少每季召開一次之規定，即屬定期性董事會。"], ["解答 (1) 依董事會議事辦法第3條規定", "「董事會之召集，……，於七日前通知各董事及監察人。但有緊急情事時，得隨時召集之。」，故緊急情事召集之董事會亦應通知各董事及監察人。"], ["(2) 按董事會議事辦法第17條第1項規定", "「董事會之議事，應作成議事錄，議事錄應詳實記載下列事項：……四、列席者之姓名及職稱。…」，前揭規定雖未明定應設置簽名簿供列席者簽到，惟議事錄應詳實記載列席者之姓名及職稱，為避免日後發生爭議，辦理議事事務單位仍宜設置簽名簿供列席者簽到，以供日後查考。"], ["解答 (1) 董事會議事規範內容不全", "A未將部分「公開發行公司董事會議事辦法」規定事項納入議事規範，如未明訂「董事會應指定之議事單位」、「董事會議事內容」、「應提董事會討論事項」、「議事錄應記載內容」、「監票及計票方式」、「不得以臨時動議提出事項」、「延期審議」、「延後開會」、「暫停開會」、「不記入表決權之董事」及「"], ["(2) 作業程序不完備", "A董事會之召集，未於7日前（自通知翌日起至開會前1日止共7日）將召集通知或足夠之會議資料寄送各董事、監察人。"], ["(3) 議事內容不完整", "A定期性董事會之議事內容，未包括「上次會議紀錄及執行情形」、「重要財務業務報告」、「內部稽核業務報告」及「上次會議紀錄及執行情形」等事項。"], ["(4) 議事錄記載不全", "董事會議事錄未詳實記載「會議屆次（或年次）」、「董事出席狀況，包括出席、請假及缺席者之姓名與人數」、「列席者之姓名及職稱」、「董事、監察人、專家及其他人員發言摘要、反對或保留意見」等事項。"], ["(5) 其他", "A董事出具委託書未列示日期。"]]}], "evolution": [{"stage": "階段 1", "content": "召集頻率："}, {"stage": "階段 2", "content": "召集通知："}, {"stage": "階段 3", "content": "應於召集事由列舉之事項："}, {"stage": "階段 4", "content": "召集人："}, {"stage": "階段 1", "content": "定期性董事會："}, {"stage": "階段 2", "content": "應提董事會討論事項："}, {"stage": "階段 3", "content": "董事會重大議案討論："}, {"stage": "階段 1", "content": "董事出席："}, {"stage": "階段 2", "content": "議事進行："}, {"stage": "階段 3", "content": "議案表決："}, {"stage": "階段 4", "content": "錄音錄影："}, {"stage": "階段 1", "content": "董事會議事錄應記載事項：（第17條第1項）"}], "outline": [{"title": "2.1 前言", "kids": []}, {"title": "2.2 公開發行公司董事會議事辦法", "kids": ["2.2.1 董事會議事規範", "2.2.2 設立議事事務專責機構", "2.2.3 董事會議事召集", "2.2.4 董事會開會時間地點", "2.2.5 董事會議事內容", "2.2.6 董事會會議進行及程序等相關規定", "2.2.7 董事利益迴避", "2.2.8 董事會議事錄"]}, {"title": "2.3 董事會議事實務小百科", "kids": []}, {"title": "2.4 結語", "kids": []}], "nodes": [{"id": "n0", "label": "2.1 前言"}, {"id": "n1", "label": "2.2 公開發行公司董事會議事辦法"}, {"id": "n1k0", "label": "2.2.1 董事會議事規範"}, {"id": "n1k1", "label": "2.2.2 設立議事事務專責機構"}, {"id": "n1k2", "label": "2.2.3 董事會議事召集"}, {"id": "n1k3", "label": "2.2.4 董事會開會時間地點"}, {"id": "n2", "label": "2.3 董事會議事實務小百科"}, {"id": "n3", "label": "2.4 結語"}], "edges": [{"from": "n0", "to": "n1"}, {"from": "n1", "to": "n1k0"}, {"from": "n1", "to": "n1k1"}, {"from": "n1", "to": "n1k2"}, {"from": "n1", "to": "n1k3"}, {"from": "n1", "to": "n2"}, {"from": "n2", "to": "n3"}], "charts": [], "mermaids": []}</script>
+  <div class="viz-grid viz-grid-dense">
+    <article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">markmap</span>章節心智圖</div><div class="viz-cell-b"><div class="markmap-host" id="viz-markmap" aria-label="章節心智圖"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>時序表</div><div class="viz-cell-b"><div id="viz-tabulator-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Chart.js</span>時序長條圖</div><div class="viz-cell-b"><div class="viz-box viz-box-sm"><canvas id="viz-chartjs-timeline"></canvas></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>時序折線</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-timeline</span>時間軸</div><div class="viz-cell-b"><div class="viz-box" id="viz-vis-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Plotly</span>時序互動圖</div><div class="viz-cell-b"><div class="viz-box" id="viz-plotly-timeline"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>對照表</div><div class="viz-cell-b"><div id="viz-tabulator-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Grid.js</span>對照表（可搜尋）</div><div class="viz-cell-b"><div id="viz-gridjs-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>演進表</div><div class="viz-cell-b"><div id="viz-tabulator-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>演進流程</div><div class="viz-cell-b"><div class="mermaid-host"><pre class="mermaid" id="viz-mermaid-evolve"></pre></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>演進關係</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">D3</span>演進樹狀圖</div><div class="viz-cell-b"><div class="d3-host viz-box" id="viz-d3-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Cytoscape</span>章節關係網</div><div class="viz-cell-b"><div class="cy-host" id="viz-cytoscape"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-network</span>概念網路</div><div class="viz-cell-b"><div class="vis-host" id="viz-vis-network"></div></div></article>
+  </div>
+</div></div>
+    <div class="tab-pane fade" id="tab-path" role="tabpanel"><div class="path-cards">
+<a class="path-card" href="#2-1-前言" data-jump-lecture><div class="path-idx">站 1</div><div class="path-title">前言</div><div class="path-desc">管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#2-2-公開發行公司董事會議事辦法" data-jump-lecture><div class="path-idx">站 2</div><div class="path-title">公開發行公司董事會議事辦法</div><div class="path-desc">依據證券交易法第26條之3第8項授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#2-3-董事會議事實務小百科" data-jump-lecture><div class="path-idx">站 3</div><div class="path-title">董事會議事實務小百科</div><div class="path-desc">1. 董事會議事辦法第3條第2項規定，董事會之召集，應載明召集事由，於7日前通知各董事及監察人。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#2-4-結語" data-jump-lecture><div class="path-idx">站 4</div><div class="path-title">結語</div><div class="path-desc">董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理…</div><div class="path-go">前往講義 →</div></a>
+</div></div>
+    <div class="tab-pane fade" id="tab-lecture" role="tabpanel"><article class="sec-block" id="2-1-前言">
+<div class="sec-kicker">站 1｜前言</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">2.1 前言</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-2-1-前言" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.1 前言」。首先，管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營績效的推手，經濟合作暨開發組織（OECD）於2010年發布之「亞洲公司治理白皮書」全球金融風暴六大原則亦直指強化董事會職能為首要，因此董事會功能是否能有效發揮，實為企業經營重要之議題，亦為推動公司治理重要環節。為推動公司治理，強化董事會職權，避免董事會運作徒具形式，金融監督管理委員會（以下稱金管會）推動公司治理法制化工作，證券交易法2006年1月1日經總統發布增訂證券交易法第14條之2至第14條之5及第26條之3等規定，引進獨立董事與審計委員會制度，及加強董事及監察人之獨立性，並明定公開發行公司應訂定董事會議事規範，其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項授權主管機關訂定，金管會依據該授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，以利公開發行公司遵循辦理，俾落實並發揮其董事會之職能，以提高公司治理之績效。為深化公司治理，督促上市（櫃）公司落實董事會議事規則之規定，讓公司治理從源頭做好，為強化公司內部控制制度及加強董事會運作資訊揭露等各項措施，並收集外界意見，自2008年1月11日起多次修正「公開發行公司董事會議事辦法」，俾使公開發行公司董事會議事有效運作，並便利公開發行公司遵循。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>前言｜時序</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>2006年3月</td>
+<td>28日訂定發布「公開發行公司董事會議事辦法」，以利公開發行公司遵循辦理，俾落實並發揮其董事會之職能，以提高公司治理之績效</td>
+</tr>
+<tr>
+<td>2008年1月</td>
+<td>11日起多次修正「公開發行公司董事會議事辦法」，俾使公開發行公司董事會議事有效運作，並便利公開發行公司遵循</td>
+</tr>
+<tr>
+<td>2010年</td>
+<td>發布之「亞洲公司治理白皮書」全球金融風暴六大原則亦直指強化董事會職能為首要，因此董事會功能是否能有效發揮，實為企業經營重要之議題，亦為推動公司治理重要環節</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營績效的推手，經濟合作暨開發組織（OECD）於2010年發布之「亞洲公司治理白皮書」全球金融風暴六大原則亦直指強化董事會職能為首要，因此董事會功能是否能有效發揮，實為企業經營重要之議題，亦為推動公司治理重要環節。</p>
+
+<p>為推動公司治理，強化董事會職權，避免董事會運作徒具形式，金融監督管理委員會（以下稱金管會）推動公司治理法制化工作，證券交易法2006年1月1日經總統發布增訂證券交易法第14條之2至第14條之5及第26條之3等規定，引進獨立董事與審計委員會制度，及加強董事及監察人之獨立性，並明定公開發行公司應訂定董事會議事規範，其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項授權主管機關訂定，金管會依據該授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，以利公開發行公司遵循辦理，俾落實並發揮其董事會之職能，以提高公司治理之績效。</p>
+
+<p>為深化公司治理，督促上市（櫃）公司落實董事會議事規則之規定，讓公司治理從源頭做好，為強化公司內部控制制度及加強董事會運作資訊揭露等各項措施，並收集外界意見，自2008年1月11日起多次修正「公開發行公司董事會議事辦法」，俾使公開發行公司董事會議事有效運作，並便利公開發行公司遵循。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="2-2-公開發行公司董事會議事辦法">
+<div class="sec-kicker">站 2｜公開發行公司董事會議事辦法</div>
+<div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">2.2 公開發行公司董事會議事辦法</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-2-2-公開發行公司董事會議事辦法" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2 公開發行公司董事會議事辦法」。首先，依據證券交易法第26條之3第8項授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下：。接著，關於可以這樣記。2.2.1 董事會議事規範：為落實董事會之職能，規定公開發行公司應訂定董事會議事規範；其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項，應依本辦法規定辦理。（第2條）；2.2.2 設立議事事務專責機構：為使董事深入討論議案，並使董事會議事運作順暢及董事請求補足會議資料時有明確負責辦理單位，規範公司董事會應指定議事事務單位擬訂議事內容，並提供充分之會議資料，於召集通知時一併寄送。董事如認為會議資料不充分，董事有權請求補足或得經董事會決議後延期審議。（第5條）；2.2.3 董事會議事召集：1. 召集頻率： 為強化公司治理，董事會應至少每季召開一次，並於議事規範明定之。（第3條第1項） 2. 召集通知： (1)董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。（第3條第2項） (2)所謂「7日前」通知，依經濟部2006年7月14日經商字第09502101500號函規定，應適用民法第119條、第120條第2項；2.2.4 董事會開會時間地點：為保障董事與會之權利，董事會召開之地點與時間，應於公司所在地及辦公時間或便於董事出席且適合董事會召開的地點及時間為之。（第4條）；2.2.5 董事會議事內容：1. 定期性董事會： 為使董事會議事內容完備，參酌實務運作及公開發行公司建立內部控制制度處理準則，內部稽核主管應列席董事會報告規定，明定定期性董事會議事內容至少包括下列事項：（如為緊急情事召集之非定期性董事會，則未規範其議事內容）（第6條） (1)報告事項： A上次會議紀錄及執行情形。 B重要財務業務報告。 C內部稽核業務報告。 D其他重要報告事項。 (2)。以上是這一節的聽讀重點，建議你對照畫面。</div>
+  </div>
+</details>
+<div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>公開發行公司董事會議事辦法｜時序</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>2006年3月</td>
+<td>28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下</td>
+</tr>
+<tr>
+<td>2008年1月</td>
+<td>11日爰刪除原董事會延後開會時間限制（延後時間合計不得超過1小時），並對延後2次仍不足額者，修正主席得依辦法第3條第2項規定之程序重行召集</td>
+</tr>
+<tr>
+<td>2017年7月</td>
+<td>28日修正辦法第7條第5項規定，明定公司設有獨立董事者，應有至少一席獨立董事親自出席董事會；對於辦法第7條第1項應提董事會決議事項，應有全體獨立董事出席董事會</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>公開發行公司董事會議事辦法｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>1. 召集頻率</td>
+<td>為強化公司治理，董事會應至少每季召開一次，並於議事規範明定之。（第3條第1項）</td>
+</tr>
+<tr>
+<td>2. 召集通知</td>
+<td>(1)董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。（第3條第2項）</td>
+</tr>
+<tr>
+<td>3. 應於召集事由列舉之事項</td>
+<td>為強化董事會功能，規範應提董事會討論事項（第7條第1項各款之事項），應在召集事由中列舉，不得以臨時動議提出。（第3條第4項）</td>
+</tr>
+<tr>
+<td>4. 召集人</td>
+<td>(1)董事會由董事長召集並擔任主席。但每屆第一次董事會，由股東會所得選票代表選舉權最多之董事召集，會議主席由該召集權人擔任之，召集權人有二人以上時，應互推一人擔任之。（第10條第1項）</td>
+</tr>
+<tr>
+<td>1. 定期性董事會</td>
+<td>為使董事會議事內容完備，參酌實務運作及公開發行公司建立內部控制制度處理準則，內部稽核主管應列席董事會報告規定，明定定期性董事會議事內容至少包括下列事項：（如為緊急情事召集之非定期性董事會，則未規範其議事內容）（第6條）</td>
+</tr>
+<tr>
+<td>(1)報告事項</td>
+<td>A上次會議紀錄及執行情形。</td>
+</tr>
+<tr>
+<td>(2)討論事項</td>
+<td>A上次會議保留之討論事項。</td>
+</tr>
+<tr>
+<td>2. 應提董事會討論事項</td>
+<td>(1)公司之營運計畫：包括公司年度之經營方針、預期銷售數量及其依據及重要之產銷政策等財務業務計畫。</td>
+</tr>
+<tr>
+<td>A關係人</td>
+<td>指證券發行人財務報告編製準則所規範之關係人。</td>
+</tr>
+<tr>
+<td>B對非關係人之重大捐贈</td>
+<td>指每筆捐贈金額或一年內（以本次董事會召開日期為基準，往前追溯推算一年，已提董事會決議通過部分免再計入）累積對同一對象捐贈金額達新臺幣一億元以上，或達最近年度經會計師簽證之財務報告營業收入淨額百分之一或實收資本額百分之五（外國公司股票無面額或每股面額非屬新臺幣十元者，以股東權益百分</td>
+</tr>
+<tr>
+<td>3. 董事會重大議案討論</td>
+<td>董事會討論重大議案，獨立董事均應出席或委由其他獨立董事代理出席；非重大議案應有至少一席獨立董事親自出席董事會。（第7條）</td>
+</tr>
+<tr>
+<td>1. 董事出席</td>
+<td>(1)董事應親自出席董事會，如不能親自出席，得依公司章程規定委託其他董事代理出席；董事委託其他董事代理出席董事會時，應於每次出具委託書，並列舉召集事由之授權範圍，惟代理人以受1人之委託為限。</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>公開發行公司董事會議事辦法｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 2</td>
+<td>2.1 董事會議事規範</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>2.2 設立議事事務專責機構</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>2.3 董事會議事召集</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>召集頻率：</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>召集通知：</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>應於召集事由列舉之事項：</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>召集人：</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>2.4 董事會開會時間地點</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>2.5 董事會議事內容</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>定期性董事會：</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>應提董事會討論事項：</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>董事會重大議案討論：</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>依據證券交易法第26條之3第8項授權於2006年3月28日訂定發布「公開發行公司董事會議事辦法」，並歷經四次修正，謹就該辦法規範內容重點彙總如下：</p>
+</div>
+<section class="sub-sec" id="2-2-1-董事會議事規範">
+<h3 class="subhead">2.2.1 董事會議事規範</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-1-董事會議事規範" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.1 董事會議事規範」。首先，為落實董事會之職能，規定公開發行公司應訂定董事會議事規範；。其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項，應依本辦法規定辦理。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>為落實董事會之職能，規定公開發行公司應訂定董事會議事規範；其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項，應依本辦法規定辦理。（第2條）</p>
+
+</section>
+<section class="sub-sec" id="2-2-2-設立議事事務專責機構">
+<h3 class="subhead">2.2.2 設立議事事務專責機構</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-2-設立議事事務專責機構" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.2 設立議事事務專責機構」。首先，為使董事深入討論議案，並使董事會議事運作順暢及董事請求補足會議資料時有明確負責辦理單位，規範公司董事會應指定議事事務單位擬訂議事內容，並提供充分之會議資料，於召集通知時一併寄送。董事如認為會議資料不充分，董事有權請求補足或得經董事會決議後延期審議。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>為使董事深入討論議案，並使董事會議事運作順暢及董事請求補足會議資料時有明確負責辦理單位，規範公司董事會應指定議事事務單位擬訂議事內容，並提供充分之會議資料，於召集通知時一併寄送。董事如認為會議資料不充分，董事有權請求補足或得經董事會決議後延期審議。（第5條）</p>
+
+</section>
+<section class="sub-sec" id="2-2-3-董事會議事召集">
+<h3 class="subhead">2.2.3 董事會議事召集</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-3-董事會議事召集" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.3 董事會議事召集」。首先，1. 召集頻率： 為強化公司治理，董事會應至少每季召開一次，並於議事規範明定之。（第3條第1項） 2. 召集通知： (1)董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>召集頻率：
+為強化公司治理，董事會應至少每季召開一次，並於議事規範明定之。（第3條第1項）</li>
+<li><p>召集通知：
+(1)董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。（第3條第2項）
+(2)所謂「7日前」通知，依經濟部2006年7月14日經商字第09502101500號函規定，應適用民法第119條、第120條第2項不算入始日之規定，自通知之翌日起算至開會前1日，算足公司法所定期間」。
+(3)因應電子科技之進步，董事會之召集通知，比照股東會之召集通知，經相對人同意者，得以電子方式為之。（第3條第3項）
+(4)董事會之召集是否為緊急情事及其召集程序是否有效，依經濟部2006年10月12日經商字第09502145290號函釋規定，允屬司法認事範疇，如有爭議，宜循司法途徑處理。</p></li>
+<li><p>應於召集事由列舉之事項：
+為強化董事會功能，規範應提董事會討論事項（第7條第1項各款之事項），應在召集事由中列舉，不得以臨時動議提出。（第3條第4項）</p></li>
+<li><p>召集人：
+(1)董事會由董事長召集並擔任主席。但每屆第一次董事會，由股東會所得選票代表選舉權最多之董事召集，會議主席由該召集權人擔任之，召集權人有二人以上時，應互推一人擔任之。（第10條第1項）
+(2)依公司法第203 條第4項或第203條之1第3項規定董事會由過半數之董事自行召集者，由董事互推一人擔任主席。（第10條第2項）
+(3)董事長請假或因故不能行使職權時，由副董事長代理之，無副董事長或副董事長亦請假或因故不能行使職權時，由董事長指定常務董事一人代理之；其未設常務董事者，指定董事一人代理之，董事長未指定代理人者，由常務董事或董事互推一人代理之。（第10條第3項）</p></li>
+</ol>
+
+</section>
+<section class="sub-sec" id="2-2-4-董事會開會時間地點">
+<h3 class="subhead">2.2.4 董事會開會時間地點</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-4-董事會開會時間地點" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.4 董事會開會時間地點」。首先，為保障董事與會之權利，董事會召開之地點與時間，應於公司所在地及辦公時間或便於董事出席且適合董事會召開的地點及時間為之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>為保障董事與會之權利，董事會召開之地點與時間，應於公司所在地及辦公時間或便於董事出席且適合董事會召開的地點及時間為之。（第4條）</p>
+
+</section>
+<section class="sub-sec" id="2-2-5-董事會議事內容">
+<h3 class="subhead">2.2.5 董事會議事內容</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-5-董事會議事內容" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.5 董事會議事內容」。首先，1. 定期性董事會： 為使董事會議事內容完備，參酌實務運作及公開發行公司建立內部控制制度處理準則，內部稽核主管應列席董事會報告規定，明定定期性董事會議事內容至少包括下列事項：（如為緊急情事召集之非定期性董事會，則未規範其議事內容）（第6條） (1)報告事項： A上次會議紀錄及執行情形。B重要財務業務報告。C內部稽核業務報告。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li><p>定期性董事會：
+為使董事會議事內容完備，參酌實務運作及公開發行公司建立內部控制制度處理準則，內部稽核主管應列席董事會報告規定，明定定期性董事會議事內容至少包括下列事項：（如為緊急情事召集之非定期性董事會，則未規範其議事內容）（第6條）
+(1)報告事項：
+A上次會議紀錄及執行情形。
+B重要財務業務報告。
+C內部稽核業務報告。
+D其他重要報告事項。
+(2)討論事項：
+A上次會議保留之討論事項。
+B本次會議討論事項。
+(3)臨時動議。</p></li>
+<li><p>應提董事會討論事項：
+(1)公司之營運計畫：包括公司年度之經營方針、預期銷售數量及其依據及重要之產銷政策等財務業務計畫。
+(2)年度財務報告及半年度財務報告。但半年度財務報告依法令規定無須經會計師查核簽證者，不在此限。
+(3)依證券交易法第14條之1規定訂定或修正內部控制制度，及內部控制制度有效性之考核。
+(4)依證券交易法第36條之1規定訂定或修正取得或處分資產、從事衍生性商品交易、資金貸與他人、為他人背書或提供保證之重大財務業務行為之處理程序。
+(5)募集、發行或私募具有股權性質之有價證券。
+(6)董事會未設常務董事者，董事長之選任或解任。
+(7)財務、會計或內部稽核主管之任免。
+(8)對關係人之捐贈或對非關係人之重大捐贈。但因重大天然災害所為急難救助之公益性質捐贈，得提下次董事會追認。
+A關係人：指證券發行人財務報告編製準則所規範之關係人。
+B對非關係人之重大捐贈：指每筆捐贈金額或一年內（以本次董事會召開日期為基準，往前追溯推算一年，已提董事會決議通過部分免再計入）累積對同一對象捐贈金額達新臺幣一億元以上，或達最近年度經會計師簽證之財務報告營業收入淨額百分之一或實收資本額百分之五（外國公司股票無面額或每股面額非屬新臺幣十元者，以股東權益百分之二點五計算之）以上者。
+(9)依證券交易法第14條之3、其他依法令或章程規定應由股東會決議或董事會決議事項或主管機關規定之重大事項。</p></li>
+<li><p>董事會重大議案討論：
+董事會討論重大議案，獨立董事均應出席或委由其他獨立董事代理出席；非重大議案應有至少一席獨立董事親自出席董事會。（第7條）</p></li>
+</ol>
+
+</section>
+<section class="sub-sec" id="2-2-6-董事會會議進行及程序等相關規定">
+<h3 class="subhead">2.2.6 董事會會議進行及程序等相關規定</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-6-董事會會議進行及程序等相關規定" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.6 董事會會議進行及程序等相關規定」。首先，1. 董事出席： (1)董事應親自出席董事會，如不能親自出席，得依公司章程規定委託其他董事代理出席；。董事委託其他董事代理出席董事會時，應於每次出具委託書，並列舉召集事由之授權範圍，惟代理人以受1人之委託為限。(2)召開董事會時，公司應設簽名簿供出席董事簽到，並供查考。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li><p>董事出席：
+(1)董事應親自出席董事會，如不能親自出席，得依公司章程規定委託其他董事代理出席；董事委託其他董事代理出席董事會時，應於每次出具委託書，並列舉召集事由之授權範圍，惟代理人以受1人之委託為限。
+(2)召開董事會時，公司應設簽名簿供出席董事簽到，並供查考。
+(3)如以視訊參與會議者，依公司法第205 條規定視為親自出席。（第9條）</p></li>
+<li><p>議事進行：
+(1)已屆開會時間應即宣布開會，如全體董事有半數未出席時，主席得宣布延後開會，其延後次數以2次為限。為保留董事會延後開會之彈性，並由主席選擇是否重行召集，2008年1月11日爰刪除原董事會延後開會時間限制（延後時間合計不得超過1小時），並對延後2次仍不足額者，修正主席得依辦法第3條第2項規定之程序重行召集。又所稱全體董事，以實際在任者計算之。（第12條）
+(2)董事會應依會議通知所排定之議事程序進行。但經出席董事過半數同意者，得變更之。非經出席董事過半數同意者，主席不得逕行宣布散會。（第13條）
+(3)董事會議事進行中，若在席董事未達出席董事過半數者，經在席董事提議，主席應宣布暫停開會，並準用前揭延後開會規定。（第13條）</p></li>
+<li><p>議案表決：
+(1)主席對於董事會議案之討論，認為已達可付表決之程度時，得宣布停止討論，提付表決。（第14條）
+(2)董事會議案表決時，經主席徵詢出席董事全體無異議者，視為通過。
+(3)董事會議案之表決方式應於議事規範明定之。為避免主席藉徵詢少數在席董事全體無異議方式通過議案，爰於2008年1月11日修正除徵詢出席董事全體無異議通過者外，其監票及計票方式應併予載明。
+(4)董事會議案之決議，除證券交易法及公司法另有規定外，應有過半數董事之出席，出席董事過半數之同意行之。（第15條）</p></li>
+<li><p>錄音錄影：
+依力霸公司2007年1月4日曾發生董事會議事重大違規案件，即該公司依據2006年12月29日第18屆第15次董事會決議向台北地方法院聲請重整，惟據調查，前揭董事會會議紀錄之負責人員坦承，其係事後蓋章，不知有無召開董事會，且記載出席之法人股東代表表示，係公司事後告知要重整而要求簽名，實際未召開董事會，顯示企業並未落實召開董事會，為瞭解公司董事會實際召開情形，且董事會議決事項如發生訴訟時得作為佐證資料，爰規定下列事項：（第18條）
+(1)公司應將董事會之開會過程全程錄音或錄影存證。
+(2)董事會以視訊方式進行時，應同時錄音及錄影。
+(3)董事會開會過程之錄音或錄影存證資料，至少保存5年，其保存得以電子方式為之。惟保存期限未屆滿前，發生關於董事會相關議決事項之訴訟時，相關錄音或錄影存證資料應續予保存至訴訟終結止。</p></li>
+<li><p>其他：
+(1)公司召開董事會，得視議案內容通知相關部門或子公司之人員列席。
+(2)必要時，亦得邀請會計師、律師或其他專業人士列席會議及說明。但討論及表決時應離席。（第11條）</p></li>
+</ol>
+
+</section>
+<section class="sub-sec" id="2-2-7-董事利益迴避">
+<h3 class="subhead">2.2.7 董事利益迴避</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-7-董事利益迴避" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.7 董事利益迴避」。首先，為健全公司治理，及避免有利害關係之董事圖求自身利益，利用董事會決議進行利益輸送交易，損及股東權益，規定董事對於會議事項，與其自身或其代表之法人有利害關係者，應於董事會說明其利害關係之重要內容，如有害於公司利益之虞時，不得加入討論及表決，且該等董事應於討論及表決時迴避，並不得代理其他董事行使其表決權。另配合公司法2018年8月1日增訂第206條第3項規定，增訂董事之配偶、二親等內血親，或與董事具有控制從屬關係之公司，就前項會議之事項有利害關係者，視為董事就該事項有自身利害關係。（第16條） 依經濟部2006年3月16日經商字第09500526860號函釋，已出席但因利益迴避之董事，於計算董事會能否開會之法定門檻時，仍應計入「出席」董事會人數，惟依公司法第206條第1項計算董事會是否過半數同意時，則不計入「出席」人數，爰於2008年1月11日增訂計算議案表決通過之出席董事時，不包括應予迴避之董事。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>為健全公司治理，及避免有利害關係之董事圖求自身利益，利用董事會決議進行利益輸送交易，損及股東權益，規定董事對於會議事項，與其自身或其代表之法人有利害關係者，應於董事會說明其利害關係之重要內容，如有害於公司利益之虞時，不得加入討論及表決，且該等董事應於討論及表決時迴避，並不得代理其他董事行使其表決權。另配合公司法2018年8月1日增訂第206條第3項規定，增訂董事之配偶、二親等內血親，或與董事具有控制從屬關係之公司，就前項會議之事項有利害關係者，視為董事就該事項有自身利害關係。（第16條）</p>
+
+<p>依經濟部2006年3月16日經商字第09500526860號函釋，已出席但因利益迴避之董事，於計算董事會能否開會之法定門檻時，仍應計入「出席」董事會人數，惟依公司法第206條第1項計算董事會是否過半數同意時，則不計入「出席」人數，爰於2008年1月11日增訂計算議案表決通過之出席董事時，不包括應予迴避之董事。（第14條第4項）</p>
+
+</section>
+<section class="sub-sec" id="2-2-8-董事會議事錄">
+<h3 class="subhead">2.2.8 董事會議事錄</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-8-董事會議事錄" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.8 董事會議事錄」。首先，1. 董事會議事錄應記載事項：（第17條第1項） (1)會議屆次（或年次）及時間地點。(2)主席之姓名。(3)董事出席狀況，包括出席、請假及缺席者之姓名與人數。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li><p>董事會議事錄應記載事項：（第17條第1項）
+(1)會議屆次（或年次）及時間地點。
+(2)主席之姓名。
+(3)董事出席狀況，包括出席、請假及缺席者之姓名與人數。
+(4)列席者之姓名及職稱。
+(5)紀錄之姓名。
+(6)報告事項。
+(7)討論事項：各議案之決議方法與結果、董事、監察人、專家及其他人員發言摘要、依辦法第16條第1項規定涉及利害關係之董事姓名、利害關係重要內容之說明、其應迴避或不迴避理由、迴避情形、反對或保留意見且有紀錄或書面聲明及獨立董事依第7條第5項規定出具之書面意見。
+(8)臨時動議：提案人姓名、議案之決議方法與結果、董事、監察人、專家及其他人員發言摘要、依辦法第16條第1項規定涉及利害關係之董事姓名、利害關係重要內容之說明、其應迴避或不迴避理由、迴避情形及反對或保留意見且有紀錄或書面聲明。
+(9)其他應記載事項。</p></li>
+<li><p>分送：
+(1)議事錄須由會議主席及記錄人員簽名或蓋章，於會後20日內分送各董事及監察人。（第17條第4項）
+(2)議事錄之製作及分發，得以電子方式為之。（第17條第5項）</p></li>
+<li><p>保存：
+(1)議事錄應列入公司重要檔案，於公司存續期間妥善保存。（第17條第4項）
+(2)董事會簽到簿為議事錄之一部分，應於公司存續期間妥善保存。（第17條第3項）
+(3)以視訊會議召開董事會者，其視訊影音資料為議事錄之一部分，應於公司存續期間妥善保存。（第18條第3項）</p></li>
+</ol>
+
+</section>
+<section class="sub-sec" id="2-2-9-公告申報">
+<h3 class="subhead">2.2.9 公告申報</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-9-公告申報" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.9 公告申報」。首先，董事會之議決事項，如有下列情事之一者，除應於議事錄載明外，並應於董事會之日起2日內於主管機關指定之資訊申報網站辦理公告申報，以強化資訊透明及外界監督機制：（第17條第2項） 1. 獨立董事有反對或保留意見且有紀錄或書面聲明。2. 設置審計委員會之公司，未經審計委員會通過，而經全體董事三分之二以上同意通過。又所稱全體董事，以實際在任者計算之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>董事會之議決事項，如有下列情事之一者，除應於議事錄載明外，並應於董事會之日起2日內於主管機關指定之資訊申報網站辦理公告申報，以強化資訊透明及外界監督機制：（第17條第2項）</p>
+
+<ol>
+<li>獨立董事有反對或保留意見且有紀錄或書面聲明。</li>
+<li>設置審計委員會之公司，未經審計委員會通過，而經全體董事三分之二以上同意通過。又所稱全體董事，以實際在任者計算之。</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="2-2-10-其他事項">
+<h3 class="subhead">2.2.10 其他事項</h3>
+<details class="narration-box" data-tts-root id="narration-2-2-10-其他事項" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.2.10 其他事項」。首先，1. 獨立董事： (1)為明確獨立董事職權，並進一步強化獨立董事對公司事項之瞭解，爰於2017年7月28日修正辦法第7條第5項規定，明定公司設有獨立董事者，應有至少一席獨立董事親自出席董事會；。對於辦法第7條第1項應提董事會決議事項，應有全體獨立董事出席董事會，獨立董事如無法親自出席，應委由其他獨立董事代理出席。(2)獨立董事如有反對或保留意見，應於董事會議事錄載明。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li><p>獨立董事：
+(1)為明確獨立董事職權，並進一步強化獨立董事對公司事項之瞭解，爰於2017年7月28日修正辦法第7條第5項規定，明定公司設有獨立董事者，應有至少一席獨立董事親自出席董事會；對於辦法第7條第1項應提董事會決議事項，應有全體獨立董事出席董事會，獨立董事如無法親自出席，應委由其他獨立董事代理出席。
+(2)獨立董事如有反對或保留意見，應於董事會議事錄載明。如獨立董事不能親自出席董事會表達反對或保留意見者，除有正當理由外，應事先出具書面意見，並載明於董事會議事錄。（第7條第5項）</p></li>
+<li><p>常務董事：
+(1)董事會設有常務董事者，其常務董事會議事準用有關董事會召集及會議通知程序、會議進行及程序、議事錄記載及應公告申報事項、定期性董事會議事內容、董事利益迴避、開會過程錄音或錄影存證等規定；董事長之選任或解任準用第三條第四項規定，應在召集事由中列舉，不得以臨時動議提出。
+(2)考量常務董事會屬7日內定期召集者，應載明召集事由於7日前通知常務董事有實際運作之困難，爰於2008年1月11日增訂常務董事會屬7日內定期召集者，得於2日前通知各常務董事。（第19條）</p></li>
+<li><p>董事會授權：
+為避免董事會不當授權他人行使董事會職權，明定除應提董事會討論事項，不得授權他人行使外，另對董事會就個別討論議案或授權行使董事會職權者（如依公司法第208 條第4項規定，常務董事會於董事會休會期間，經常執行董事會職權），明定其決議授權執行之層級、內容等事項，應具體明確。（第8條）</p></li>
+</ol>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">應於召集事由列舉之事項：</span>
+<span class="tag-chip chip-mint">定期性董事會：</span>
+<span class="tag-chip chip-amber">應提董事會討論事項：</span>
+<span class="tag-chip chip-coral">董事會重大議案討論：</span>
+<span class="tag-chip chip-violet">董事會議事錄應記載事項：（第17條第1項）</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="2-3-董事會議事實務小百科">
+<div class="sec-kicker">站 3｜董事會議事實務小百科</div>
+<div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">2.3 董事會議事實務小百科</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實務小百科</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-2-3-董事會議事實務小百科" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.3 董事會議事實務小百科」。首先，1. 董事會議事辦法第3條第2項規定，董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。有關「7日前通知」之起算日期為何？以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>董事會議事實務小百科｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>解答 按董事會議事辦法第3條第1項及第2項規定</td>
+<td>「董事會應至少每季召開1次，並於議事規範明定之。……但有緊急情事時，得隨時召集之。」，公司如已於所訂董事會議事規範明定公司定期召開董事會之頻率，且符合上開董事會應至少每季召開一次之規定，即屬定期性董事會。</td>
+</tr>
+<tr>
+<td>解答 (1) 依董事會議事辦法第3條規定</td>
+<td>「董事會之召集，……，於七日前通知各董事及監察人。但有緊急情事時，得隨時召集之。」，故緊急情事召集之董事會亦應通知各董事及監察人。</td>
+</tr>
+<tr>
+<td>(2) 按董事會議事辦法第17條第1項規定</td>
+<td>「董事會之議事，應作成議事錄，議事錄應詳實記載下列事項：……四、列席者之姓名及職稱。…」，前揭規定雖未明定應設置簽名簿供列席者簽到，惟議事錄應詳實記載列席者之姓名及職稱，為避免日後發生爭議，辦理議事事務單位仍宜設置簽名簿供列席者簽到，以供日後查考。</td>
+</tr>
+<tr>
+<td>解答 (1) 董事會議事規範內容不全</td>
+<td>A未將部分「公開發行公司董事會議事辦法」規定事項納入議事規範，如未明訂「董事會應指定之議事單位」、「董事會議事內容」、「應提董事會討論事項」、「議事錄應記載內容」、「監票及計票方式」、「不得以臨時動議提出事項」、「延期審議」、「延後開會」、「暫停開會」、「不記入表決權之董事」及「</td>
+</tr>
+<tr>
+<td>(2) 作業程序不完備</td>
+<td>A董事會之召集，未於7日前（自通知翌日起至開會前1日止共7日）將召集通知或足夠之會議資料寄送各董事、監察人。</td>
+</tr>
+<tr>
+<td>(3) 議事內容不完整</td>
+<td>A定期性董事會之議事內容，未包括「上次會議紀錄及執行情形」、「重要財務業務報告」、「內部稽核業務報告」及「上次會議紀錄及執行情形」等事項。</td>
+</tr>
+<tr>
+<td>(4) 議事錄記載不全</td>
+<td>董事會議事錄未詳實記載「會議屆次（或年次）」、「董事出席狀況，包括出席、請假及缺席者之姓名與人數」、「列席者之姓名及職稱」、「董事、監察人、專家及其他人員發言摘要、反對或保留意見」等事項。</td>
+</tr>
+<tr>
+<td>(5) 其他</td>
+<td>A董事出具委託書未列示日期。</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><ol>
+<li><p>董事會議事辦法第3條第2項規定，董事會之召集，應載明召集事由，於7日前通知各董事及監察人。但有緊急情事時，得隨時召集之。有關「7日前通知」之起算日期為何？
+解答 按經濟部 2006年7月14日經商字第09502101500號函規定「公司法第204 條規定……，所謂『7日前』，……，自通知之翌日算至開會前1日，算足公司法所定期間」。例如1月1日寄發董事會開會通知，最早開會日為1月9日。</p></li>
+<li><p>董事會得否決議概括授權董事長於董事會休會期間代表董事會為一切行為？
+解答 依公開發行公司董事會議事辦法第8條規定，在董事會休會期間，董事會依法令或公司章程規定，授權行使董事會職權者，其授權層級、內容或事項應具體明確，不得概括授權。因此，董事會依法令或公司章程規定，決議授權行使董事會職權之層級、內容或事項等，應具體明確。</p></li>
+<li><p>董事會之召集於7日前通知各董事及監察人後至開會前之期間，可否臨時加入議案併入該次董事會？
+解答 衡酌公司法第204條及公開發行公司董事會議事辦法第3條第2項之立法意旨，公司如於董事會之召集通知寄發後至開會前之期間，發生緊急情事，急待董事會討論，可臨時加入議案，增列為討論事項併入該次董事會討論。另公司於前揭期間內如有新增之報告案，考量報告案尚無涉及表決，影響性較小，亦得臨時加入議案，增列為報告事項併入該次董事會報告。</p></li>
+<li><p>董事會於討論員工績效獎金案時，有利害關係之董事（如勞工董事等）是否應予以迴避？
+解答 (1) 按「公開發行公司董事會議事辦法」第16條第1項規定，董事對於會議事項，與其自身或其代表之法人有利害關係者，應於當次董事會說明其利害關係之重要內容，如有害於公司利益之虞時，不得加入討論及表決，且討論及表決時應予迴避。故董事就有利害關係之事項，應依上開規定說明其利害關係之重要內容，如其確未損害公司之利益，目前尚無強制規範利害關係董事應於討論及表決時予以迴避。
+(2) 有關董事會於討論員工紅利及績效獎金部分，如係討論全體員工紅利或績效獎金，未涉董事自身或其代表之法人之利害關係者，其兼具員工身分之董事尚無須迴避。惟如討論事項涉及董事自身或其代表之法人利害關係，且有害於公司利益之虞時，利害關係董事應予迴避。</p></li>
+<li><p>如何區分因緊急情事召集之董事會？
+解答 依經濟部2006年10月12日經商字第09502145290號函釋，公司法第204 條所謂「緊急情事」，係指事出突然，又急待董事會商決之事項而言，其但書規定「有緊急情事，得隨時召集之」，乃指有緊急情事時，得不於7日前通知召集。而遇有緊急情事得否以書面通知，應視公司章程有否明定為斷。至於董事會之召集是否為緊急情事及其召集程序是否有效，允屬司法認事範疇，如有爭議，宜循司法途徑處理。</p></li>
+<li><p>定期性董事會定義為何？
+解答 按董事會議事辦法第3條第1項及第2項規定：「董事會應至少每季召開1次，並於議事規範明定之。……但有緊急情事時，得隨時召集之。」，公司如已於所訂董事會議事規範明定公司定期召開董事會之頻率，且符合上開董事會應至少每季召開一次之規定，即屬定期性董事會。</p></li>
+<li><p>董事會議事辦法第3條規定，董事會之召開應於7日前通知各董事及監察人，則臨時性董事會是否亦有通知各董事及監察人之義務？另臨時性董事會之程序是否亦應符合董事會議事辦法之規範？
+解答 (1) 依董事會議事辦法第3條規定：「董事會之召集，……，於七日前通知各董事及監察人。但有緊急情事時，得隨時召集之。」，故緊急情事召集之董事會亦應通知各董事及監察人。
+(2) 按「公開發行公司應訂定董事會議事規範；其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項，應依本辦法規定辦理。」、「定期性董事會之議事內容，至少包括下列事項：……。」。分別為董事會議事辦法第2條及第6條所明定，故非定期性董事會除議事內容無前揭辦法第6條之適用外，餘相關議事規範仍應依前揭辦法辦理。</p></li>
+<li><p>公司召開董事會，可否未實際召開而由董事以書面核准方式進行；另董事可否以電話會議方式出席董事會？
+解答 (1) 公司205條第1項規定，董事會開會時，董事應親自出席。但公司章程訂定得由其他董事代理者，不在此限；同條第2項規定，董事會開會時，如以視訊會議為之，其董事以視訊參與會議者，視為親自出席；另「公開發行公司董事會議事辦法」第9條第2項規定，董事應親自出席董事會，如不能親自出席，得依公司章程規定委託其他董事代理出席；如以視訊參與會議者，視為親自出席。前揭法規已明文規範公司召開董事會，董事應親自出席，或委託其他董事代理出席，故公司尚不得未實際召開董事會而由董事以書面核准之紙上董事會方式進行。
+(2) 另經濟部2003年9月15日經商字第09202189710號函釋，鑑於電傳科技發達，人與人溝通不侷限同一地點，從事面對面交談，如以視訊會議方式從事會談，亦可達到相互討論之會議效果，與親自出席無異。亦即以電傳視訊從事面對面會談情形始得為之。其餘方式，尚不得視為親自出席。依前揭函釋內容，以視訊參與會議，視為親自出席，惟以電話討論方式參與董事會，尚不得視為親自出席。</p></li>
+<li><p>臨時性或定期性董事會內部稽核主管是否皆應列席？另辦理公司董事會議事事務單位是否應設置簽名簿供列席之內部稽核主管簽到？
+解答 (1) 董事會屬公司法第204條所規定「有緊急情事時，得隨時召集之」者，內部稽核主管列席報告與否，得由公司董事會依需要自行斟酌。至其餘董事會，內部稽核主管應依規定列席董事會報告。
+(2) 按董事會議事辦法第17條第1項規定：「董事會之議事，應作成議事錄，議事錄應詳實記載下列事項：……四、列席者之姓名及職稱。…」，前揭規定雖未明定應設置簽名簿供列席者簽到，惟議事錄應詳實記載列席者之姓名及職稱，為避免日後發生爭議，辦理議事事務單位仍宜設置簽名簿供列席者簽到，以供日後查考。</p></li>
+<li><p>以視訊會議進行董事會是否需同時錄音與錄影？
+解答 依「公開發行公司董事會議事辦法」第18條第3項規定，以視訊會議召開董事會者，其會議錄音、錄影資料屬議事錄之一部分，爰董事會以視訊方式進行時，應依前開規定同時錄音與錄影。</p></li>
+<li><p>公司依證券交易法第26條之3第8項規定訂定董事會議事規範，是否應提董事會及股東會決議通過？
+解答 依據證券交易法第26條之3第8項規定，公司應訂定董事會議事規範，其主要議事內容、作業程序、議事錄應載明事項、公告及其他應遵行事項之辦法，由主管機關定之。金管會依該授權已訂定「公開發行公司董事會議事辦法」，故公司所定董事會議事規範，其內容應符合金管會上開辦法規定，並宜提董事會決議通過，至於是否須經股東會通過，係屬公司自治事項，宜由公司自行決定。</p></li>
+<li><p>公開發行公司董事會議事辦法第7條第1項第1款「公司之營運計畫」之內容？
+解答 公開發行公司董事會議事辦法第7條第1項第1款規定，所稱營運計畫之內容係包括公司年度之經營方針、預期銷售數量及其依據及重要之產銷政策等財務業務計畫。公開發行公司應依前揭規定，將營運計畫提報董事會討論。</p></li>
+<li><p>董事會如無異議照案通過，議事錄是否需記載董事、監察人、專家及其他人員發言摘要？
+解答 依公開發行公司董事會議事辦法第17條第1項第7款及第8款規定，董事會議事錄，應詳實記載討論事項、臨時動議之各議案，有關董事、監察人、專家及其他人員發言摘要，故董事會如有董事、監察人、專家及其他人員發言，議事錄應詳實記載其發言摘要，而非僅記載有反對或保留意見之董事等人之發言。</p></li>
+<li><p>公開發行公司董事會議案，如有撤案或暫不討論之情形者，在會議紀錄如何表達？
+解答 按公開發行公司董事會議事辦法第6條規定定期性董事會之議事內容至少包括上次會議紀錄及執行情形，另第17條規定董事會議事錄應記載各議案之決議方法與結果，故公開發行公司召開董事會，依前揭規定，如有議案經決議撤案或暫不討論者，應將其決議方法與結果詳實記載於董事會議事錄，並均應於下次董事會報告之。惟議案經決議撤案或暫不討論者，如無其他附帶決議事項須執行者，因無執行情形，其執行情形免於下次董事會報告及記載。</p></li>
+<li><p>董事會議事辦法第10條第1項規定，每屆第1次董事會，會議主席由召集權人擔任之，召集權人有2人以上者「應互推一人擔任之」，係指會議主席由有召集權人互推1人，抑或由所有董事於有召集權人之中推選1人？
+解答 按「...。但每屆第一次董事會，由股東會所得選票代表選舉權最多之董事召集，會議主席由該召集權人擔任之，召集權人有二人以上時，應互推一人擔任之。」為公開發行公司董事會議事辦法第10條第1項所明定。依股東會所獲得選票代表選舉權最多之董事即為召集權人，故召集權人有2人以上時，應由有召集權人互推1人擔任會議主席。</p></li>
+<li><p>董事會議中議案如經董事全數同意變更，董事會議事錄上是否僅需記載新議案之案由及決議？
+解答 公開發行公司董事會議事辦法第17條第1項規定「董事會之議事，應作成議事錄，議事錄應詳實記載下列事項：…七、討論事項：各議案之決議與結果……」，議案如經董事全數同意變更，董事會議事錄仍應記載變更前議案及新議案之決議與結果。</p></li>
+<li><p>董事會議事程序無論是否變動，董事會結束前皆必須經出席董事過半數表決同意，主席始可宣佈散會？且董事會議事錄亦須記載「經出席董事過半數同意散會」？
+解答 (1) 按「董事會應依會議通知所排定之議事程序進行。……非經出席董事過半數同意者，主席不得逕行宣布散會。」為公開發行公司董事會議事辦法第13條所明定。前揭條文旨在規範董事會應依會議通知所排定之議事程序進行，並避免於董事會議事進行中，主席逕行宣布散會。
+(2) 若董事會依會議通知所排定之議事程序進行完竣，主席自得宣布散會；惟若於議事進行中，非經出席董事過半數同意，主席不得逕行宣布散會，該事項並應記載於董事會議事錄。</p></li>
+<li><p>董事會議事運作常見缺失有那些？
+解答 (1) 董事會議事規範內容不全：
+A未將部分「公開發行公司董事會議事辦法」規定事項納入議事規範，如未明訂「董事會應指定之議事單位」、「董事會議事內容」、「應提董事會討論事項」、「議事錄應記載內容」、「監票及計票方式」、「不得以臨時動議提出事項」、「延期審議」、「延後開會」、「暫停開會」、「不記入表決權之董事」及「全程錄音或錄影」等事項。
+B董事會以每年召開四次為原則，與「公開發行公司董事會議事辦法」董事會應至少每季召開一次不一致。
+C公司章程未訂遇緊急情事得不經書面通知隨時召集董事會，惟「董事會議事規範」訂有臨時董事會之召集，不以書面通知各董事、監察人。
+D議事規範所訂應提董事會討論事項，未包括「募集、發行或私募具有股權性質之有價證券」及「依證券交易法第14條之3、其他依法令或章程規定應由股東會決議或提董事會之事項或主管機關規定之重大事項」等事項。
+E董事會休會期間之授權範圍，包括法令規定應提董事會討論事項在內，如「訂定有效及適當之內部控制制度」、「選任經理人」及「對會計師之選任」等事項。
+F董事會休會期間之授權範圍未具體明確，如以公司「授權裁決簡則」或「資金貸與他人作業程序」代替授權原則。
+(2) 作業程序不完備：
+A董事會之召集，未於7日前（自通知翌日起至開會前1日止共7日）將召集通知或足夠之會議資料寄送各董事、監察人。
+B董事會之召集，召集通知未列示日期或未保留寄送軌跡，致無法查證是否於7日前寄送各董事、監察人；另召集通知書上未有「一併寄送」議事內容相關資料之軌跡，致無法判斷是否提供足夠之會議資料。
+C董事會開會時未能完成錄音或錄影。
+D董事會議事錄寄送各董事及監察人之憑證，未妥善留存。
+(3) 議事內容不完整：
+A定期性董事會之議事內容，未包括「上次會議紀錄及執行情形」、「重要財務業務報告」、「內部稽核業務報告」及「上次會議紀錄及執行情形」等事項。
+B內部稽核主管未列席定期性董事會並做報告。
+(4) 議事錄記載不全：董事會議事錄未詳實記載「會議屆次（或年次）」、「董事出席狀況，包括出席、請假及缺席者之姓名與人數」、「列席者之姓名及職稱」、「董事、監察人、專家及其他人員發言摘要、反對或保留意見」等事項。
+(5) 其他：
+A董事出具委託書未列示日期。
+B法人董事指派自然人代表變動及赴大陸投資未發布重大訊息。
+C監察人委託他人列席未親自列席。</p></li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">董事會得否決議概括授權董事長於董事會休會期間代表董事會為一切行為？</span>
+<span class="tag-chip chip-mint">董事會之召集於7日前通知各董事及監察人後至開會前之期間，可否臨時加入議案併入該次董事會？</span>
+<span class="tag-chip chip-amber">董事會於討論員工績效獎金案時，有利害關係之董事（如勞工董事等）是否應予以迴避？</span>
+<span class="tag-chip chip-coral">如何區分因緊急情事召集之董事會？</span>
+<span class="tag-chip chip-violet">定期性董事會定義為何？</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="2-4-結語">
+<div class="sec-kicker">站 4｜結語</div>
+<div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">2.4 結語</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-2-4-結語" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.4 結語」。首先，董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理能否有效落實，除法令規範外，最重要仍是董事及經營階層是否正直、誠信與專業，因而有待公司確實強化董事及經營階層對自身誠信的要求與遵守，及積極建立完善內部控制制度及董事會績效評估制度，並落實執行相關規定，以提升企業競爭力，創造企業經營之最大利益。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理能否有效落實，除法令規範外，最重要仍是董事及經營階層是否正直、誠信與專業，因而有待公司確實強化董事及經營階層對自身誠信的要求與遵守，及積極建立完善內部控制制度及董事會績效評估制度，並落實執行相關規定，以提升企業競爭力，創造企業經營之最大利益。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理…</span>
+</div>
+</div>
+</article></div>
+    <div class="tab-pane fade" id="tab-quick" role="tabpanel"><div class="row g-3">
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 1 節</div>
+<h3 class="h6">2.1 前言</h3>
+<ul class='mb-2 small'>
+<li>管理大師彼得杜拉克曾指出，企業經營績效之良窳，與董事會決策能力休戚相關，董事會職權之落實不僅在公司治理中扮演了不可或缺的角色，亦為公司經營…</li>
+</ul>
+<a class="small" href="#2-1-前言" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 2 節</div>
+<h3 class="h6">2.2 公開發行公司董事會議事辦法</h3>
+<ul class='mb-2 small'>
+<li>應於召集事由列舉之事項：</li>
+<li>定期性董事會：</li>
+<li>應提董事會討論事項：</li>
+<li>董事會重大議案討論：</li>
+</ul>
+<a class="small" href="#2-2-公開發行公司董事會議事辦法" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 3 節</div>
+<h3 class="h6">2.3 董事會議事實務小百科</h3>
+<ul class='mb-2 small'>
+<li>董事會得否決議概括授權董事長於董事會休會期間代表董事會為一切行為？</li>
+<li>董事會之召集於7日前通知各董事及監察人後至開會前之期間，可否臨時加入議案併入該次董事會？</li>
+<li>董事會於討論員工績效獎金案時，有利害關係之董事（如勞工董事等）是否應予以迴避？</li>
+<li>如何區分因緊急情事召集之董事會？</li>
+</ul>
+<a class="small" href="#2-3-董事會議事實務小百科" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 4 節</div>
+<h3 class="h6">2.4 結語</h3>
+<ul class='mb-2 small'>
+<li>董事會職能的發揮，不僅有助於建立投資人對企業經營之信心，亦對企業經營績效及公司治理之提升有正面效益，惟公司董事會功能是否發揮成效及公司治理…</li>
+</ul>
+<a class="small" href="#2-4-結語" data-jump-lecture>看完整講義</a>
+</div></div>
+</div></div>
+    <div class="tab-pane fade" id="tab-quiz" role="tabpanel"><article class="sec-block" id="2-5-練習題">
+<div class="sec-kicker">課後練習</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">2.5 練習題</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">練習檢核</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-2-5-練習題" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2.5 練習題」。首先，1. 請問公開發行公司董事會之召集，除緊急情事，得隨時召集之外，應於幾日前通知各董事及監察人？(A)三日 (B)五日 (C)二日 (D) 七日 解答(D) 2. 請問依「公開發行公司董事會議事辦法」第3條第4項規定，下列事項何者除有突發緊急情事或正當理由外，應在召集事由中列舉，不得以臨時動議提出？(A)對非關係人之小額捐贈 (B) 募集、發行或私募具有股權性質之有價證券 (C)公司董事會指定議事單位 (D) 邀請會計師說明財務報告之查核情形 解答(B) 3. 請問依「公開發行公司董事會議事辦法」規定，董事出席董事會方式不包括下列何者？以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><ol>
+<li><p>請問公開發行公司董事會之召集，除緊急情事，得隨時召集之外，應於幾日前通知各董事及監察人？
+(A)三日
+(B)五日
+(C)二日
+(D) 七日
+解答(D)</p></li>
+<li><p>請問依「公開發行公司董事會議事辦法」第3條第4項規定，下列事項何者除有突發緊急情事或正當理由外，應在召集事由中列舉，不得以臨時動議提出？
+(A)對非關係人之小額捐贈
+(B) 募集、發行或私募具有股權性質之有價證券
+(C)公司董事會指定議事單位
+(D) 邀請會計師說明財務報告之查核情形
+解答(B)</p></li>
+<li><p>請問依「公開發行公司董事會議事辦法」規定，董事出席董事會方式不包括下列何者？
+(A) 視訊出席
+(B) 委託其他董事代理出席
+(C)以書面方式行使表決權，不實際集會
+(D)親自出席
+解答(C)</p></li>
+<li><p>請問依「公開發行公司董事會議事辦法」規定，下列何者於董事會討論及表決時無須離席？
+(A) 與會議事項有利害關係且有害公司利益之董事
+(B) 列席之會計師
+(C)列席之子公司人員
+(D) 列席之律師
+解答(C)</p></li>
+<li><p>請問下列何者係「公開發行公司董事會議事辦法」規定之董事長請假或因故不能行使職權時之代理順序？
+(A)董事長請假或因故不能行使職權時，由副董事長代理之
+(B) 無副董事長或副董事長亦請假或因故不能行使職權時，由董事長指定常務董事一人代理之
+(C)董事長未指定代理人者，由常務董事或董事互推一人代理之
+(D) 以上皆是
+解答(D)</p></li>
+<li><p>請問依「公開發行公司董事會議事辦法」規定，獨立董事於董事會上有反對或保留意見且有紀錄或書面聲明，除應於議事錄載明外，公司並應於董事會之日起幾日內辦理公告申報？
+(A)3日
+(B)1日
+(C)2日
+(D) 以上皆非
+解答(C)</p></li>
+<li><p>請問依「公開發行公司董事會議事辦法」規定，下列何者非董事會之開會相關資料之保存規定？
+(A)董事會之開會過程全程錄音或錄影存證，並至少保存三年.
+(B)發生關於董事會相關議決事項之訴訟時，董事會之開會過程錄音或錄影存證資料應至少保存五年√
+(C)以視訊會議召開董事會者，其視訊影音資料至少保存三年
+(D) 以上皆是
+解答(D)</p></li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">請問公開發行公司董事會之召集，除緊急情事，得隨時召集之外，應於幾日前通知各董事及監察人？</span>
+<span class="tag-chip chip-mint">請問依「公開發行公司董事會議事辦法」第3條第4項規定，下列事項何者除有突發緊急情事或正當理由外，應在召集事由中列舉，不得以臨時動議提出？</span>
+<span class="tag-chip chip-amber">請問依「公開發行公司董事會議事辦法」規定，董事出席董事會方式不包括下列何者？</span>
+<span class="tag-chip chip-coral">請問依「公開發行公司董事會議事辦法」規定，下列何者於董事會討論及表決時無須離席？</span>
+<span class="tag-chip chip-violet">請問下列何者係「公開發行公司董事會議事辦法」規定之董事長請假或因故不能行使職權時之代理順序？</span>
+</div>
+</div>
+</article></div>
+  </div>
+</div>
+
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script>
+window.markmap = {
+  autoLoader: {
+    manual: true,
+    toolbar: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18.11"></script>
+<script>
+(function(){
+  try {
+    if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "loose" });
+  } catch (e) {}
+})();
+</script>
+<script>
+(function(){
+  const body = document.body;
+  const key = 'gov-ebook-side-collapsed';
+  const backdrop = document.getElementById('side-backdrop');
+  const mq = window.matchMedia('(max-width:900px)');
+  const isMobile = () => mq.matches;
+  const edge = document.getElementById('edge-toggle');
+  const burger = document.getElementById('burger-fab');
+  function setCollapsed(v){
+    body.classList.toggle('side-collapsed', !!v);
+    try{ localStorage.setItem(key, v ? '1' : '0'); }catch(e){}
+  }
+  function openMobile(v){
+    body.classList.toggle('side-open-mobile', !!v);
+    if(backdrop) backdrop.hidden = !v;
+    body.style.overflow = v ? 'hidden' : '';
+    if(burger){
+      burger.setAttribute('aria-expanded', v ? 'true' : 'false');
+      burger.title = v ? '關閉目錄' : '打開目錄';
+      burger.setAttribute('aria-label', v ? '關閉目錄' : '打開目錄');
+    }
+  }
+  function syncViewport(){
+    if(isMobile()){
+      setCollapsed(true);
+      openMobile(false);
+    } else {
+      openMobile(false);
+      try{
+        setCollapsed(localStorage.getItem(key)==='1');
+      }catch(e){ setCollapsed(false); }
+    }
+  }
+  syncViewport();
+  if(mq.addEventListener) mq.addEventListener('change', syncViewport);
+  else if(mq.addListener) mq.addListener(syncViewport);
+  if(edge) edge.addEventListener('click', ()=>{ if(isMobile()) openMobile(false); else setCollapsed(true); });
+  if(burger) burger.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(isMobile()){
+      openMobile(!body.classList.contains('side-open-mobile'));
+    } else {
+      setCollapsed(false);
+    }
+  });
+  if(backdrop) backdrop.addEventListener('click', ()=> openMobile(false));
+
+  document.querySelectorAll('[data-nav-jump], [data-jump-lecture], .milestone-link, .path-card').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href')||'';
+      const hashIdx = href.indexOf('#');
+      if(hashIdx < 0) return;
+      const hash = href.slice(hashIdx);
+      const file = href.slice(0, hashIdx);
+      const cur = decodeURIComponent(location.pathname.split('/').pop()||'');
+      if(file && file !== cur) return;
+      const btn = document.getElementById('tab-lecture-btn');
+      if(btn && window.bootstrap){
+        e.preventDefault();
+        bootstrap.Tab.getOrCreateInstance(btn).show();
+        if(isMobile()) openMobile(false);
+        setTimeout(()=>{ const t=document.querySelector(hash); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }, 160);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-reveal-answer]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const row = btn.closest('.ans-row');
+      const box = row && row.querySelector('[data-secret-box]');
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      if(box) box.classList.toggle('is-masked', !show);
+      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+      btn.textContent = show ? '隱藏解答' : '顯示解答';
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function parsePayload(){
+    const el = document.getElementById('note-viz-data');
+    if(!el) return {};
+    try { return JSON.parse(el.textContent || '{}'); } catch(e){ return {}; }
+  }
+  const data = parsePayload();
+  const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+  const compares = Array.isArray(data.compares) ? data.compares : [];
+  const evolution = Array.isArray(data.evolution) ? data.evolution : [];
+  const outline = Array.isArray(data.outline) ? data.outline : [];
+  const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+  const edges = Array.isArray(data.edges) ? data.edges : [];
+  const charts = Array.isArray(data.charts) ? data.charts : [];
+  const mermaids = Array.isArray(data.mermaids) ? data.mermaids : [];
+
+  const state = {
+    ready: false,
+    echarts: [],
+    cy: null,
+    network: null,
+    timeline: null,
+    markmapSvg: null
+  };
+
+  function showEmpty(id, on){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('d-none', !on);
+  }
+  function short(s, n){
+    s = String(s||'');
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+  }
+  function isNarrow(){ return window.matchMedia('(max-width:767px)').matches; }
+  function tableH(desktop){ return isNarrow() ? Math.max(180, Math.min(260, Math.round(window.innerHeight*0.32))) + 'px' : desktop; }
+  function boxSize(el){
+    if(!el) return { w: 320, h: 240 };
+    const w = Math.max(el.clientWidth || el.offsetWidth || 0, 280);
+    const h = Math.max(el.clientHeight || el.offsetHeight || 0, 200);
+    return { w, h };
+  }
+  function chartsTabVisible(){
+    const pane = document.getElementById('tab-charts');
+    if(!pane) return true;
+    return pane.classList.contains('active') || pane.classList.contains('show');
+  }
+
+  function buildOutlineMd(){
+    let md = '# 講義大綱\n';
+    if(outline.length){
+      outline.forEach((o,i)=>{
+        const title = String(o.title||('節 '+(i+1))).replace(/\n/g,' ');
+        md += `\n## ${i+1}. ${title}`;
+        (o.kids||[]).forEach(k=>{
+          md += `\n- ${String(k).replace(/\n/g,' ')}`;
+        });
+      });
+    } else if(nodes.length){
+      nodes.forEach(n=>{ md += `\n## ${n.label||n.id}`; });
+    } else {
+      md += '\n## （尚無大綱）\n- 請見章節講義';
+    }
+    return md;
+  }
+
+  function waitMarkmapReady(){
+    return new Promise((resolve)=>{
+      const al = window.markmap && markmap.autoLoader;
+      if(!al){ resolve(false); return; }
+      if(al.ready && typeof al.ready.then === 'function'){
+        al.ready.then(()=>resolve(true)).catch(()=>resolve(!!al.renderAll));
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        n++;
+        const ok = !!(window.markmap && markmap.autoLoader && (markmap.autoLoader.render || markmap.autoLoader.renderAll));
+        if(ok || n > 50){ clearInterval(t); resolve(ok); }
+      }, 120);
+    });
+  }
+
+  async function renderMarkmap(){
+    const host = document.getElementById('viz-markmap');
+    if(!host) return;
+    const md = buildOutlineMd();
+    host.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'markmap';
+    const tpl = document.createElement('script');
+    tpl.type = 'text/template';
+    tpl.textContent = md;
+    el.appendChild(tpl);
+    host.appendChild(el);
+
+    const ok = await waitMarkmapReady();
+    const al = window.markmap && markmap.autoLoader;
+    if(!ok || !al){
+      host.innerHTML = '<p class="viz-empty">心智圖套件尚未載入完成，請重新整理頁面。</p>';
+      return;
+    }
+    try {
+      if(typeof al.render === 'function') await al.render(el);
+      else if(typeof al.renderAllUnder === 'function') await al.renderAllUnder(host);
+      else if(typeof al.renderAll === 'function') await al.renderAll();
+      // 強制 SVG 填滿容器
+      const svg = host.querySelector('svg');
+      if(svg){
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        state.markmapSvg = svg;
+      }
+      // 觸發 fit：模擬 resize
+      setTimeout(()=> window.dispatchEvent(new Event('resize')), 60);
+    } catch(e){
+      console.warn('markmap render', e);
+      host.innerHTML = '<p class="viz-empty">心智圖渲染失敗：' + String(e && e.message || e) + '</p>';
+    }
+  }
+
+  function fitAll(){
+    state.echarts.forEach(c=>{ try{ c.resize(); }catch(e){} });
+    if(state.cy){ try{ state.cy.resize(); state.cy.fit(undefined, 24); }catch(e){} }
+    if(state.network){ try{ state.network.redraw(); state.network.fit(); }catch(e){} }
+    if(state.timeline){ try{ state.timeline.redraw(); }catch(e){} }
+    if(window.Plotly){
+      document.querySelectorAll('#viz-plotly-timeline .js-plotly-plot, #viz-plotly-timeline').forEach(el=>{
+        try{ Plotly.Plots.resize(el); }catch(e){}
+      });
+    }
+    const host = document.getElementById('viz-markmap');
+    const svg = host && host.querySelector('svg');
+    if(svg){
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+    }
+    // D3 重畫交由 init 內的資料；窄螢幕時僅調整既有 svg 寬度
+    const d3svg = document.querySelector('#viz-d3-evolve svg');
+    if(d3svg){
+      const wrap = document.getElementById('viz-d3-evolve');
+      const { w } = boxSize(wrap);
+      d3svg.setAttribute('width', String(w));
+    }
+  }
+
+  function initViz(){
+    if(state.ready){ fitAll(); return; }
+    state.ready = true;
+
+    /* —— markmap —— */
+    renderMarkmap();
+
+    /* —— timeline —— */
+    if(timeline.length){
+      const rows = timeline.map(r=>({ when:r.when||r[0]||'', what:r.what||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-timeline')){
+        new Tabulator('#viz-tabulator-timeline', {
+          data: rows, layout:'fitDataStretch', height: tableH('220px'),
+          columns:[
+            {title:'時點', field:'when', minWidth:88, widthGrow:1, headerFilter: isNarrow()?false:'input'},
+            {title:'事件／規範重點', field:'what', minWidth:160, widthGrow:3, headerFilter: isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      if(window.Chart){
+        const ctx = document.getElementById('viz-chartjs-timeline');
+        if(ctx){
+          new Chart(ctx, {
+            type:'bar',
+            data:{
+              labels: rows.map(r=>short(r.when, isNarrow()?8:12)),
+              datasets:[{ label:'事件數', data: rows.map(()=>1), backgroundColor:'rgba(94,200,255,.55)' }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{ legend:{ labels:{ color:'#c9d7ea', boxWidth:12 } } },
+              scales:{
+                x:{ ticks:{ color:'#93a4b8', maxRotation:45, minRotation:0, autoSkip:true }, grid:{ color:'#2a3544' } },
+                y:{ ticks:{ color:'#93a4b8', stepSize:1 }, grid:{ color:'#2a3544' }, beginAtZero:true }
+              }
+            }
+          });
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-timeline');
+        if(el){
+          const chart = echarts.init(el, 'dark');
+          chart.setOption({
+            backgroundColor:'transparent',
+            grid:{ left:36, right:16, top:24, bottom: isNarrow()?64:40, containLabel:true },
+            tooltip:{ trigger:'axis' },
+            xAxis:{ type:'category', data: rows.map(r=>short(r.when, isNarrow()?8:14)), axisLabel:{ color:'#9fb0c6', hideOverlap:true } },
+            yAxis:{ type:'value', show:false },
+            series:[{
+              type:'line', smooth:true, symbolSize:10,
+              data: rows.map((_,i)=>i+1),
+              areaStyle:{ color:'rgba(94,200,255,.15)' },
+              lineStyle:{ color:'#5ec8ff' },
+              itemStyle:{ color:'#3ee0a2' }
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.vis && vis.Timeline){
+        const el = document.getElementById('viz-vis-timeline');
+        if(el){
+          const items = new vis.DataSet(rows.map((r,i)=>{
+            const y = String(r.when).match(/(19|20)\d{2}/);
+            const start = y ? (y[0]+'-01-01') : (`2020-0${(i%9)+1}-01`);
+            return { id:i+1, content: short(r.what, isNarrow()?22:40), start };
+          }));
+          state.timeline = new vis.Timeline(el, items, {
+            stack:true, horizontalScroll:true, zoomKey:'ctrlKey',
+            orientation:'top', margin:{ item:8 },
+            height: isNarrow() ? 200 : 240
+          });
+        }
+      }
+      if(window.Plotly){
+        const el = document.getElementById('viz-plotly-timeline');
+        if(el){
+          Plotly.newPlot(el, [{
+            type:'scatter', mode:'lines+markers',
+            x: rows.map(r=>r.when), y: rows.map((_,i)=>i+1),
+            text: rows.map(r=>r.what),
+            marker:{ color:'#5ec8ff', size:10 },
+            line:{ color:'#3ee0a2' }
+          }], {
+            paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+            font:{ color:'#c9d7ea', size: isNarrow()?11:12 },
+            margin:{ t:20,r:12,b: isNarrow()?70:40, l:36 },
+            yaxis:{ title:'序', gridcolor:'#2a3544' },
+            xaxis:{ gridcolor:'#2a3544', tickangle: isNarrow()?-35:0 }
+          }, {responsive:true, displayModeBar:false});
+        }
+      }
+    }
+
+    /* —— compare —— */
+    const firstCompare = compares[0] || null;
+    if(firstCompare){
+      const headers = firstCompare.headers || firstCompare[0] || [];
+      const body = firstCompare.rows || firstCompare[1] || [];
+      const fields = headers.map((h,i)=> 'c'+i);
+      const dataRows = body.map(r=>{
+        const o={}; fields.forEach((f,i)=>{ o[f]= (r&&r[i]!=null)? String(r[i]) : ''; }); return o;
+      });
+      if(window.Tabulator && document.getElementById('viz-tabulator-compare')){
+        new Tabulator('#viz-tabulator-compare', {
+          data: dataRows, layout:'fitDataStretch', height: tableH('240px'),
+          columns: headers.map((h,i)=>({
+            title:String(h), field:fields[i], minWidth:100, widthGrow:1,
+            headerFilter: isNarrow()?false:'input', formatter:'textarea'
+          }))
+        });
+      }
+      if(window.gridjs && document.getElementById('viz-gridjs-compare')){
+        new gridjs.Grid({
+          columns: headers.map(String),
+          data: body.map(r=> (r||[]).map(c=> String(c??''))),
+          search: !isNarrow(), sort: true,
+          pagination: { enabled:true, limit: isNarrow()?5:8 },
+          style: { table:{ 'font-size': isNarrow()?'12px':'13px' } }
+        }).render(document.getElementById('viz-gridjs-compare'));
+      }
+    }
+
+    /* —— evolution —— */
+    if(evolution.length){
+      const rows = evolution.map(r=>({ stage:r.stage||r[0]||'', content:r.content||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-evolve')){
+        new Tabulator('#viz-tabulator-evolve', {
+          data: rows, layout:'fitDataStretch', height: tableH('200px'),
+          columns:[
+            {title:'階段', field:'stage', minWidth:90, widthGrow:1, headerFilter:isNarrow()?false:'input'},
+            {title:'重點內容', field:'content', minWidth:140, widthGrow:3, headerFilter:isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      const mEl = document.getElementById('viz-mermaid-evolve');
+      if(mEl && window.mermaid){
+        const dir = isNarrow() ? 'TD' : 'LR';
+        let code = 'flowchart ' + dir + '\n';
+        rows.forEach((r,i)=>{
+          const id = 'S'+(i+1);
+          const label = short(r.stage, isNarrow()?14:18).replace(/"/g,"'");
+          code += `  ${id}["${label}"]\n`;
+          if(i>0) code += `  S${i} --> ${id}\n`;
+        });
+        mEl.removeAttribute('data-processed');
+        mEl.textContent = code;
+        try { mermaid.run({ nodes: [mEl] }); } catch(e){
+          try { mermaid.init(undefined, mEl); } catch(_e){}
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-evolve');
+        if(el){
+          const { w, h } = boxSize(el);
+          const chart = echarts.init(el, 'dark');
+          const n = rows.length || 1;
+          chart.setOption({
+            backgroundColor:'transparent',
+            tooltip:{ formatter: p => (p.data && (p.data.name + '<br/>' + (p.data.value||''))) || '' },
+            series:[{
+              type:'graph', layout:'none', roam:true,
+              label:{ show:true, color:'#e8eef7', fontSize: isNarrow()?10:12 },
+              edgeSymbol:['none','arrow'],
+              data: rows.map((r,i)=>({
+                name: short(r.stage, isNarrow()?10:12),
+                x: isNarrow() ? (w*0.5) : (40 + i * Math.max(70, (w-80)/Math.max(n-1,1))),
+                y: isNarrow() ? (30 + i * Math.max(42, (h-60)/Math.max(n-1,1))) : (h*0.45),
+                value: r.content
+              })),
+              links: rows.slice(1).map((_,i)=>({ source:i, target:i+1 }))
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.d3){
+        const el = document.getElementById('viz-d3-evolve');
+        if(el){
+          el.innerHTML = '';
+          const { w } = boxSize(el);
+          const height = Math.max(el.clientHeight || 240, 200);
+          const svg = d3.select(el).append('svg').attr('width', w).attr('height', height);
+          const root = { name:'演進', children: rows.map(r=>({ name: short(r.stage, isNarrow()?12:16), children:[{ name: short(r.content, isNarrow()?20:28) }] })) };
+          const hier = d3.hierarchy(root);
+          d3.tree().size([height-36, Math.max(120, w-120)])(hier);
+          const g = svg.append('g').attr('transform','translate(56,18)');
+          g.selectAll('.link').data(hier.links()).enter().append('path')
+            .attr('class','link').attr('fill','none')
+            .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+          const node = g.selectAll('.node').data(hier.descendants()).enter().append('g')
+            .attr('class','node').attr('transform', d=>`translate(${d.y},${d.x})`);
+          node.append('circle').attr('r',4);
+          node.append('text').attr('dy',3).attr('x', d=> d.children? -8:8)
+            .attr('text-anchor', d=> d.children? 'end':'start').text(d=>d.data.name);
+        }
+      }
+    }
+
+    /* —— graphs —— */
+    if(document.getElementById('viz-cytoscape') || document.getElementById('viz-vis-network')){
+      const gNodes = nodes.length ? nodes : outline.map((o,i)=>({ id:'n'+i, label: short(o.title||('節'+(i+1)), 18) }));
+      const gEdges = edges.length ? edges : gNodes.slice(1).map((n,i)=>({ from: gNodes[i].id, to: n.id }));
+      if(window.cytoscape && gNodes.length && document.getElementById('viz-cytoscape')){
+        state.cy = cytoscape({
+          container: document.getElementById('viz-cytoscape'),
+          elements: [
+            ...gNodes.map(n=>({ data:{ id:String(n.id), label:n.label||String(n.id) } })),
+            ...gEdges.map((e,i)=>({ data:{ id:'e'+i, source:String(e.from||e.source), target:String(e.to||e.target) } }))
+          ],
+          style:[
+            { selector:'node', style:{ 'background-color':'#5ec8ff', 'label':'data(label)', 'color':'#e8eef7', 'font-size': isNarrow()?'9px':'10px', 'text-wrap':'wrap', 'text-max-width': isNarrow()?64:80 } },
+            { selector:'edge', style:{ 'width':2, 'line-color':'#3ee0a2', 'target-arrow-color':'#3ee0a2', 'target-arrow-shape':'triangle', 'curve-style':'bezier' } }
+          ],
+          layout:{ name:'cose', animate:false, padding:16 }
+        });
+      }
+      if(window.vis && vis.Network && gNodes.length && document.getElementById('viz-vis-network')){
+        const el = document.getElementById('viz-vis-network');
+        const ns = new vis.DataSet(gNodes.map(n=>({ id:n.id, label:n.label||String(n.id) })));
+        const es = new vis.DataSet(gEdges.map((e,i)=>({ id:i, from:e.from||e.source, to:e.to||e.target })));
+        state.network = new vis.Network(el, { nodes:ns, edges:es }, {
+          nodes:{ shape:'dot', size: isNarrow()?11:14, font:{ color:'#e8eef7', size: isNarrow()?11:13 }, color:{ background:'#5ec8ff', border:'#3ee0a2' } },
+          edges:{ color:'#6ee7f5', arrows:'to' },
+          physics:{ stabilization:true },
+          interaction:{ zoomView:true, dragView:true }
+        });
+      }
+    }
+
+    /* —— extra（HTML 已為每張圖建獨立格） —— */
+    if(charts.length && window.Chart){
+      charts.forEach((c, i)=>{
+        const canvas = document.getElementById('viz-extra-chart-'+i);
+        if(!canvas) return;
+        const cfg = c.config || {};
+        new Chart(canvas, {
+          type: cfg.type || c.type || 'bar',
+          data: cfg.data || { labels:c.labels||[], datasets:c.datasets||[] },
+          options: Object.assign({
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#c9d7ea' } } },
+            scales:{
+              x:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } },
+              y:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } }
+            }
+          }, cfg.options||{})
+        });
+      });
+    }
+    const mHost = document.getElementById('viz-extra-mermaids');
+    if(mHost && mermaids.length){
+      mermaids.forEach((code)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'mb-3 mermaid-host';
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = code;
+        wrap.appendChild(pre);
+        mHost.appendChild(wrap);
+      });
+      if(window.mermaid){
+        try { mermaid.run({ querySelector: '#viz-extra-mermaids .mermaid' }); } catch(e){}
+      }
+    }
+
+    setTimeout(fitAll, 80);
+    setTimeout(fitAll, 320);
+  }
+
+  function requestInit(){
+    // 等一幀確保 tab 已顯示、容器有寬度
+    requestAnimationFrame(()=> requestAnimationFrame(initViz));
+  }
+
+  // 圖表 tab 顯示後才初始化（避免隱藏 tab 寬度為 0）
+  const chartsBtn = document.getElementById('tab-charts-btn');
+  if(chartsBtn){
+    chartsBtn.addEventListener('shown.bs.tab', ()=> requestInit());
+  }
+  document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn=>{
+    btn.addEventListener('shown.bs.tab', (ev)=>{
+      const target = (ev.target && ev.target.getAttribute('data-bs-target')) || '';
+      if(target === '#tab-charts') requestInit();
+      else if(state.ready) setTimeout(fitAll, 50);
+    });
+  });
+
+  // 若圖表本來就是作用中（或沒有 tabs），直接初始化
+  if(chartsTabVisible()){
+    requestInit();
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+  });
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize', ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  if(!('speechSynthesis' in window)){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      const st = root.querySelector('[data-tts-status]');
+      if(st) st.textContent = '此瀏覽器不支援語音播放，仍可閱讀講解稿。';
+      root.querySelectorAll('button[data-tts-play],button[data-tts-pause],button[data-tts-stop]').forEach(b=> b.disabled = true);
+      root.querySelectorAll('[data-tts-voice]').forEach(s=> s.disabled = true);
+    });
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const STORE_KEY = 'note-tts-voice-uri-v2';
+  let currentRoot = null;
+  let currentUtter = null;
+  let voicesReady = false;
+
+  function voiceScore(v){
+    const blob = ((v.name||'') + ' ' + (v.lang||'')).toLowerCase();
+    let s = 0;
+    if(/zh|chinese|中文|國語|台|hong|澳門|yue/.test(blob)) s += 100;
+    // 預設優先 Google 中文語音
+    if(/google/.test(blob)) s += 200;
+    if(/zh-tw|taiwan|國語（台灣）|國語 \(台灣\)|chinese \(taiwan\)/.test(blob)) s += 90;
+    if(/hanhan|hsia.?chen|yunjhe|yun-jie|zhiwei|meijia|tingting/.test(blob)) s += 70;
+    if(/zh-cn|xiaoxiao|xiaoyi|yunxi|yunyang|huihui|普通话|國語（中國）/.test(blob)) s += 50;
+    if(/natural|neural|online|自然|神經|雲端/.test(blob)) s += 35;
+    if(/microsoft|edge/.test(blob)) s += 8;
+    if(/desktop|sapi|espeak|compact/.test(blob)) s -= 15;
+    return s;
+  }
+  function listVoices(){
+    const all = synth.getVoices() || [];
+    const zh = all.filter(v => voiceScore(v) >= 100).sort((a,b)=> voiceScore(b)-voiceScore(a));
+    if(zh.length) return zh;
+    return all.slice().sort((a,b)=> voiceScore(b)-voiceScore(a));
+  }
+  function voiceKey(v){
+    return (v.voiceURI || (v.name + '|' + v.lang) || '').trim();
+  }
+  function savedVoiceKey(){
+    try{ return localStorage.getItem(STORE_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveVoiceKey(key){
+    try{ localStorage.setItem(STORE_KEY, key || ''); }catch(e){}
+  }
+  function findVoiceByKey(key){
+    if(!key) return null;
+    const voices = synth.getVoices() || [];
+    return voices.find(v => voiceKey(v) === key) || null;
+  }
+  function defaultVoice(){
+    const voices = listVoices();
+    if(!voices.length) return null;
+    const saved = findVoiceByKey(savedVoiceKey());
+    if(saved) return saved;
+    const googleTw = voices.find(v => /google/i.test(v.name) && /zh-tw|taiwan|台灣|台湾/i.test(v.name + v.lang));
+    const googleZh = voices.find(v => /google/i.test(v.name) && /zh|chinese|中文|國語|普通话/i.test(v.name + v.lang));
+    const googleAny = voices.find(v => /google/i.test(v.name));
+    return googleTw || googleZh || googleAny || voices[0];
+  }
+  function fillVoiceSelects(){
+    const voices = listVoices();
+    const preferred = defaultVoice();
+    const preferredKey = preferred ? voiceKey(preferred) : '';
+    document.querySelectorAll('[data-tts-voice]').forEach(sel=>{
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if(!voices.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '（尚無可用語音）';
+        sel.appendChild(opt);
+        return;
+      }
+      voices.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = voiceKey(v);
+        let tag = '';
+        if(/google/i.test(v.name)) tag = ' ★Google';
+        else if(/natural|neural|online|自然/i.test(v.name)) tag = ' ★較自然';
+        opt.textContent = (v.name || '語音') + '（' + (v.lang || '?') + '）' + tag;
+        sel.appendChild(opt);
+      });
+      const want = prev || preferredKey || voiceKey(voices[0]);
+      if([...sel.options].some(o => o.value === want)) sel.value = want;
+      else sel.selectedIndex = 0;
+    });
+    voicesReady = true;
+  }
+  function selectedVoice(root){
+    const sel = root && root.querySelector('[data-tts-voice]');
+    const key = sel && sel.value;
+    return findVoiceByKey(key) || defaultVoice();
+  }
+  function setStatus(root, text){
+    const st = root && root.querySelector('[data-tts-status]');
+    if(st) st.textContent = text || '';
+  }
+  function setSpeaking(root, on){
+    const box = root && root.querySelector('[data-tts-text]');
+    if(box) box.classList.toggle('is-speaking', !!on);
+  }
+  function stopAll(){
+    try{ synth.cancel(); }catch(e){}
+    if(currentRoot){
+      setSpeaking(currentRoot, false);
+      setStatus(currentRoot, '使用系統語音朗讀（可自選聲線）');
+    }
+    currentRoot = null;
+    currentUtter = null;
+  }
+  function playRoot(root){
+    const textEl = root.querySelector('[data-tts-text]');
+    const text = (textEl && (textEl.innerText || textEl.textContent) || '').trim();
+    if(!text){ setStatus(root, '尚無講解稿'); return; }
+    if(!voicesReady) fillVoiceSelects();
+    stopAll();
+    const u = new SpeechSynthesisUtterance(text);
+    const voice = selectedVoice(root);
+    if(voice){
+      u.voice = voice;
+      u.lang = voice.lang || 'zh-TW';
+      saveVoiceKey(voiceKey(voice));
+    }else{
+      u.lang = 'zh-TW';
+    }
+    const rateEl = root.querySelector('[data-tts-rate]');
+    u.rate = rateEl ? Number(rateEl.value || 1) : 1;
+    u.pitch = 1;
+    u.onstart = ()=>{
+      currentRoot = root;
+      setSpeaking(root, true);
+      setStatus(root, '播放中… ' + ((voice && voice.name) || ''));
+    };
+    u.onend = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放結束');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    u.onerror = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放中斷（可改選其他語音）');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    currentUtter = u;
+    // Chrome 偶發 cancel 後立刻 speak 會失敗
+    setTimeout(()=> synth.speak(u), 40);
+  }
+
+  function bindRoots(){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      if(root.dataset.ttsBound) return;
+      root.dataset.ttsBound = '1';
+      const play = root.querySelector('[data-tts-play]');
+      const pause = root.querySelector('[data-tts-pause]');
+      const stop = root.querySelector('[data-tts-stop]');
+      const voiceSel = root.querySelector('[data-tts-voice]');
+      if(play) play.addEventListener('click', ()=>{
+        if(synth.paused && currentRoot === root){ synth.resume(); setStatus(root, '繼續播放…'); return; }
+        playRoot(root);
+      });
+      if(pause) pause.addEventListener('click', ()=>{
+        if(synth.speaking && !synth.paused){ synth.pause(); setStatus(root, '已暫停'); }
+      });
+      if(stop) stop.addEventListener('click', ()=> stopAll());
+      if(voiceSel) voiceSel.addEventListener('change', ()=>{
+        saveVoiceKey(voiceSel.value);
+        document.querySelectorAll('[data-tts-voice]').forEach(other=>{
+          if(other !== voiceSel) other.value = voiceSel.value;
+        });
+        setStatus(root, '已選語音，按朗讀試聽');
+      });
+    });
+  }
+
+  fillVoiceSelects();
+  bindRoots();
+  try{
+    synth.getVoices();
+    synth.addEventListener('voiceschanged', ()=>{ fillVoiceSelects(); });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

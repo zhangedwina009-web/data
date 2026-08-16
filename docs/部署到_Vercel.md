@@ -37,8 +37,12 @@ Python 伺服器、Ollama、AHK、爬蟲**不會**在 Vercel 上跑，請繼續�
 ## 部署後網址
 
 - 首頁：`https://你的專案.vercel.app/`
-- 筆記瀏覽：`https://你的專案.vercel.app/notes/`
-- 各講義：`/notes/簡單開公司/….html`、`/notes/公司治理/….html`
+- 筆記瀏覽：`https://你的專案.vercel.app/notes/index.html`
+- 財稅講義：`/notes/simpany/1-1.html`（檔名為單元代號，避免中文／問號導致 404）
+- 公司治理：`/notes/governance/ch01.html`
+
+> 舊路徑 `notes/簡單開公司/….html` 含空白、`？`、`&`，在 Vercel 上常會 404，已改為英文資料夾＋短檔名。
+
 
 ## 語音說明
 

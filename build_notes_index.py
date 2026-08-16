@@ -7,6 +7,8 @@ import html
 from datetime import datetime
 from pathlib import Path
 
+from note_paths import FOLDER_LABELS
+
 ROOT = Path(__file__).resolve().parent
 NOTES = ROOT / "notes"
 SKIP_DIRS = {"archive", "__pycache__"}
@@ -14,6 +16,10 @@ SKIP_DIRS = {"archive", "__pycache__"}
 
 def _esc(s: str) -> str:
     return html.escape(s or "", quote=True)
+
+
+def _folder_label(name: str) -> str:
+    return FOLDER_LABELS.get(name, name)
 
 
 def _folder_href(d: Path) -> str | None:
@@ -41,7 +47,14 @@ def collect() -> list[dict]:
         if not href:
             continue
         count = len([f for f in d.glob("*.html") if f.name.lower() != "index.html"])
-        folders.append({"name": d.name, "href": href, "count": count})
+        folders.append(
+            {
+                "name": d.name,
+                "label": _folder_label(d.name),
+                "href": href,
+                "count": count,
+            }
+        )
     return folders
 
 
@@ -52,7 +65,7 @@ def render(folders: list[dict]) -> str:
     else:
         btns = [
             f'<a class="folder-btn" href="{_esc(f["href"])}">'
-            f'<span class="folder-name">{_esc(f["name"])}</span>'
+            f'<span class="folder-name">{_esc(f["label"])}</span>'
             f'<span class="folder-go">開啟 →</span>'
             f"</a>"
             for f in folders
@@ -116,7 +129,7 @@ h1{{margin:0 0 6px;font-size:clamp(1.35rem,3.5vw,1.7rem);}}
       <p class="sub">選擇資料夾進入 · 更新於 {stamp}</p>
     </div>
     <div class="nav">
-      <a class="ghost" href="../index.html">← 回首頁</a>
+      <a class="ghost" href="../">← 回首頁</a>
       <a href="../apps/note_generator.html">新增筆記</a>
     </div>
   </div>

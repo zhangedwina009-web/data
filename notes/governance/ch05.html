@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>第5章 併購特別委員會行使職權之解析</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/theme/mermaid.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-alpine-dark.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+.viz-toolkit-badge{display:inline-flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 1rem;}
+.viz-pill{font-size:.68rem;font-weight:750;padding:.18rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(18,24,33,.85);}
+.viz-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+  align-items:stretch;
+}
+@media (min-width:768px){
+  .viz-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media (min-width:1200px){
+  .viz-grid.viz-grid-dense{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+.viz-cell{
+  margin:0;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(16,22,30,.92);
+  max-width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.viz-cell-wide{grid-column:1 / -1;}
+.viz-panel-h,.viz-cell-h{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:720;
+}
+.viz-lib{font-size:.7rem;font-weight:800;padding:.15rem .45rem;border-radius:999px;background:rgba(94,200,255,.16);color:var(--cyan);}
+.viz-body,.viz-cell-b{padding:.75rem .85rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.viz-box{min-height:clamp(180px,42vw,260px);width:100%;max-width:100%;position:relative;}
+.viz-box-sm{min-height:clamp(160px,38vw,220px);}
+.viz-box-lg{min-height:clamp(220px,48vw,340px);}
+.viz-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0;}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.tabulator,.tabulator-header,.tabulator-row{background:transparent !important;color:var(--text) !important;}
+.tabulator{border:1px solid rgba(255,255,255,.08) !important;border-radius:10px;overflow:hidden;max-width:100%;}
+.gridjs-wrapper{overflow-x:auto !important;max-width:100%;}
+.gridjs-th,.gridjs-td{background:#121821 !important;border-color:rgba(255,255,255,.1) !important;color:#e8eef7 !important;}
+table.dataTable{color:var(--text);width:100% !important;}
+.ag-theme-alpine-dark{--ag-background-color:#121821;--ag-header-background-color:#0d1520;height:clamp(220px,50vw,300px);width:100%;max-width:100%;}
+.markmap-host{position:relative;width:100%;max-width:100%;height:clamp(280px,58vw,420px);border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;overflow:hidden;}
+.markmap-host .markmap{position:relative;width:100%;height:100%;}
+.markmap-host .markmap > svg,
+.markmap > svg{width:100% !important;height:100% !important;min-height:260px;display:block;}
+.cy-host,.vis-host{height:clamp(240px,55vw,340px);width:100%;max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;}
+.vis-timeline{border:0 !important;background:transparent !important;width:100% !important;}
+.vis-item{background:rgba(94,200,255,.25) !important;border-color:rgba(94,200,255,.55) !important;color:#e8eef7 !important;font-size:12px !important;}
+.d3-host{height:clamp(220px,50vw,300px);width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;}
+.d3-host text{fill:#c9d7ea;font-size:11px;}
+.d3-host .link{stroke:rgba(94,200,255,.35);}
+.d3-host .node circle{fill:#5ec8ff;}
+.mermaid-host{padding:.5rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#0a0e14;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.mermaid-host .mermaid,.mermaid-host svg{max-width:100%;}
+@media (max-width:767px){
+  .viz-cell-b{padding:.65rem .7rem .85rem;}
+  .viz-cell-h{padding:.55rem .7rem;font-size:.92rem;}
+  .viz-toolkit-badge{gap:.28rem;}
+  .viz-pill{font-size:.62rem;padding:.14rem .42rem;}
+  .tabulator .tabulator-header-filter input{font-size:12px;}
+}
+@media (max-width:420px){
+  .markmap-host{height:260px;}
+  .cy-host,.vis-host{height:220px;}
+}
+.narration-box{
+  margin:.85rem 0 1.1rem;border:1px solid rgba(110,231,245,.28);border-radius:14px;
+  background:linear-gradient(135deg,rgba(110,231,245,.08),rgba(16,22,30,.95));
+  overflow:hidden;
+}
+.narration-box > summary{
+  list-style:none;cursor:pointer;padding:.7rem .9rem;font-weight:750;
+  display:flex;align-items:center;gap:.45rem;color:#e8eef7;
+}
+.narration-box > summary::-webkit-details-marker{display:none;}
+.narration-box > summary::before{content:"▸";color:var(--sky,#6ee7f5);}
+.narration-box[open] > summary::before{content:"▾";}
+.narration-badge{
+  font-size:.7rem;font-weight:800;padding:.14rem .45rem;border-radius:999px;
+  background:rgba(110,231,245,.18);color:var(--sky,#6ee7f5);
+}
+.narration-body{padding:0 .9rem 1rem;}
+.narration-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 .65rem;
+}
+.narration-toolbar button{
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  background:rgba(18,24,33,.9);color:#e8eef7;padding:.32rem .75rem;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+}
+.narration-toolbar button.main{
+  background:linear-gradient(135deg,rgba(94,200,255,.9),rgba(62,224,162,.75));
+  color:#071018;border:0;
+}
+.narration-toolbar button:hover{filter:brightness(1.08);}
+.narration-toolbar button:disabled{opacity:.45;cursor:not-allowed;}
+.narration-rate{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);}
+.narration-rate input{width:90px;accent-color:#5ec8ff;}
+.narration-voice{
+  display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);
+  flex:1 1 220px;min-width:180px;
+}
+.narration-voice select{
+  flex:1;min-width:0;max-width:100%;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  background:rgba(18,24,33,.95);color:#e8eef7;
+  padding:.28rem .7rem;font-size:.78rem;
+}
+.narration-hint{font-size:.72rem;color:var(--muted,#9fb0c6);margin:.15rem 0 .45rem;line-height:1.45;}
+.narration-status{font-size:.78rem;color:var(--mint,#3ee0a2);min-height:1.1em;}
+.narration-script{
+  white-space:pre-wrap;line-height:1.75;color:#d7e2f0;font-size:.92rem;
+  padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(110,231,245,.25);
+  background:rgba(10,14,20,.72);max-height:280px;overflow:auto;-webkit-overflow-scrolling:touch;
+}
+.narration-script.is-speaking{border-color:rgba(62,224,162,.55);box-shadow:inset 3px 0 0 var(--mint,#3ee0a2);}
+@media (max-width:560px){
+  .narration-toolbar{gap:.35rem;}
+  .narration-voice{flex-basis:100%;}
+  .narration-script{max-height:220px;font-size:.88rem;}
+}
+:root{
+  --bg:#0b0f14; --text:#e8eef7; --muted:#9fb0c6;
+  --cyan:#5ec8ff; --mint:#3ee0a2; --amber:#ffc857; --coral:#ff7b72;
+  --violet:#c3a6ff; --sky:#6ee7f5; --side-w:320px; --side-blue:#0d2137;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;}
+body{
+  background:
+    radial-gradient(1100px 480px at 8% -8%, rgba(94,200,255,.12), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgba(195,166,255,.10), transparent 50%),
+    var(--bg);
+  color:var(--text);
+}
+
+.layout{min-height:100vh;}
+.sidebar{
+  position:fixed; inset:0 auto 0 0; width:min(var(--side-w), 88vw); z-index:40;
+  background:linear-gradient(180deg, #0a2744 0%, var(--side-blue) 40%, #0b1a2a 100%);
+  border-right:1px solid rgba(94,200,255,.18);
+  display:flex; flex-direction:column;
+  transform:translateX(0); transition:transform .22s ease;
+  box-shadow:8px 0 28px rgba(0,0,0,.25);
+}
+body.side-collapsed .sidebar{transform:translateX(-105%);}
+.side-scroll{overflow:auto; -webkit-overflow-scrolling:touch; padding:.85rem .75rem 5rem; flex:1;}
+.side-brand-block{padding:.35rem .45rem 0.85rem; border-bottom:1px solid rgba(94,200,255,.15); margin-bottom:.75rem;}
+.side-brand{font-weight:850; font-size:1.05rem; color:#fff; letter-spacing:.04em;}
+.side-sub{font-size:.75rem; color:rgba(158,200,230,.85); margin-top:.15rem;}
+.side-home{
+  display:inline-flex; margin-top:.55rem; font-size:.78rem; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+}
+.side-home:hover{color:#fff;}
+.chap-drop{
+  border:1px solid rgba(94,200,255,.14); border-radius:12px;
+  background:rgba(8,24,40,.72); margin:0 0 .45rem; overflow:hidden;
+}
+.chap-drop.active-chap{border-color:rgba(94,200,255,.45); box-shadow:inset 3px 0 0 var(--cyan);}
+.chap-drop > summary{
+  list-style:none; cursor:pointer; padding:.55rem .65rem;
+  display:flex; align-items:center; gap:.35rem;
+  font-size:.84rem; font-weight:750; color:#e8f4ff;
+}
+.chap-drop > summary::-webkit-details-marker{display:none;}
+.chap-drop > summary::before{content:"▸"; color:rgba(158,200,230,.7); width:1rem; flex:0 0 auto;}
+.chap-drop[open] > summary::before{content:"▾"; color:var(--cyan);}
+.chap-sum-link{color:inherit; text-decoration:none; flex:1; min-width:0; word-break:break-word;}
+.chap-sum-link:hover{color:var(--cyan);}
+.toc-kids{padding:0 .35rem .55rem .35rem; display:flex; flex-direction:column; gap:.08rem;}
+.toc-h3{
+  display:flex; align-items:flex-start; gap:.4rem; text-decoration:none; color:rgba(200,220,235,.88);
+  font-size:.78rem; padding:.32rem .45rem; border-radius:8px; line-height:1.35;
+}
+.toc-h3:hover{background:rgba(94,200,255,.12); color:#fff;}
+.toc-sub{padding-left:1.15rem; font-size:.74rem; color:rgba(170,195,215,.8);}
+.toc-mark{flex:0 0 auto; width:1.1rem; text-align:center; color:var(--cyan); font-size:.85rem;}
+.toc-sub .toc-mark{color:var(--amber); font-size:.78rem;}
+.toc-text{flex:1; min-width:0; overflow-wrap:anywhere;}
+.edge-toggle{
+  position:fixed; left:calc(min(var(--side-w), 88vw) - 16px); top:max(12px, env(safe-area-inset-top));
+  z-index:50; width:32px; height:32px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(13,33,55,.95); color:#fff; cursor:pointer;
+  display:grid; place-items:center; transition:left .22s ease, opacity .2s ease;
+}
+body.side-collapsed .edge-toggle{display:none;}
+.burger-fab{
+  display:none; position:fixed;
+  left:max(12px, env(safe-area-inset-left));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:55; width:42px; height:42px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(94,200,255,.45),rgba(62,224,162,.32));
+  color:#071018; font-size:1.1rem; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+body.side-collapsed .burger-fab{display:grid; place-items:center;}
+.content{margin-left:min(var(--side-w), 88vw); min-width:0; width:auto; transition:margin-left .22s ease;}
+body.side-collapsed .content{margin-left:0;}
+.wrap{max-width:980px; margin:0 auto; padding:1.25rem 1.15rem 3.2rem; overflow-x:clip;}
+body.side-collapsed .wrap{padding-top:4.2rem;}
+.meta-line{color:var(--muted); font-size:.82rem; margin-bottom:.9rem;}
+.backdrop{display:none; position:fixed; inset:0; z-index:35; background:rgba(0,0,0,.45);}
+body.side-open-mobile .backdrop{display:block;}
+
+@media (max-width:1100px){
+  :root{ --side-w:280px; }
+  .milestone-track{grid-template-columns:repeat(auto-fit,minmax(132px,1fr));}
+}
+@media (max-width:900px){
+  .sidebar{
+    width:min(86vw, 320px);
+    transform:translateX(-105%);
+    box-shadow:12px 0 40px rgba(0,0,0,.45);
+  }
+  body.side-open-mobile .sidebar{transform:translateX(0);}
+  body.side-collapsed .sidebar{transform:translateX(-105%);}
+  /* 開啟時必須蓋過 collapsed，否則漢堡按了側欄仍關著 */
+  body.side-collapsed.side-open-mobile .sidebar{transform:translateX(0);}
+  .content{margin-left:0 !important; width:100%;}
+  .edge-toggle{display:none !important;}
+  .burger-fab{display:grid !important; place-items:center;}
+  body.side-open-mobile .burger-fab{opacity:1;}
+  .wrap{
+    padding:4.4rem max(.85rem, env(safe-area-inset-right))
+            calc(2.5rem + env(safe-area-inset-bottom))
+            max(.85rem, env(safe-area-inset-left));
+  }
+  .note-title{font-size:clamp(1.2rem, 5.5vw, 1.65rem);}
+  .lecture-nav{
+    display:flex; flex-wrap:nowrap; gap:.35rem;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:.35rem; margin-bottom:.75rem;
+    scrollbar-width:thin;
+  }
+  .lecture-nav .nav-item{flex:0 0 auto;}
+  .lecture-nav .nav-link{padding:.38rem .75rem; font-size:.82rem; white-space:nowrap;}
+  .lecture-tab-content{padding:.85rem .7rem 1.1rem; border-radius:12px;}
+  .milestone-track{grid-template-columns:1fr 1fr; gap:.55rem;}
+  .path-cards{grid-template-columns:1fr;}
+  .sec-head{align-items:flex-start;}
+  .sec-title{font-size:1.05rem; line-height:1.35;}
+  .sec-num{flex:0 0 auto;}
+  .struct-table td:first-child{white-space:normal; min-width:4.5rem;}
+  .struct-table table{font-size:.8rem;}
+  .struct-cap{flex-wrap:wrap; font-size:.86rem;}
+  .row.g-3 > [class*="col-"]{flex:0 0 100%; max-width:100%;}
+  .ans-row{flex-direction:column;}
+  .ans-box{width:100%;}
+}
+@media (max-width:560px){
+  .milestone-track{grid-template-columns:1fr;}
+  .chip-row{gap:.35rem;}
+  .tag-chip{font-size:.72rem; padding:.22rem .55rem;}
+  .summary-chip{padding:.65rem .75rem; font-size:.9rem;}
+  .unit-badge{font-size:.7rem;}
+  .ms-desc,.path-desc{font-size:.74rem;}
+  .table-responsive{margin:0 -.15rem; border-radius:0 0 12px 12px;}
+  .struct-table .table th,.struct-table .table td{padding:.4rem .45rem;}
+}
+@media (min-width:901px){
+  body.side-open-mobile .backdrop{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.content,.edge-toggle{transition:none;}
+}
+@media print{
+  .sidebar,.burger-fab,.edge-toggle,.backdrop,.lecture-nav{display:none !important;}
+  .content{margin-left:0 !important;}
+  .wrap{padding:0; max-width:100%;}
+  .tab-pane{display:block !important; opacity:1 !important;}
+}
+
+.lecture-hero{margin-bottom:1rem;}
+.unit-badge{display:inline-block;font-size:.75rem;font-weight:800;padding:.28rem .7rem;border-radius:999px;background:linear-gradient(135deg,rgba(94,200,255,.25),rgba(195,166,255,.25));border:1px solid rgba(255,255,255,.1);margin-bottom:.55rem;}
+.note-title{font-weight:780;line-height:1.28;font-size:clamp(1.4rem,3vw,1.95rem);margin:0 0 .7rem;}
+.chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 1rem;}
+.tag-chip{display:inline-flex;align-items:center;padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:650;border:1px solid transparent;background:rgba(18,24,33,.95);}
+.chip-cyan{border-color:rgba(94,200,255,.4);box-shadow:inset 3px 0 0 var(--cyan);}
+.chip-mint{border-color:rgba(62,224,162,.4);box-shadow:inset 3px 0 0 var(--mint);}
+.chip-amber{border-color:rgba(255,200,87,.4);box-shadow:inset 3px 0 0 var(--amber);}
+.chip-coral{border-color:rgba(255,123,114,.4);box-shadow:inset 3px 0 0 var(--coral);}
+.chip-violet{border-color:rgba(195,166,255,.4);box-shadow:inset 3px 0 0 var(--violet);}
+.chip-sky{border-color:rgba(110,231,245,.4);box-shadow:inset 3px 0 0 var(--sky);}
+.summary-chips{display:flex;flex-direction:column;gap:.55rem;}
+.summary-chip{border-radius:12px;padding:.75rem .95rem;border:1px solid transparent;background:rgba(18,24,33,.9);line-height:1.55;}
+.panel{background:rgba(18,24,33,.88);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;}
+.panel-mint{border-left:4px solid var(--mint);}
+.section-kicker{font-size:.75rem;font-weight:800;letter-spacing:.08em;color:var(--cyan);margin-bottom:.25rem;}
+.section-title{font-size:1.1rem;font-weight:720;margin-bottom:.7rem;}
+.tab-hint{color:var(--muted);font-size:.9rem;}
+.milestone-wrap{margin:0 0 1.2rem;}
+.milestone-track{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;}
+.milestone-link{display:flex;flex-direction:column;gap:.3rem;height:100%;padding:.8rem .85rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.92);border:1px solid rgba(255,255,255,.08);}
+.milestone-link:hover{border-color:rgba(94,200,255,.45);color:inherit;}
+.ms-dot{width:1.6rem;height:1.6rem;border-radius:999px;display:grid;place-items:center;font-size:.78rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.ms-label{font-weight:720;font-size:.92rem;}
+.ms-desc{font-size:.76rem;color:var(--muted);line-height:1.4;}
+.path-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;}
+.path-card{display:block;padding:1rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.path-card:hover{border-color:rgba(195,166,255,.5);color:inherit;}
+.path-idx{font-size:.75rem;font-weight:800;color:var(--violet);}
+.path-title{font-weight:720;margin:.25rem 0;}
+.path-desc{font-size:.82rem;color:var(--muted);}
+.path-go{margin-top:.5rem;font-size:.82rem;color:var(--cyan);}
+.lecture-nav{gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lecture-nav .nav-link{border-radius:999px;color:var(--muted);background:rgba(18,24,33,.8);border:1px solid rgba(255,255,255,.08);padding:.4rem .9rem;}
+.lecture-nav .nav-link.active{color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));border-color:transparent;font-weight:750;}
+.lecture-tab-content{background:rgba(12,16,22,.45);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.1rem 1rem 1.4rem;}
+.sec-block{padding:1rem 0 1.35rem;border-bottom:1px solid rgba(255,255,255,.06);scroll-margin-top:1.2rem;}
+.sec-block:last-child{border-bottom:0;}
+.sec-kicker{font-size:.72rem;font-weight:800;color:var(--amber);letter-spacing:.04em;margin-bottom:.3rem;}
+.sec-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.45rem;}
+.sec-num{display:inline-grid;place-items:center;min-width:1.85rem;height:1.85rem;border-radius:999px;font-size:.9rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));flex:0 0 auto;}
+.sec-title{margin:0;font-size:1.15rem;font-weight:720;}
+.subhead{font-size:1rem;font-weight:700;margin:1rem 0 .45rem;color:var(--sky);scroll-margin-top:1.2rem;}
+.sec-body p,.sec-body li,.sub-sec p,.sub-sec li{line-height:1.75;color:#d7e2f0;overflow-wrap:anywhere;}
+.sec-body table,.sub-sec table{width:100%;margin:1rem 0;border-collapse:collapse;font-size:.88rem;}
+.sec-body th,.sec-body td,.sub-sec th,.sub-sec td{border:1px solid rgba(255,255,255,.12);padding:.45rem .55rem;}
+.sec-body th,.sub-sec th{background:rgba(94,200,255,.12);}
+.sec-body blockquote,.sub-sec blockquote{border-left:3px solid var(--violet);margin:1rem 0;padding:.4rem .9rem;color:var(--muted);background:rgba(195,166,255,.06);}
+.kp-box{margin:.75rem 0 .2rem;padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(94,200,255,.35);background:rgba(94,200,255,.06);}
+.callout{border-radius:14px;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.08);background:rgba(16,22,30,.92);margin:.7rem 0;}
+.callout-label{font-size:.75rem;font-weight:800;letter-spacing:.06em;margin-bottom:.3rem;color:var(--cyan);}
+.callout-warn{border-color:rgba(255,200,87,.45);background:linear-gradient(135deg,rgba(255,200,87,.14),rgba(16,22,30,.95));}
+.callout-warn .callout-label{color:var(--amber);}
+.quick-card{padding:1rem;border-radius:14px;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);height:100%;}
+.quick-kicker{font-size:.72rem;font-weight:800;color:var(--cyan);}
+.ans-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:.35rem 0 .7rem;}
+.ans-btn{border-radius:10px;border:1px solid rgba(195,166,255,.4);background:rgba(195,166,255,.12);color:var(--violet);font-size:.82rem;font-weight:700;padding:.35rem .7rem;}
+.ans-box{flex:1 1 180px;min-height:2.2rem;display:flex;align-items:center;padding:.4rem .7rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0a0e14;font-family:ui-monospace,Consolas,monospace;}
+.ans-text{color:var(--mint);overflow-wrap:anywhere;}
+.ans-box.is-masked .ans-text{-webkit-text-security:disc;text-security:disc;color:var(--muted);user-select:none;}
+.struct-table{margin:1rem 0 1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:rgba(16,22,30,.92);}
+.struct-cap{display:flex;align-items:center;gap:.55rem;padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;font-size:.92rem;}
+.struct-badge{font-size:.72rem;font-weight:800;padding:.18rem .5rem;border-radius:999px;letter-spacing:.04em;}
+.table-timeline .struct-badge{background:rgba(94,200,255,.18);color:var(--cyan);}
+.table-compare .struct-badge{background:rgba(195,166,255,.18);color:var(--violet);}
+.table-evolve .struct-badge{background:rgba(62,224,162,.16);color:var(--mint);}
+.struct-table .table-responsive{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.struct-table table{margin:0;--bs-table-bg:transparent;--bs-table-color:var(--text);font-size:.88rem;min-width:100%;}
+.struct-table thead th{background:rgba(94,200,255,.1);color:#e8eef7;}
+.table-compare thead th{background:rgba(195,166,255,.12);}
+.table-evolve thead th{background:rgba(62,224,162,.1);}
+.struct-table td:first-child{font-weight:700;color:var(--amber);vertical-align:top;}
+.table-compare td:first-child{color:var(--violet);}
+.table-evolve td:first-child{color:var(--mint);}
+.structs-wrap .struct-table{margin-bottom:1.35rem;}
+</style>
+</head>
+<body>
+<div class="backdrop" id="side-backdrop" hidden></div>
+<button type="button" class="burger-fab" id="burger-fab" title="打開目錄" aria-label="打開目錄">☰</button>
+<button type="button" class="edge-toggle" id="edge-toggle" title="收起目錄" aria-label="收起目錄">‹</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="左側目錄">
+    <div class="side-scroll"><div class="side-brand-block"><div class="side-brand">公司治理</div><div class="side-sub">詳盡學習講義</div><a class="side-home" href="../index.html">← 筆記首頁</a></div>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch01.html">第1章 台灣公司治理之導論</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch01.html#1-1-前言" data-nav-jump="ch01.html"><span class="toc-mark">◆</span><span class="toc-text">1.1 | 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-2-國際公司治理之發展與趨勢" data-nav-jump="ch01.html"><span class="toc-mark">◇</span><span class="toc-text">1.2 | 國際公司治理之發展與趨勢</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-3-台灣公司治理之發展" data-nav-jump="ch01.html"><span class="toc-mark">›</span><span class="toc-text">1.3 | 台灣公司治理之發展</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-4-台灣公司治理之挑戰與前瞻" data-nav-jump="ch01.html"><span class="toc-mark">▹</span><span class="toc-text">1.4 | 台灣公司治理之挑戰與前瞻</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-1-近期金融事件之挑戰與省思" data-nav-jump="ch01.html"><span class="toc-mark">●</span><span class="toc-text">1.4.1 近期金融事件之挑戰與省思</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-2-2018年公司治理藍圖" data-nav-jump="ch01.html"><span class="toc-mark">○</span><span class="toc-text">1.4.2 2018年公司治理藍圖</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-3-推動建置商業法院" data-nav-jump="ch01.html"><span class="toc-mark">■</span><span class="toc-text">1.4.3 推動建置商業法院</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-4-董事績效評估制度" data-nav-jump="ch01.html"><span class="toc-mark">□</span><span class="toc-text">1.4.4 董事績效評估制度</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-5-引導家族企業結合良好公司治理" data-nav-jump="ch01.html"><span class="toc-mark">✦</span><span class="toc-text">1.4.5 引導家族企業結合良好公司治理</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-6-董事成員多元化" data-nav-jump="ch01.html"><span class="toc-mark">✧</span><span class="toc-text">1.4.6 董事成員多元化</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-5-公司治理未來發展" data-nav-jump="ch01.html"><span class="toc-mark">●</span><span class="toc-text">1.5 | 公司治理未來發展</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-6-公司治理-3-0-永續發展藍圖" data-nav-jump="ch01.html"><span class="toc-mark">○</span><span class="toc-text">1.6 | 公司治理 3.0-永續發展藍圖</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-7-上市櫃公司永續發展行動方案-2023年" data-nav-jump="ch01.html"><span class="toc-mark">■</span><span class="toc-text">1.7 | 上市櫃公司永續發展行動方案 (2023年)</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-8-結語" data-nav-jump="ch01.html"><span class="toc-mark">□</span><span class="toc-text">1.8 | 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-9-練習題" data-nav-jump="ch01.html"><span class="toc-mark">✦</span><span class="toc-text">1.9 | 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch02.html">第 2 章 公司董事會議事辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch02.html#2-1-前言" data-nav-jump="ch02.html"><span class="toc-mark">◆</span><span class="toc-text">2.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-2-公開發行公司董事會議事辦法" data-nav-jump="ch02.html"><span class="toc-mark">◇</span><span class="toc-text">2.2 公開發行公司董事會議事辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-1-董事會議事規範" data-nav-jump="ch02.html"><span class="toc-mark">›</span><span class="toc-text">2.2.1 董事會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-2-設立議事事務專責機構" data-nav-jump="ch02.html"><span class="toc-mark">▹</span><span class="toc-text">2.2.2 設立議事事務專責機構</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-3-董事會議事召集" data-nav-jump="ch02.html"><span class="toc-mark">●</span><span class="toc-text">2.2.3 董事會議事召集</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-4-董事會開會時間地點" data-nav-jump="ch02.html"><span class="toc-mark">○</span><span class="toc-text">2.2.4 董事會開會時間地點</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-5-董事會議事內容" data-nav-jump="ch02.html"><span class="toc-mark">■</span><span class="toc-text">2.2.5 董事會議事內容</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-6-董事會會議進行及程序等相關規定" data-nav-jump="ch02.html"><span class="toc-mark">□</span><span class="toc-text">2.2.6 董事會會議進行及程序等相關規定</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-7-董事利益迴避" data-nav-jump="ch02.html"><span class="toc-mark">✦</span><span class="toc-text">2.2.7 董事利益迴避</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-8-董事會議事錄" data-nav-jump="ch02.html"><span class="toc-mark">✧</span><span class="toc-text">2.2.8 董事會議事錄</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-9-公告申報" data-nav-jump="ch02.html"><span class="toc-mark">◆</span><span class="toc-text">2.2.9 公告申報</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-10-其他事項" data-nav-jump="ch02.html"><span class="toc-mark">◇</span><span class="toc-text">2.2.10 其他事項</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-3-董事會議事實務小百科" data-nav-jump="ch02.html"><span class="toc-mark">›</span><span class="toc-text">2.3 董事會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-4-結語" data-nav-jump="ch02.html"><span class="toc-mark">▹</span><span class="toc-text">2.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-5-練習題" data-nav-jump="ch02.html"><span class="toc-mark">●</span><span class="toc-text">2.5 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch03.html">第3章 審計委員會行使職權辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch03.html#3-2-國際間審計委員會制度概況" data-nav-jump="ch03.html"><span class="toc-mark">◆</span><span class="toc-text">3.2 國際間審計委員會制度概況</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#美國" data-nav-jump="ch03.html"><span class="toc-mark">◇</span><span class="toc-text">美國</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#德國" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">德國</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#日本" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">日本</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#韓國" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">韓國</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-3-我國審計委員會制度及發展沿革" data-nav-jump="ch03.html"><span class="toc-mark">◇</span><span class="toc-text">3.3 我國審計委員會制度及發展沿革</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-3-1-審計委員會緣起" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">3.3.1 審計委員會緣起</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-3-2-審計委員會發展沿革" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.3.2 審計委員會發展沿革</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-4-我國審計委員會制度相關規範" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">3.4 我國審計委員會制度相關規範</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-1-審計委員會之設置及組成" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.4.1 審計委員會之設置及組成</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-2-審計委員會之職責" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">3.4.2 審計委員會之職責</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-3-審計委員會會議" data-nav-jump="ch03.html"><span class="toc-mark">○</span><span class="toc-text">3.4.3 審計委員會會議</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-4-審計委員會會議其他事項及實務運作" data-nav-jump="ch03.html"><span class="toc-mark">■</span><span class="toc-text">3.4.4 審計委員會會議其他事項及實務運作</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-5-審計委員會議事實務小百科" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.5 審計委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-6-結語" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">3.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-7-練習題" data-nav-jump="ch03.html"><span class="toc-mark">○</span><span class="toc-text">3.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch04.html">第4章 薪資報酬委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch04.html#4-1-前言" data-nav-jump="ch04.html"><span class="toc-mark">◆</span><span class="toc-text">4.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-2-國際發展現況" data-nav-jump="ch04.html"><span class="toc-mark">◇</span><span class="toc-text">4.2 國際發展現況</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-3-股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法" data-nav-jump="ch04.html"><span class="toc-mark">›</span><span class="toc-text">4.3 股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-1-適用範圍" data-nav-jump="ch04.html"><span class="toc-mark">▹</span><span class="toc-text">4.3.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-2-組織規程訂定" data-nav-jump="ch04.html"><span class="toc-mark">●</span><span class="toc-text">4.3.2 組織規程訂定</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-3-委員會成員組成" data-nav-jump="ch04.html"><span class="toc-mark">○</span><span class="toc-text">4.3.3 委員會成員組成</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-4-委員會職權行使" data-nav-jump="ch04.html"><span class="toc-mark">■</span><span class="toc-text">4.3.4 委員會職權行使</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-5-委員會議事規範" data-nav-jump="ch04.html"><span class="toc-mark">□</span><span class="toc-text">4.3.5 委員會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-6-薪資報酬委員會與董事會決議" data-nav-jump="ch04.html"><span class="toc-mark">✦</span><span class="toc-text">4.3.6 薪資報酬委員會與董事會決議</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-4-薪資報酬委員會議事實務小百科" data-nav-jump="ch04.html"><span class="toc-mark">▹</span><span class="toc-text">4.4 薪資報酬委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-5-結語" data-nav-jump="ch04.html"><span class="toc-mark">●</span><span class="toc-text">4.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-6-練習題" data-nav-jump="ch04.html"><span class="toc-mark">○</span><span class="toc-text">4.6 練習題</span></a>
+</div></details>
+<details class="chap-drop active-chap" open>
+<summary><a class="chap-sum-link" href="ch05.html">第5章 併購特別委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch05.html#5-1-前言" data-nav-jump="ch05.html"><span class="toc-mark">◆</span><span class="toc-text">5.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-2-國際併購手法" data-nav-jump="ch05.html"><span class="toc-mark">◇</span><span class="toc-text">5.2 國際併購手法</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-3-企業併購法及併購特別委員會行使職權辦法" data-nav-jump="ch05.html"><span class="toc-mark">›</span><span class="toc-text">5.3 企業併購法及併購特別委員會行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch05.html#5-3-1-企業併購法" data-nav-jump="ch05.html"><span class="toc-mark">▹</span><span class="toc-text">5.3.1 企業併購法</span></a>
+<a class="toc-h3 toc-sub" href="ch05.html#5-3-2-併購特別委員會" data-nav-jump="ch05.html"><span class="toc-mark">●</span><span class="toc-text">5.3.2 併購特別委員會</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-4-併購特別委員會實務小百科" data-nav-jump="ch05.html"><span class="toc-mark">▹</span><span class="toc-text">5.4 併購特別委員會實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-5-結語" data-nav-jump="ch05.html"><span class="toc-mark">●</span><span class="toc-text">5.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-6-練習題" data-nav-jump="ch05.html"><span class="toc-mark">○</span><span class="toc-text">5.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch06.html">第6章 資訊揭露制度與法制之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch06.html#6-1-前言" data-nav-jump="ch06.html"><span class="toc-mark">◆</span><span class="toc-text">6.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-2-公開發行公司資訊揭露原則" data-nav-jump="ch06.html"><span class="toc-mark">◇</span><span class="toc-text">6.2 公開發行公司資訊揭露原則</span></a>
+<a class="toc-h3 toc-sub" href="ch06.html#6-2-1-定期揭露事項" data-nav-jump="ch06.html"><span class="toc-mark">›</span><span class="toc-text">6.2.1 定期揭露事項</span></a>
+<a class="toc-h3 toc-sub" href="ch06.html#6-2-2-不定期揭露之重大事項" data-nav-jump="ch06.html"><span class="toc-mark">▹</span><span class="toc-text">6.2.2 不定期揭露之重大事項</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-3-法制規範與責任" data-nav-jump="ch06.html"><span class="toc-mark">›</span><span class="toc-text">6.3 法制規範與責任</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-4-公開發行公司應建立之機制" data-nav-jump="ch06.html"><span class="toc-mark">▹</span><span class="toc-text">6.4 公開發行公司應建立之機制</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-5-資訊揭露實務小百科" data-nav-jump="ch06.html"><span class="toc-mark">●</span><span class="toc-text">6.5 資訊揭露實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-6-結語" data-nav-jump="ch06.html"><span class="toc-mark">○</span><span class="toc-text">6.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-7-練習題" data-nav-jump="ch06.html"><span class="toc-mark">■</span><span class="toc-text">6.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch07.html">第7章 內線交易之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch07.html#7-1-前言" data-nav-jump="ch07.html"><span class="toc-mark">◆</span><span class="toc-text">7.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-2-構成要件-5個-w" data-nav-jump="ch07.html"><span class="toc-mark">◇</span><span class="toc-text">7.2 構成要件-5個 W</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-1-why-為什麼要禁止內線交易" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">7.2.1 WHY:為什麼要禁止內線交易</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-2-who-內線交易的受規範對象" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.2 WHO:內線交易的受規範對象</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-3-how-怎樣會構成內線交易" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.2.3 HOW:怎樣會構成內線交易</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-4-what-規範的買賣標的及重大消息" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.2.4 WHAT:規範的買賣標的及重大消息</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-3-刑事責任與民事責任" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">7.3 刑事責任與民事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#內線交易法律責任" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">內線交易法律責任</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-4-法院判決實務" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.4 法院判決實務</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-4-1-案例事實" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.4.1 案例事實</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-4-2-法院見解" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.4.2 法院見解</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-5-如何避免誤觸內線交易" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.5 如何避免誤觸內線交易</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-6-內線交易實務小百科" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.6 內線交易實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-7-結語" data-nav-jump="ch07.html"><span class="toc-mark">■</span><span class="toc-text">7.7 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-8-練習題" data-nav-jump="ch07.html"><span class="toc-mark">□</span><span class="toc-text">7.8 練習題</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#1-內線交易規範的買賣標的為何" data-nav-jump="ch07.html"><span class="toc-mark">✦</span><span class="toc-text">1. 內線交易規範的買賣標的為何</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="ch07.html"><span class="toc-mark">✧</span><span class="toc-text">2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="ch07.html"><span class="toc-mark">◆</span><span class="toc-text">3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#4-什麼是-公司有重大影響其支付本息能力之消息" data-nav-jump="ch07.html"><span class="toc-mark">◇</span><span class="toc-text">4. 什麼是「公司有重大影響其支付本息能力之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#5-重大消息之-公開方式" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">5. 重大消息之「公開方式」</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-5-when-內線交易的禁止交易期間" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.5 WHEN:內線交易的禁止交易期間</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#刑事責任" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">刑事責任</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#民事責任" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">民事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-3-1-刑事責任" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.3.1 刑事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-3-2-民事責任" data-nav-jump="ch07.html"><span class="toc-mark">■</span><span class="toc-text">7.3.2 民事責任</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch08.html">第 8 章 股東會及委託書使用之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch08.html#8-1-前言" data-nav-jump="ch08.html"><span class="toc-mark">◆</span><span class="toc-text">8.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-2-股東會議事規則參考範例" data-nav-jump="ch08.html"><span class="toc-mark">◇</span><span class="toc-text">8.2 股東會議事規則參考範例</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-1-股東會召集及開會通知" data-nav-jump="ch08.html"><span class="toc-mark">›</span><span class="toc-text">8.2.1 股東會召集及開會通知</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-2-召開股東會地點-時間及開會時間之原則" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.2.2 召開股東會地點、時間及開會時間之原則</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-3-股東會議事手冊-資料公告及簽名簿等文件之備置" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-4-股東會主席及列席人員" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.2.4 股東會主席及列席人員</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-5-股東會開會過程錄音或錄影之存證" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.2.5 股東會開會過程錄音或錄影之存證</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-6-議案討論及股東發言" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.2.6 議案討論及股東發言</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-7-表決股數之計算-電子投票-股東會視訊會議" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.2.7 表決股數之計算、電子投票、股東會視訊會議</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-8-議事錄及公告" data-nav-jump="ch08.html"><span class="toc-mark">✧</span><span class="toc-text">8.2.8 議事錄及公告</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-9-休息及續行集會" data-nav-jump="ch08.html"><span class="toc-mark">◆</span><span class="toc-text">8.2.9 休息及續行集會</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-3-出席股東會使用委託書規則" data-nav-jump="ch08.html"><span class="toc-mark">›</span><span class="toc-text">8.3 出席股東會使用委託書規則</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-1-委託書之徵求與非屬徵求" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.3.1 委託書之徵求與非屬徵求</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-2-徵求人之資格條件及代理股數" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.3.2 徵求人之資格條件及代理股數</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-3-委託書徵求資訊之揭露" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.3.3 委託書徵求資訊之揭露</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-4-委託書使用及取得方式之限制" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.3.4 委託書使用及取得方式之限制</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-5-違反委託書規則之效果" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.3.5 違反委託書規則之效果</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-6-委託書規則最新修正重點" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.3.6 委託書規則最新修正重點</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-4-股東會召集-會場實務及會後辦理事項" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.4 股東會召集、會場實務及會後辦理事項</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-1-股東會召集" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.4.1 股東會召集</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-2-股東會會場實務" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.4.2 股東會會場實務</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-3-股東會會後辦理事項" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.4.3 股東會會後辦理事項</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-5-獨立董事之提名及選舉" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.5 獨立董事之提名及選舉</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-1-強制設立" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.5.1 強制設立</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-2-獨立董事之提名方式" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.5.2 獨立董事之提名方式</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-3-獨立董事之選舉方式" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.5.3 獨立董事之選舉方式</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-6-常見違規案例" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.6 常見違規案例</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-7-股東會及委託書使用實務小百科" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.7 股東會及委託書使用實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-8-結語" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.8 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-9-練習題" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.9 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch09.html">第 9 章 上市上櫃公司治理實務守則之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch09.html#9-1-前言" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">9.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-2-上市上櫃公司治理實務守則" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9.2 上市上櫃公司治理實務守則</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-1-公司治理之原則" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">9.2.1 公司治理之原則</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-2-建立內部控制制度" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">9.2.2 建立內部控制制度</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-3-公司治理主管" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">9.2.3 公司治理主管</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-4-保障股東權益" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">9.2.4 保障股東權益</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-3-上市上櫃公司治理實務守則實務小百科" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">9.3 上市上櫃公司治理實務守則實務小百科</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#1-由證券交易所及櫃檯買賣中心共同制定之-上市上櫃公司治理實務守則-法律效果為何-上市-櫃-公司可採何種規範形式以建置其公司治理機制" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">1. 由證券交易所及櫃檯買賣中心共同制定之「上市上櫃公司治理實務守則」法律效果為何？上市(櫃)公司可採何種規範形式以建置其公司治理機制？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#2-公司治理主管需要董事會委任嗎-其薪資是否需提到薪資報酬委員會討論-得否由其他職位兼任-兼任者之原職位如已經董事會任命-其兼任公司治理主管是否需再經董事會決議" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">2. 公司治理主管需要董事會委任嗎？其薪資是否需提到薪資報酬委員會討論？得否由其他職位兼任？兼任者之原職位如已經董事會任命，其兼任公司治理主管是否需再經董事會決議？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#3-集團公司指派同一人擔任公司治理主管可不可以" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">3. 集團公司指派同一人擔任公司治理主管可不可以?</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#4-公司治理主管之進修範圍-時數為何" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">4. 公司治理主管之進修範圍、時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#5-上市上櫃公司治理實務守則-第-13-條之-1-及第-13-條之-2-所定上市上櫃公司建立與股東之互動機制-應如何落實" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">5. 「上市上櫃公司治理實務守則」第 13 條之 1 及第 13 條之 2 所定上市上櫃公司建立與股東之互動機制，應如何落實？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#6-上市-櫃-公司選任董事時-應考量之事項為何" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">6. 上市(櫃)公司選任董事時，應考量之事項為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#7-獨立董事是否得由法人或其代表人擔任-是否可兼任其他公司之董事-監察人或經理人" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">7. 獨立董事是否得由法人或其代表人擔任？是否可兼任其他公司之董事、監察人或經理人？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#8-上市-櫃-公司對董事會績效之評估範圍-評估內容宜包含哪些構面-自何時須開始進行評鑑" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">8. 上市(櫃)公司對董事會績效之評估範圍？評估內容宜包含哪些構面？自何時須開始進行評鑑？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#10-法人說明會之資訊揭露規定" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">10. 法人說明會之資訊揭露規定？</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-4-結語" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">9.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-5-練習題" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">9.5 練習題</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#1-依上市上櫃公司治理實務守則-董事會成員組成應考量多元化-兼任公司經理人之董事不宜逾董事席次比例" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 依上市上櫃公司治理實務守則，董事會成員組成應考量多元化，兼任公司經理人之董事不宜逾董事席次比例？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#2-依證券交易法第-26-條之-3-規定-公開發行公司董事間至少應有多少席次-不得具有配偶或二親等以內之親屬關係" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 依證券交易法第 26 條之 3 規定，公開發行公司董事間至少應有多少席次，不得具有配偶或二親等以內之親屬關係？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#3-依上市上櫃公司治理實務守則-獨立董事應具備專業知識-其持股應予限制-除應依相關法令規定辦理外-不宜同時擔任超過幾家上市上櫃公司之董事-含獨立董事-或監察人" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 依上市上櫃公司治理實務守則，獨立董事應具備專業知識，其持股應予限制，除應依相關法令規定辦理外，不宜同時擔任超過幾家上市上櫃公司之董事（含獨立董事）或監察人？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#4-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">4. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#5-依上市上櫃公司治理實務守則-上市上櫃公司董事因故解任-致不足幾人者-公司應於最近一次股東會補選之-但董事缺額達章程所定席次三分之一者-公司應自事實發生之日起幾日內-召開股東臨時會補選之" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">5. 依上市上櫃公司治理實務守則，上市上櫃公司董事因故解任，致不足幾人者，公司應於最近一次股東會補選之。但董事缺額達章程所定席次三分之一者，公司應自事實發生之日起幾日內，召開股東臨時會補選之？</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-鼓勵股東參與公司治理" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 鼓勵股東參與公司治理：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-建立與股東互動機制" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 建立與股東互動機制：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-公司與關係人間之公司治理關係" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 公司與關係人間之公司治理關係：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-5-強化董事會職能" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">9.2.5 強化董事會職能</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-董事會結構" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">1. 董事會結構：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-獨立董事制度" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">2. 獨立董事制度：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-功能性委員會" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">3. 功能性委員會：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-6-尊重利害關係人權益" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9.2.6 尊重利害關係人權益</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-應與公司之利害關係人保持溝通並維護權益-第-51-條" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">1. 應與公司之利害關係人保持溝通並維護權益（第 51 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-對於往來銀行及其他債權人-應提供充足之資訊-第-52-條" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">2. 對於往來銀行及其他債權人，應提供充足之資訊（第 52 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-建立員工溝通管道-第-53-條" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">3. 建立員工溝通管道（第 53 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#4-公司之社會責任-第-54-條" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">4. 公司之社會責任（第 54 條）：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-7-提升資訊透明度" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">9.2.7 提升資訊透明度</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-資訊公開及網路申報系統-第-55-條" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 資訊公開及網路申報系統（第 55 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-設置發言人-第-56-條" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 設置發言人（第 56 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-架設公司治理網站-第-57-條" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 架設公司治理網站（第 57 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#4-召開法人說明會" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">4. 召開法人說明會：</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch10.html">第 10 永續發展之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch10.html#10-1" data-nav-jump="ch10.html"><span class="toc-mark">◆</span><span class="toc-text">10.1</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-2-永續發展之演進歷程" data-nav-jump="ch10.html"><span class="toc-mark">◇</span><span class="toc-text">10.2 永續發展之演進歷程</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-3-金管會推動永續發展相關措施" data-nav-jump="ch10.html"><span class="toc-mark">›</span><span class="toc-text">10.3 金管會推動永續發展相關措施</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-4-上市上櫃公司永續發展實務守則" data-nav-jump="ch10.html"><span class="toc-mark">▹</span><span class="toc-text">10.4 上市上櫃公司永續發展實務守則</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-1-適用範圍" data-nav-jump="ch10.html"><span class="toc-mark">●</span><span class="toc-text">10.4.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-2-實踐永續發展之效益" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.4.2 實踐永續發展之效益</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-3-永續發展之實踐原則" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.4.3 永續發展之實踐原則</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-4-永續發展政策之訂定程序" data-nav-jump="ch10.html"><span class="toc-mark">□</span><span class="toc-text">10.4.4 永續發展政策之訂定程序</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-5-實踐永續發展" data-nav-jump="ch10.html"><span class="toc-mark">✦</span><span class="toc-text">10.4.5 實踐永續發展</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-5-永續發展資訊揭露之相關規範" data-nav-jump="ch10.html"><span class="toc-mark">●</span><span class="toc-text">10.5 永續發展資訊揭露之相關規範</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-5-1-年報及公開說明書揭露推動永續發展執行情形" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.5.1 年報及公開說明書揭露推動永續發展執行情形</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-5-2-上市-櫃-公司編製與申報永續報告書作業辦法" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.5.2 上市(櫃)公司編製與申報永續報告書作業辦法</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-6-永續發展實務小百科" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.6 永續發展實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-7" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.7</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-8-練習題" data-nav-jump="ch10.html"><span class="toc-mark">□</span><span class="toc-text">10.8 練習題</span></a>
+</div></details></div>
+  </aside>
+  <div class="content">
+    <main class="wrap">
+      <p class="meta-line">公司治理講義 · 全套視覺化 · 里程碑／Tabs／Chips · 2026-08-17 00:53</p>
+      
+<div class="lecture-tabs">
+  <ul class="nav nav-pills lecture-nav" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button" role="tab">總覽</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-charts-btn" data-bs-toggle="pill" data-bs-target="#tab-charts" type="button" role="tab">圖表</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-path-btn" data-bs-toggle="pill" data-bs-target="#tab-path" type="button" role="tab">學習路徑</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-lecture-btn" data-bs-toggle="pill" data-bs-target="#tab-lecture" type="button" role="tab">章節講義</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick" type="button" role="tab">速查卡片</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quiz-btn" data-bs-toggle="pill" data-bs-target="#tab-quiz" type="button" role="tab">練習</button></li>
+  </ul>
+  <div class="tab-content lecture-tab-content">
+    <div class="tab-pane fade show active" id="tab-overview" role="tabpanel"><header class="lecture-hero"><span class="unit-badge">公司治理 · 詳盡講義</span><h1 class='note-title'>第5章 併購特別委員會行使職權之解析</h1><div class="chip-row">
+<span class="tag-chip chip-cyan">公司治理</span>
+<span class="tag-chip chip-mint">併購</span>
+<span class="tag-chip chip-amber">練習題</span>
+</div></header><section class="milestone-wrap" aria-label="學習里程碑">
+<div class="section-kicker">學習路徑</div>
+<h2 class="section-title">本章里程碑</h2>
+<ol class="milestone-track">
+<li class="milestone-item"><a class="milestone-link" href="#5-1-前言" data-jump-lecture><span class="ms-dot">1</span><span class="ms-label">前言</span><span class="ms-desc">在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#5-2-國際併購手法" data-jump-lecture><span class="ms-dot">2</span><span class="ms-label">國際併購手法</span><span class="ms-desc">國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#5-3-企業併購法及併購特別委員會行使職權辦法" data-jump-lecture><span class="ms-dot">3</span><span class="ms-label">企業併購法及併購特別委員會行使職權辦法</span><span class="ms-desc">5.3.1 企業併購法</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#5-4-併購特別委員會實務小百科" data-jump-lecture><span class="ms-dot">4</span><span class="ms-label">併購特別委員會實務小百科</span><span class="ms-desc">1. 問：設置特別委員會,是否需於公司章程中記載? 答：因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#5-5-結語" data-jump-lecture><span class="ms-dot">5</span><span class="ms-label">結語</span><span class="ms-desc">就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申…</span></a></li>
+</ol></section><section class="panel panel-mint mb-3"><h2 class="section-title">學習目標</h2><ul class="mb-0"><li>能說明「前言」的重點</li><li>能說明「國際併購手法」的重點</li><li>能說明「企業併購法及併購特別委員會行使職權辦法」的重點</li><li>能說明「併購特別委員會實務小百科」的重點</li><li>能完成本章練習題並核對解答</li></ul></section><section class="mb-3"><h2 class="section-title">重點摘要</h2><div class="summary-chips"><div class="summary-chip chip-cyan">在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考量重點有:(1)透過資金挹注,協助被投資企業成長(2)透過併購者專業知識,吸引專業人才及提升企業經營…</div><div class="summary-chip chip-mint">國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金加速企業全球化之發展,同時可補強企業經營者在併購及財務方面之規劃與執行能力不足的劣勢,對於產業面臨技…</div><div class="summary-chip chip-amber">我國企業併購法(以下簡稱企併法)自2002年2月6日公布施行後,歷經二次修正,對於國內企業從事併購活動,促進組織調整及加速企業轉型,提供重要之法規遵循,近年各界對於增加併購彈性及保障股東權益迭有建議;又司法院釋字第七七○號解釋理由書指明企…</div><div class="summary-chip chip-coral">1. 問：設置特別委員會,是否需於公司章程中記載? 答：因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決定。</div><div class="summary-chip chip-violet">就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申請核准,投審會並依相關單位之審查意見作為准駁之參考;如需於國內辦理公開收購者,並應依證券交易法第43…</div></div></section><p class="tab-hint">建議路徑：總覽 → 圖表（時序／對照／演進）→ 學習路徑 → 章節講義 → 速查 → 練習。</p></div>
+    <div class="tab-pane fade" id="tab-charts" role="tabpanel"><div class="structs-wrap"><div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 1</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>1. 保障股東權益</td>
+<td>(1)為強化併購資訊揭露,增訂公司應於股東會召集事由中敘明董事利害關係之重要內容及贊成或反對併購決議之理由。(修正條文第5條)</td>
+</tr>
+<tr>
+<td>2. 放寬非對稱併購適用範圍</td>
+<td>為增加併購之彈性及效率,公司併購時,如以淨值為計算基準,放寬併購公司所支付之對價總額未超過其淨值之百分之二十,亦適用非對稱式併購,僅須由董事會決議,以加速併購程序。(修正條文第18條、第29條及第36條)</td>
+</tr>
+<tr>
+<td>3. 擴大彈性租稅措施</td>
+<td>(1)鑑於公司為強化其競爭力、拓展市場,取得無形資產常為進行併購之重要因素,爰增訂其取得之無形資產,得按實際取得成本於一定年限內平均攤銷。(修正條文第40條之1)</td>
+</tr>
+<tr>
+<td>1. 有關特別委員會組成、資格條件及審議方法</td>
+<td>(1)特別委員會組成:</td>
+</tr>
+<tr>
+<td>A國外規範</td>
+<td>a 美國德拉瓦州法院審理相關訴訟案時,原則上要求被收購公司應由獨立及無利害關係董事組成特別委員會,並要求該等成員不應該收購交易獲有額外報酬或影響。</td>
+</tr>
+<tr>
+<td>B 國內相關規範</td>
+<td>a 公開發行公司有價證券管理辦法(以下簡稱公開收購管理辦法)第14條之1規定:審議委員會委員之人數不得少於三人,被收購有價證券之公開發行公司設有獨立董事者,應由獨立董事組成;獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。</td>
+</tr>
+<tr>
+<td>(2)資格條件</td>
+<td>A國外規範:美、港針對專業資格部分無特別規定,惟要求相關成員應具獨立性及無利害關係。</td>
+</tr>
+<tr>
+<td>B國內相關規範</td>
+<td>a 公開收購管理辦法第14條之1第4項規定,審議委員會委員之資格條件應符合獨立董事設置辦法第2條第1項及第3條第1項規定。</td>
+</tr>
+<tr>
+<td>(3)審議方法</td>
+<td>A 國外無特別明文規定。</td>
+</tr>
+<tr>
+<td>B 國內相關規範</td>
+<td>a 公開收購管理辦法第14條之1第5項規定:「審議委員會之審議結果應經全體委員二分之一以上同意,並將審議委員同意或反對之明確意見及反對之理由列入。」</td>
+</tr>
+<tr>
+<td>b 審計委員會行使職權辦法第5條規定</td>
+<td>「………其決議應有審計委員會全體成員二分之一以上之同意。」</td>
+</tr>
+<tr>
+<td>c 薪資報酬委員會辦法第9條第4項規定</td>
+<td>「薪資報酬委員會為決議時,應有全體成員二分之一以上同意…」。</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 2</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>答</td>
+<td>因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決定。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>特別委員會應由全體成員互推一人擔任召集人及會議主席,至於推舉程序部分,本會並未規範而屬公司自治事項,允宜由公司自行決定。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>(1)如未依證券交易法設置獨立董事之公司,尚無強制要求其委員會須由獨立董事組成,惟已依證券交易法設置獨立董事之公司,依子法規定應由獨立董事組成,倘獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。(2)特別委員除獨立董事外係由董事會遴選,遴選之程序係屬公司自治事項,宜回歸公</td>
+</tr>
+<tr>
+<td>答</td>
+<td>(1)為利公司判斷特別委員會是否具備會計或財務專長,於公司治理問答集對於會計或財務專長提供下列標準供公司參考: A具公開發行公司財務主管、會計主管、主辦會計、內部稽核主管之工作經驗。 B具直接督導上開職務之工作經驗。 C取得會計師、證券投資分析人員等證書或取得與財務、會計有關之國</td>
+</tr>
+<tr>
+<td>答</td>
+<td>考量特別委員會係依企併法規定針對重大併購案件要求設置,另依子法規定特別委員會成員之人數不得少於3人,爰倘僅剩2人時應先由董事會遴選補足成員後方能召開會議。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>依企併法修正條文第6條之立法意旨,違反企併法及其子法規定,自應依民法及公司法相關規定處理。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>特別委員會之審議結果僅為董事會及股東會的先行程序,最終決定權仍在董事會及股東會。是以,董事會得經決議不參採特別委員會之審議結果,另董事會決議回歸依公司法(第206條)規定辦理。</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>演進／架構總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>保障股東權益:</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>放寬非對稱併購適用範圍:</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>擴大彈性租稅措施:</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>有關特別委員會組成、資格條件及審議方法:</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>有關獨立專家資格條件、獨立性之認定及選任方式:</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>問：設置特別委員會,是否需於公司章程中記載?</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>問：特別委員會第一次會議召集人如何產生?</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>問：特別委員會是否均應由獨立董事組成,還是可以包括獨立董事以外之人員?如何遴選?</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>問：所定特別委員會成員中至少1人應具備會計或財務專長之定義或標準為何?</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>問：特別委員會成員只剩2人可否開會?</td>
+</tr>
+<tr>
+<td>階段 6</td>
+<td>問：違反特別委員會規定是否有罰則?</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>問：董事會得否經決議而反對(或不參採)特別委員會之審議結果?董事會反對決議之門檻標準為何?</td>
+</tr>
+</tbody></table></div></div></div>
+<div class="structs-wrap viz-root" id="viz-root">
+  <p class="tab-hint mb-2">以下僅顯示本章有資料的圖表；每張圖獨立一格，可分別操作。</p>
+  <div class="viz-toolkit-badge"><span class="viz-pill">markmap</span><span class="viz-pill">Tabulator</span><span class="viz-pill">Grid.js</span><span class="viz-pill">Mermaid</span><span class="viz-pill">ECharts</span><span class="viz-pill">D3</span><span class="viz-pill">Cytoscape</span><span class="viz-pill">vis-network</span></div>
+  <script type="application/json" id="note-viz-data">{"title": "第5章 併購特別委員會行使職權之解析", "timeline": [], "compares": [{"headers": ["項目", "說明／對照"], "rows": [["1. 保障股東權益", "(1)為強化併購資訊揭露,增訂公司應於股東會召集事由中敘明董事利害關係之重要內容及贊成或反對併購決議之理由。(修正條文第5條)"], ["2. 放寬非對稱併購適用範圍", "為增加併購之彈性及效率,公司併購時,如以淨值為計算基準,放寬併購公司所支付之對價總額未超過其淨值之百分之二十,亦適用非對稱式併購,僅須由董事會決議,以加速併購程序。(修正條文第18條、第29條及第36條)"], ["3. 擴大彈性租稅措施", "(1)鑑於公司為強化其競爭力、拓展市場,取得無形資產常為進行併購之重要因素,爰增訂其取得之無形資產,得按實際取得成本於一定年限內平均攤銷。(修正條文第40條之1)"], ["1. 有關特別委員會組成、資格條件及審議方法", "(1)特別委員會組成:"], ["A國外規範", "a 美國德拉瓦州法院審理相關訴訟案時,原則上要求被收購公司應由獨立及無利害關係董事組成特別委員會,並要求該等成員不應該收購交易獲有額外報酬或影響。"], ["B 國內相關規範", "a 公開發行公司有價證券管理辦法(以下簡稱公開收購管理辦法)第14條之1規定:審議委員會委員之人數不得少於三人,被收購有價證券之公開發行公司設有獨立董事者,應由獨立董事組成;獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。"], ["(2)資格條件", "A國外規範:美、港針對專業資格部分無特別規定,惟要求相關成員應具獨立性及無利害關係。"], ["B國內相關規範", "a 公開收購管理辦法第14條之1第4項規定,審議委員會委員之資格條件應符合獨立董事設置辦法第2條第1項及第3條第1項規定。"], ["(3)審議方法", "A 國外無特別明文規定。"], ["B 國內相關規範", "a 公開收購管理辦法第14條之1第5項規定:「審議委員會之審議結果應經全體委員二分之一以上同意,並將審議委員同意或反對之明確意見及反對之理由列入。」"], ["b 審計委員會行使職權辦法第5條規定", "「………其決議應有審計委員會全體成員二分之一以上之同意。」"], ["c 薪資報酬委員會辦法第9條第4項規定", "「薪資報酬委員會為決議時,應有全體成員二分之一以上同意…」。"]]}, {"headers": ["項目", "說明／對照"], "rows": [["答", "因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決定。"], ["答", "特別委員會應由全體成員互推一人擔任召集人及會議主席,至於推舉程序部分,本會並未規範而屬公司自治事項,允宜由公司自行決定。"], ["答", "(1)如未依證券交易法設置獨立董事之公司,尚無強制要求其委員會須由獨立董事組成,惟已依證券交易法設置獨立董事之公司,依子法規定應由獨立董事組成,倘獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。(2)特別委員除獨立董事外係由董事會遴選,遴選之程序係屬公司自治事項,宜回歸公"], ["答", "(1)為利公司判斷特別委員會是否具備會計或財務專長,於公司治理問答集對於會計或財務專長提供下列標準供公司參考: A具公開發行公司財務主管、會計主管、主辦會計、內部稽核主管之工作經驗。 B具直接督導上開職務之工作經驗。 C取得會計師、證券投資分析人員等證書或取得與財務、會計有關之國"], ["答", "考量特別委員會係依企併法規定針對重大併購案件要求設置,另依子法規定特別委員會成員之人數不得少於3人,爰倘僅剩2人時應先由董事會遴選補足成員後方能召開會議。"], ["答", "依企併法修正條文第6條之立法意旨,違反企併法及其子法規定,自應依民法及公司法相關規定處理。"], ["答", "特別委員會之審議結果僅為董事會及股東會的先行程序,最終決定權仍在董事會及股東會。是以,董事會得經決議不參採特別委員會之審議結果,另董事會決議回歸依公司法(第206條)規定辦理。"]]}], "evolution": [{"stage": "階段 1", "content": "保障股東權益:"}, {"stage": "階段 2", "content": "放寬非對稱併購適用範圍:"}, {"stage": "階段 3", "content": "擴大彈性租稅措施:"}, {"stage": "階段 1", "content": "有關特別委員會組成、資格條件及審議方法:"}, {"stage": "階段 2", "content": "有關獨立專家資格條件、獨立性之認定及選任方式:"}, {"stage": "階段 1", "content": "問：設置特別委員會,是否需於公司章程中記載?"}, {"stage": "階段 2", "content": "問：特別委員會第一次會議召集人如何產生?"}, {"stage": "階段 3", "content": "問：特別委員會是否均應由獨立董事組成,還是可以包括獨立董事以外之人員?如何遴選?"}, {"stage": "階段 4", "content": "問：所定特別委員會成員中至少1人應具備會計或財務專長之定義或標準為何?"}, {"stage": "階段 5", "content": "問：特別委員會成員只剩2人可否開會?"}, {"stage": "階段 6", "content": "問：違反特別委員會規定是否有罰則?"}, {"stage": "階段 7", "content": "問：董事會得否經決議而反對(或不參採)特別委員會之審議結果?董事會反對決議之門檻標準為何?"}], "outline": [{"title": "5.1 前言", "kids": []}, {"title": "5.2 國際併購手法", "kids": []}, {"title": "5.3 企業併購法及併購特別委員會行使職權辦法", "kids": ["5.3.1 企業併購法", "5.3.2 併購特別委員會"]}, {"title": "5.4 併購特別委員會實務小百科", "kids": []}, {"title": "5.5 結語", "kids": []}], "nodes": [{"id": "n0", "label": "5.1 前言"}, {"id": "n1", "label": "5.2 國際併購手法"}, {"id": "n2", "label": "5.3 企業併購法及併購特別委員會行使職權辦"}, {"id": "n2k0", "label": "5.3.1 企業併購法"}, {"id": "n2k1", "label": "5.3.2 併購特別委員會"}, {"id": "n3", "label": "5.4 併購特別委員會實務小百科"}, {"id": "n4", "label": "5.5 結語"}], "edges": [{"from": "n0", "to": "n1"}, {"from": "n1", "to": "n2"}, {"from": "n2", "to": "n2k0"}, {"from": "n2", "to": "n2k1"}, {"from": "n2", "to": "n3"}, {"from": "n3", "to": "n4"}], "charts": [], "mermaids": []}</script>
+  <div class="viz-grid viz-grid-dense">
+    <article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">markmap</span>章節心智圖</div><div class="viz-cell-b"><div class="markmap-host" id="viz-markmap" aria-label="章節心智圖"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>對照表</div><div class="viz-cell-b"><div id="viz-tabulator-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Grid.js</span>對照表（可搜尋）</div><div class="viz-cell-b"><div id="viz-gridjs-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>演進表</div><div class="viz-cell-b"><div id="viz-tabulator-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>演進流程</div><div class="viz-cell-b"><div class="mermaid-host"><pre class="mermaid" id="viz-mermaid-evolve"></pre></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>演進關係</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">D3</span>演進樹狀圖</div><div class="viz-cell-b"><div class="d3-host viz-box" id="viz-d3-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Cytoscape</span>章節關係網</div><div class="viz-cell-b"><div class="cy-host" id="viz-cytoscape"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-network</span>概念網路</div><div class="viz-cell-b"><div class="vis-host" id="viz-vis-network"></div></div></article>
+  </div>
+</div></div>
+    <div class="tab-pane fade" id="tab-path" role="tabpanel"><div class="path-cards">
+<a class="path-card" href="#5-1-前言" data-jump-lecture><div class="path-idx">站 1</div><div class="path-title">前言</div><div class="path-desc">在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#5-2-國際併購手法" data-jump-lecture><div class="path-idx">站 2</div><div class="path-title">國際併購手法</div><div class="path-desc">國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#5-3-企業併購法及併購特別委員會行使職權辦法" data-jump-lecture><div class="path-idx">站 3</div><div class="path-title">企業併購法及併購特別委員會行使職權辦法</div><div class="path-desc">5.3.1 企業併購法</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#5-4-併購特別委員會實務小百科" data-jump-lecture><div class="path-idx">站 4</div><div class="path-title">併購特別委員會實務小百科</div><div class="path-desc">1. 問：設置特別委員會,是否需於公司章程中記載? 答：因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#5-5-結語" data-jump-lecture><div class="path-idx">站 5</div><div class="path-title">結語</div><div class="path-desc">就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申…</div><div class="path-go">前往講義 →</div></a>
+</div></div>
+    <div class="tab-pane fade" id="tab-lecture" role="tabpanel"><article class="sec-block" id="5-1-前言">
+<div class="sec-kicker">站 1｜前言</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">5.1 前言</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-1-前言" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.1 前言」。首先，在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考量重點有:(1)透過資金挹注,協助被投資企業成長(2)透過併購者專業知識,吸引專業人才及提升企業經營效能等附加價值及 (3) 協助提供併購資本,充實企業營運資金及增加國際競爭力。聯合會計師事務所(PwC)發布之2023 全球併購市場暨產業趨勢分析報告 (Global M&amp;A Industry Trends 2023),全球併購市場在2022年之併購件數和金額分別自 2021年的歷史高點下滑17%和37%。而根據經濟部商業司的統計資料,臺灣地區併購案件2022年度計163件,金額約新臺幣56.97億元,較2021年度併購金額新臺幣395.98億元(170件)減少約85.61%。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考量重點有:(1)透過資金挹注,協助被投資企業成長(2)透過併購者專業知識,吸引專業人才及提升企業經營效能等附加價值及 (3) 協助提供併購資本,充實企業營運資金及增加國際競爭力。</p>
+
+<p>聯合會計師事務所(PwC)發布之2023 全球併購市場暨產業趨勢分析報告 (Global M&amp;A Industry Trends 2023),全球併購市場在2022年之併購件數和金額分別自 2021年的歷史高點下滑17%和37%。而根據經濟部商業司的統計資料,臺灣地區併購案件2022年度計163件,金額約新臺幣56.97億元,較2021年度併購金額新臺幣395.98億元(170件)減少約85.61%。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="5-2-國際併購手法">
+<div class="sec-kicker">站 2｜國際併購手法</div>
+<div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">5.2 國際併購手法</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">比較對照</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-2-國際併購手法" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.2 國際併購手法」。首先，國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金加速企業全球化之發展,同時可補強企業經營者在併購及財務方面之規劃與執行能力不足的劣勢,對於產業面臨技術、營運瓶頸或世代交替問題之解決或有所助益。但無可否認,私募股權基金大多設有獲利目標及退場期限,通常設定為5至7年。私募股權基金在世界各國從事投資或併購行為,其常見併購方式之一,係採管理階層收購(Management Buyout, MBO)方式進行,即收購者與目標公司內部管理人共組收購團隊收購目標公司之股票,收購完成後之股權及管理權全數由內部管理人掌控,甚者,併購公開發行公司後將之下市,即所謂「併購私有化」。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金加速企業全球化之發展,同時可補強企業經營者在併購及財務方面之規劃與執行能力不足的劣勢,對於產業面臨技術、營運瓶頸或世代交替問題之解決或有所助益。但無可否認,私募股權基金大多設有獲利目標及退場期限,通常設定為5至7年。</p>
+
+<p>私募股權基金在世界各國從事投資或併購行為,其常見併購方式之一,係採管理階層收購(Management Buyout, MBO)方式進行,即收購者與目標公司內部管理人共組收購團隊收購目標公司之股票,收購完成後之股權及管理權全數由內部管理人掌控,甚者,併購公開發行公司後將之下市,即所謂「併購私有化」。根據公開資訊觀測站的統計,2017及2018年度國內公開發行公司申報公開收購案件分別為15件及14件、屬收購後下市(櫃)者分別有4件及2件。</p>
+
+<p>近來國內外均有私募股權基金結合公司大股東(或管理階層)進行併購私有化之案例,其中較具知名之國內公司個案如,遨睿投資股份有限公司(係由國巨股份有限公司(下稱國巨公司)董事長陳泰銘與私募基金 Kohlberg Kravis Roberts &amp; Co. L.P.(下稱KKR)共同投資荷蘭商 ALPHARD INVESTMENT NETHERLANDS COOPERATIEF U.A. 而設立之投資公司) 計畫以新臺幣每股16.1 元現金公開收購國巨公司(上市公司)案(以下簡稱遨睿收購國巨案);國外知名案例如,Dell電腦公司(美國上市公司)創辦人兼執行長 Michael Dell 和私募基金 Silver Lake Partners (下稱Silver Lake)共同提出計畫以每股13.65美元(最後收購價格為每股13.75美元並加發每股0.13元的現金股利)收購 Dell 電腦公司股份並下市(以下簡稱Dell 公司下市案)。另李長榮化學工業股份有限公司(下稱榮化公司)大股東李謀偉家族與私募基金 KKR 共同投資盧森堡商 Carlton (Luxembourg) Holdings S.a.r,並透過其100%持股之國內楷榮股份有限公司,計畫以現金新臺幣每股56元為對價,並按企業併購法第29條規定之股份轉換方式成功收購榮化公司之全部股份,嗣榮化公司於2019年1月30日下市。</p>
+
+<p>前述個案雖均屬MBO案,惟其執行過程及結果大相逕庭,其中遨睿收購國巨案因經濟部投資審議委員會駁回投資案而失敗,反觀Dell 公司下市案因其採取美國法院實務要求之合理併購程序而獲成功下市,探究其成功或失敗原因,不難發現該等公司雖未違反當地國法令要求形式規定,惟雙方對於實質落實執行少數股東權益(投資人)保障之程序卻明顯有別,其中遨睿收購國巨案過程中並未成立獨立之特別委員會,且董事會決議時因利害關係董事進行利益迴避,僅剩一名獨立董事來決定其被收購價格條件之合理性,以致外界質疑相關決策不透明及收購價格不合理等;反之Dell 公司下市案係由 Dell 公司之獨立董事組成特別委員會,經其聘請獨立專家(包括獨立財務顧問、獨立法律顧問及投資顧問等)評估收購條件,案經其特別委員會審核同意後,最後經 Dell 公司股東臨時會中無利害關係之少數股東多數決同意。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="5-3-企業併購法及併購特別委員會行使職權辦法">
+<div class="sec-kicker">站 3｜企業併購法及併購特別委員會行使職權辦法</div>
+<div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">5.3 企業併購法及併購特別委員會行使職權辦法</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-3-企業併購法及併購特別委員會行使職權辦法" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.3 企業併購法及併購特別委員會行使職權辦法」。首先，關於可以這樣記。5.3.1 企業併購法：我國企業併購法(以下簡稱企併法)自2002年2月6日公布施行後,歷經二次修正,對於國內企業從事併購活動,促進組織調整及加速企業轉型,提供重要之法規遵循,近年各界對於增加併購彈性及保障股東權益迭有建議;又司法院釋字第七七○號解釋理由書指明企併法現行規定未使股東及時獲取董事或股東利害關係相關資訊等,應檢討修正。爰針對保障股東權益、放寬非對稱併購適用範圍及擴大彈性；5.3.2 併購特別委員會：為落實少數股東權益保障,且避免類似前述遨睿收購國巨案引發之爭議,爰企併法條文第6條規定:「公開發行股票之公司於召開董事會決議併購事項前,應設置特別委員會,就本次併購計畫與交易之公平性、合理性進行審議,並將審議結果提報董事會及股東會……前項規定,於公司依證券交易法設有審計委員會者,由審計委員會行之;其辦理本條之審議事項,依證券交易法有關審計委員會決議事項之規定。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>企業併購法及併購特別委員會行使職權辦法｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>1. 保障股東權益</td>
+<td>(1)為強化併購資訊揭露,增訂公司應於股東會召集事由中敘明董事利害關係之重要內容及贊成或反對併購決議之理由。(修正條文第5條)</td>
+</tr>
+<tr>
+<td>2. 放寬非對稱併購適用範圍</td>
+<td>為增加併購之彈性及效率,公司併購時,如以淨值為計算基準,放寬併購公司所支付之對價總額未超過其淨值之百分之二十,亦適用非對稱式併購,僅須由董事會決議,以加速併購程序。(修正條文第18條、第29條及第36條)</td>
+</tr>
+<tr>
+<td>3. 擴大彈性租稅措施</td>
+<td>(1)鑑於公司為強化其競爭力、拓展市場,取得無形資產常為進行併購之重要因素,爰增訂其取得之無形資產,得按實際取得成本於一定年限內平均攤銷。(修正條文第40條之1)</td>
+</tr>
+<tr>
+<td>1. 有關特別委員會組成、資格條件及審議方法</td>
+<td>(1)特別委員會組成:</td>
+</tr>
+<tr>
+<td>A國外規範</td>
+<td>a 美國德拉瓦州法院審理相關訴訟案時,原則上要求被收購公司應由獨立及無利害關係董事組成特別委員會,並要求該等成員不應該收購交易獲有額外報酬或影響。</td>
+</tr>
+<tr>
+<td>B 國內相關規範</td>
+<td>a 公開發行公司有價證券管理辦法(以下簡稱公開收購管理辦法)第14條之1規定:審議委員會委員之人數不得少於三人,被收購有價證券之公開發行公司設有獨立董事者,應由獨立董事組成;獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。</td>
+</tr>
+<tr>
+<td>(2)資格條件</td>
+<td>A國外規範:美、港針對專業資格部分無特別規定,惟要求相關成員應具獨立性及無利害關係。</td>
+</tr>
+<tr>
+<td>B國內相關規範</td>
+<td>a 公開收購管理辦法第14條之1第4項規定,審議委員會委員之資格條件應符合獨立董事設置辦法第2條第1項及第3條第1項規定。</td>
+</tr>
+<tr>
+<td>(3)審議方法</td>
+<td>A 國外無特別明文規定。</td>
+</tr>
+<tr>
+<td>B 國內相關規範</td>
+<td>a 公開收購管理辦法第14條之1第5項規定:「審議委員會之審議結果應經全體委員二分之一以上同意,並將審議委員同意或反對之明確意見及反對之理由列入。」</td>
+</tr>
+<tr>
+<td>b 審計委員會行使職權辦法第5條規定</td>
+<td>「………其決議應有審計委員會全體成員二分之一以上之同意。」</td>
+</tr>
+<tr>
+<td>c 薪資報酬委員會辦法第9條第4項規定</td>
+<td>「薪資報酬委員會為決議時,應有全體成員二分之一以上同意…」。</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>企業併購法及併購特別委員會行使職權辦法｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 5</td>
+<td>3.1 企業併購法</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>保障股東權益:</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>放寬非對稱併購適用範圍:</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>擴大彈性租稅措施:</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>3.2 併購特別委員會</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>有關特別委員會組成、資格條件及審議方法:</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>有關獨立專家資格條件、獨立性之認定及選任方式:</td>
+</tr>
+</tbody></table></div></div>
+<section class="sub-sec" id="5-3-1-企業併購法">
+<h3 class="subhead">5.3.1 企業併購法</h3>
+<details class="narration-box" data-tts-root id="narration-5-3-1-企業併購法" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.3.1 企業併購法」。首先，我國企業併購法(以下簡稱企併法)自2002年2月6日公布施行後,歷經二次修正,對於國內企業從事併購活動,促進組織調整及加速企業轉型,提供重要之法規遵循,近年各界對於增加併購彈性及保障股東權益迭有建議;又司法院釋字第七七○號解釋理由書指明企併法現行規定未使股東及時獲取董事或股東利害關係相關資訊等,應檢討修正。爰針對保障股東權益、放寬非對稱併購適用範圍及擴大彈性租稅措施等部分提出修正草案,業經總統111年6月15日華總一經字第11100048761 號令公布,自111年12月15日施行,修正重點如下: 1. 保障股東權益: (1)為強化併購資訊揭露,增訂公司應於股東會召集事由中敘明董事利害關係之重要內容及贊成或反對併購決議之理由。(修正條文第5條) (2)對於出席股東會並投票反對併購之股東,亦須有退場機制以保障其股份財產權,爰增訂投票反對併購之股東亦可行使股份收買請求權。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>我國企業併購法(以下簡稱企併法)自2002年2月6日公布施行後,歷經二次修正,對於國內企業從事併購活動,促進組織調整及加速企業轉型,提供重要之法規遵循,近年各界對於增加併購彈性及保障股東權益迭有建議;又司法院釋字第七七○號解釋理由書指明企併法現行規定未使股東及時獲取董事或股東利害關係相關資訊等,應檢討修正。爰針對保障股東權益、放寬非對稱併購適用範圍及擴大彈性租稅措施等部分提出修正草案,業經總統111年6月15日華總一經字第11100048761 號令公布,自111年12月15日施行,修正重點如下:</p>
+
+<ol>
+<li>保障股東權益:
+(1)為強化併購資訊揭露,增訂公司應於股東會召集事由中敘明董事利害關係之重要內容及贊成或反對併購決議之理由。(修正條文第5條)
+(2)對於出席股東會並投票反對併購之股東,亦須有退場機制以保障其股份財產權,爰增訂投票反對併購之股東亦可行使股份收買請求權。(修正條文第12條)</li>
+<li>放寬非對稱併購適用範圍:
+為增加併購之彈性及效率,公司併購時,如以淨值為計算基準,放寬併購公司所支付之對價總額未超過其淨值之百分之二十,亦適用非對稱式併購,僅須由董事會決議,以加速併購程序。(修正條文第18條、第29條及第36條)</li>
+<li>擴大彈性租稅措施:
+(1)鑑於公司為強化其競爭力、拓展市場,取得無形資產常為進行併購之重要因素,爰增訂其取得之無形資產,得按實際取得成本於一定年限內平均攤銷。(修正條文第40條之1)
+(2)為促進友善併購新創公司環境,增訂被併購新創公司之個人股東所取得之股份對價,依所得稅法規定計算之股利所得,得選擇全數延緩至取得次年度之第三年起,分三年平均課徵所得稅。(修正條文第44條之1)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="5-3-2-併購特別委員會">
+<h3 class="subhead">5.3.2 併購特別委員會</h3>
+<details class="narration-box" data-tts-root id="narration-5-3-2-併購特別委員會" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.3.2 併購特別委員會」。首先，為落實少數股東權益保障,且避免類似前述遨睿收購國巨案引發之爭議,爰企併法條文第6條規定:「公開發行股票之公司於召開董事會決議併購事項前,應設置特別委員會,就本次併購計畫與交易之公平性、合理性進行審議,並將審議結果提報董事會及股東會……前項規定,於公司依證券交易法設有審計委員會者,由審計委員會行之;其辦理本條之審議事項,依證券交易法有關審計委員會決議事項之規定辦理。特別委員會或審計委員會進行審議時,應委請獨立專家協助就換股比例或配發股東之現金或其他財產之合理性提供意見。特別委員會之組成、資格、審議方法與獨立專家之資格條件、獨立性之認定、選任方式及其他相關事項之辦法,由證券主管機關定之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>為落實少數股東權益保障,且避免類似前述遨睿收購國巨案引發之爭議,爰企併法條文第6條規定:「公開發行股票之公司於召開董事會決議併購事項前,應設置特別委員會,就本次併購計畫與交易之公平性、合理性進行審議,並將審議結果提報董事會及股東會……前項規定,於公司依證券交易法設有審計委員會者,由審計委員會行之;其辦理本條之審議事項,依證券交易法有關審計委員會決議事項之規定辦理。特別委員會或審計委員會進行審議時,應委請獨立專家協助就換股比例或配發股東之現金或其他財產之合理性提供意見。特別委員會之組成、資格、審議方法與獨立專家之資格條件、獨立性之認定、選任方式及其他相關事項之辦法,由證券主管機關定之。」</p>
+
+<p>前述企併法條文規定,未來倘公開發行公司進行重大併購案均應設置特別委員會(或審計委員會),並委請獨立專家提供價格合理性意見,並將審議結果提報董事會及股東會。是以,謹就國內外類似特別委員會之組成、資格條件及審議方法,暨獨立專家資格條件、獨立性之認定及選任方式等規範如下:</p>
+
+<ol>
+<li><p>有關特別委員會組成、資格條件及審議方法:
+(1)特別委員會組成:
+A國外規範:
+a 美國德拉瓦州法院審理相關訴訟案時,原則上要求被收購公司應由獨立及無利害關係董事組成特別委員會,並要求該等成員不應該收購交易獲有額外報酬或影響。
+b 香港依公司收購及合併守則規定,要求應由所有非執行董事組成獨立委員會,並要求該等成員不能擁有直接或間接利益。
+B 國內相關規範:
+a 公開發行公司有價證券管理辦法(以下簡稱公開收購管理辦法)第14條之1規定:審議委員會委員之人數不得少於三人,被收購有價證券之公開發行公司設有獨立董事者,應由獨立董事組成;獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。
+b 公開發行公司審計委員會行使職權辦法(以下簡稱審計委員會行使職權辦法)第4條規定:審計委員會應由全體獨立董事組成,其人數不得少於三人,其中一人為召集人,且至少一人應具備會計或財務專長。
+c 股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法(以下簡稱薪資報酬委員會辦法)第4條規定:薪資報酬委員會成員由董事會決議委任之,其人數不得少於三人,其中一人為召集人。」
+d 特別委員會成員之人數不得少於三人,公開發行公司設有獨立董事者,應由獨立董事組成;獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成,其中一人為召集人,且至少一人應具備會計或財務專長。</p>
+
+<p>(2)資格條件:
+A國外規範:美、港針對專業資格部分無特別規定,惟要求相關成員應具獨立性及無利害關係。
+B國內相關規範:
+a 公開收購管理辦法第14條之1第4項規定,審議委員會委員之資格條件應符合獨立董事設置辦法第2條第1項及第3條第1項規定。
+b 審計委員會行使職權辦法第4條規定,審計委員會應由全體獨立董事組成,且至少一人應具備會計或財務專長。
+c 薪資報酬委員會辦法第5條及第6條訂有相關專業資格及獨立性要求規定(與獨立董事設置辦法第2條及第3條相近)。
+d 特別委員會成員之資格條件,應符合公開發行公司獨立董事設置及應遵循事項辦法第2條第1項及第3條第1項規定。</p>
+
+<p>(3)審議方法:
+A 國外無特別明文規定。
+B 國內相關規範:
+a 公開收購管理辦法第14條之1第5項規定:「審議委員會之審議結果應經全體委員二分之一以上同意,並將審議委員同意或反對之明確意見及反對之理由列入。」
+b 審計委員會行使職權辦法第5條規定:「………其決議應有審計委員會全體成員二分之一以上之同意。」
+c 薪資報酬委員會辦法第9條第4項規定:「薪資報酬委員會為決議時,應有全體成員二分之一以上同意…」。
+d 特別委員會為決議時,應有全體成員二分之一以上同意,並將審議結果與成員同意或反對之明確意見及反對之理由提報董事會。</p></li>
+<li><p>有關獨立專家資格條件、獨立性之認定及選任方式:
+(1)資格條件及獨立性方面:
+A 國外規範:美、港針對專業資格部分無特別規定,惟美國法院審判實務及香港收購守則均要求獨立專家或財務顧問不得違反利益衝突之禁止原則。
+B國內相關規範:
+a 「公開發行公司取得或處分資產處理準則」第22條規定,「公司辦理合併…應於召開董事會決議前,委請會計師、律師或證券承銷商就換股比例、收購價格或配發股東之現金或其他財產之合理性表示意見……」;同準則第5條規定:「公開發行公司取得之估價報告或會計師、律師或證券承銷商之意見書,該專業估價者及其估價人員、會計師、律師或證券承銷商與交易當事人不得為關係人」。
+b 「公開發行公司辦理私募有價證券應注意事項」第2條第7款規定:「獨立專家係:指會計師、律師或證券承銷商,且不得與公開發行公司或應募人為關係人。」
+c 獨立專家係指會計師、律師或證券承銷商,且不得與併購交易當事人為關係人。</p>
+
+<p>(2)選任方法:
+A 國外規範:美國無特別規定,香港則規定任何獨立財務顧問在獲得委任前,其委任必先得到獨立委員會的核准。
+B 國內相關規範:
+a 證券交易法第14條之5第1項第8款規定:「已依本法發行股票之公司設置審計委員會者,下列事項應經審計委員會全體成員二分之一以上同意…八、簽證會計師之委任、解任或報酬。」
+b 獨立專家之委任,應由特別委員會全體成員二分之一以上同意行之。</p></li>
+</ol>
+
+<p><em>(註：因篇幅與格式限制，詳細對照表格請參閱原文內容)</em></p>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">保障股東權益:</span>
+<span class="tag-chip chip-mint">放寬非對稱併購適用範圍:</span>
+<span class="tag-chip chip-amber">擴大彈性租稅措施:</span>
+<span class="tag-chip chip-coral">有關特別委員會組成、資格條件及審議方法:</span>
+<span class="tag-chip chip-violet">有關獨立專家資格條件、獨立性之認定及選任方式:</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="5-4-併購特別委員會實務小百科">
+<div class="sec-kicker">站 4｜併購特別委員會實務小百科</div>
+<div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">5.4 併購特別委員會實務小百科</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實務小百科</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-4-併購特別委員會實務小百科" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.4 併購特別委員會實務小百科」。首先，1. 問：設置特別委員會,是否需於公司章程中記載? 答：因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決定。2. 問：特別委員會第一次會議召集人如何產生? 答：特別委員會應由全體成員互推一人擔任召集人及會議主席,至於推舉程序部分,本會並未規範而屬公司自治事項,允宜由公司自行決定。3. 問：特別委員會是否均應由獨立董事組成,還是可以包括獨立董事以外之人員?如何遴選? 答：(1)如未依證券交易法設置獨立董事之公司,尚無強制要求其委員會須由獨立董事組成,惟已依證券交易法設置獨立董事之公司,依子法規定應由獨立董事組成,倘獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>併購特別委員會實務小百科｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>答</td>
+<td>因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決定。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>特別委員會應由全體成員互推一人擔任召集人及會議主席,至於推舉程序部分,本會並未規範而屬公司自治事項,允宜由公司自行決定。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>(1)如未依證券交易法設置獨立董事之公司,尚無強制要求其委員會須由獨立董事組成,惟已依證券交易法設置獨立董事之公司,依子法規定應由獨立董事組成,倘獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。(2)特別委員除獨立董事外係由董事會遴選,遴選之程序係屬公司自治事項,宜回歸公</td>
+</tr>
+<tr>
+<td>答</td>
+<td>(1)為利公司判斷特別委員會是否具備會計或財務專長,於公司治理問答集對於會計或財務專長提供下列標準供公司參考: A具公開發行公司財務主管、會計主管、主辦會計、內部稽核主管之工作經驗。 B具直接督導上開職務之工作經驗。 C取得會計師、證券投資分析人員等證書或取得與財務、會計有關之國</td>
+</tr>
+<tr>
+<td>答</td>
+<td>考量特別委員會係依企併法規定針對重大併購案件要求設置,另依子法規定特別委員會成員之人數不得少於3人,爰倘僅剩2人時應先由董事會遴選補足成員後方能召開會議。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>依企併法修正條文第6條之立法意旨,違反企併法及其子法規定,自應依民法及公司法相關規定處理。</td>
+</tr>
+<tr>
+<td>答</td>
+<td>特別委員會之審議結果僅為董事會及股東會的先行程序,最終決定權仍在董事會及股東會。是以,董事會得經決議不參採特別委員會之審議結果,另董事會決議回歸依公司法(第206條)規定辦理。</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><ol>
+<li><p><strong>問：設置特別委員會,是否需於公司章程中記載?</strong>
+答：因企業併購法並無明文規定,爰公司章程是否要明定設置特別委員會之規定,得由公司自行決定。</p></li>
+<li><p><strong>問：特別委員會第一次會議召集人如何產生?</strong>
+答：特別委員會應由全體成員互推一人擔任召集人及會議主席,至於推舉程序部分,本會並未規範而屬公司自治事項,允宜由公司自行決定。</p></li>
+<li><p><strong>問：特別委員會是否均應由獨立董事組成,還是可以包括獨立董事以外之人員?如何遴選?</strong>
+答：(1)如未依證券交易法設置獨立董事之公司,尚無強制要求其委員會須由獨立董事組成,惟已依證券交易法設置獨立董事之公司,依子法規定應由獨立董事組成,倘獨立董事人數不足或無獨立董事者,由董事會遴選之成員組成。(2)特別委員除獨立董事外係由董事會遴選,遴選之程序係屬公司自治事項,宜回歸公司法相關規定,由董事會盡善良管理人之義務排除遴選有利害關係的人選。</p></li>
+<li><p><strong>問：所定特別委員會成員中至少1人應具備會計或財務專長之定義或標準為何?</strong>
+答：(1)為利公司判斷特別委員會是否具備會計或財務專長,於公司治理問答集對於會計或財務專長提供下列標準供公司參考: A具公開發行公司財務主管、會計主管、主辦會計、內部稽核主管之工作經驗。 B具直接督導上開職務之工作經驗。 C取得會計師、證券投資分析人員等證書或取得與財務、會計有關之國家考試及格證書,且具有會計、審計、稅務、財務或內部稽核業務2年以上之工作經驗。 D經教育部承認之國內外專科以上學校修畢會計、財務、審計或稅務相關科目12學分以上,且具有會計、審計、稅務、財務或內部稽核業務3年以上之工作經驗。 E經教育部承認之國內外高職或同等學校修畢會計、財務、審計或稅務相關科目12學分以上,且具有會計、審計、稅務、財務或內部稽核業務5年以上之工作經驗。(2)前揭參考標準係列舉參考性質,公司董事會亦得根據個案情況評估個別人士是否為勝任人選。</p></li>
+<li><p><strong>問：特別委員會成員只剩2人可否開會?</strong>
+答：考量特別委員會係依企併法規定針對重大併購案件要求設置,另依子法規定特別委員會成員之人數不得少於3人,爰倘僅剩2人時應先由董事會遴選補足成員後方能召開會議。</p></li>
+<li><p><strong>問：違反特別委員會規定是否有罰則?</strong>
+答：依企併法修正條文第6條之立法意旨,違反企併法及其子法規定,自應依民法及公司法相關規定處理。</p></li>
+<li><p><strong>問：董事會得否經決議而反對(或不參採)特別委員會之審議結果?董事會反對決議之門檻標準為何?</strong>
+答：特別委員會之審議結果僅為董事會及股東會的先行程序,最終決定權仍在董事會及股東會。是以,董事會得經決議不參採特別委員會之審議結果,另董事會決議回歸依公司法(第206條)規定辦理。</p></li>
+</ol>
+
+<p><em>(其餘實務小百科內容請參考原文)</em></p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">問：設置特別委員會,是否需於公司章程中記載?</span>
+<span class="tag-chip chip-mint">問：特別委員會第一次會議召集人如何產生?</span>
+<span class="tag-chip chip-amber">問：特別委員會是否均應由獨立董事組成,還是可以包括獨立董事以外之人員?如何遴選?</span>
+<span class="tag-chip chip-coral">問：所定特別委員會成員中至少1人應具備會計或財務專長之定義或標準為何?</span>
+<span class="tag-chip chip-violet">問：特別委員會成員只剩2人可否開會?</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="5-5-結語">
+<div class="sec-kicker">站 5｜結語</div>
+<div class="sec-head"><span class="sec-num">5</span><h2 class="sec-title">5.5 結語</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-5-結語" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.5 結語」。首先，就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申請核准,投審會並依相關單位之審查意見作為准駁之參考;如需於國內辦理公開收購者,並應依證券交易法第43條之1第2項規定,先向金融監督管理委員會申報並公告後始得為之。眾所周知,臺灣企業因為有優異的管理技術、健全的資訊揭露、優秀的國際人才以及完整的大陸布局,得到許多國際公司或投資機構的青睞,他們曾經積極投資台灣的產業包括:有線電視、金融業、傳統產業及電子業。倘企業或私募股權基金業者刻正規劃投資併購我國上市櫃公司,可依循前面提及之企併法修正方向及立法意旨,確實執行符合保障投資人權益之相關併購程序,並設置特別委員會並委請獨立專家提供價格合理性意見,將審議結果提報董事會及股東會、資訊揭露充分並符合法規要求,另若涉及私有化者,亦建議參照企併法第18條規定之決議門檻,於召集股東會決議被合併時宜取得三分之二以上股權同意,以達兼顧維持併購彈性與保障少數股東權益之雙贏目標。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申請核准,投審會並依相關單位之審查意見作為准駁之參考;如需於國內辦理公開收購者,並應依證券交易法第43條之1第2項規定,先向金融監督管理委員會申報並公告後始得為之。</p>
+
+<p>眾所周知,臺灣企業因為有優異的管理技術、健全的資訊揭露、優秀的國際人才以及完整的大陸布局,得到許多國際公司或投資機構的青睞,他們曾經積極投資台灣的產業包括:有線電視、金融業、傳統產業及電子業。</p>
+
+<p>倘企業或私募股權基金業者刻正規劃投資併購我國上市櫃公司,可依循前面提及之企併法修正方向及立法意旨,確實執行符合保障投資人權益之相關併購程序,並設置特別委員會並委請獨立專家提供價格合理性意見,將審議結果提報董事會及股東會、資訊揭露充分並符合法規要求,另若涉及私有化者,亦建議參照企併法第18條規定之決議門檻,於召集股東會決議被合併時宜取得三分之二以上股權同意,以達兼顧維持併購彈性與保障少數股東權益之雙贏目標。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申…</span>
+</div>
+</div>
+</article></div>
+    <div class="tab-pane fade" id="tab-quick" role="tabpanel"><div class="row g-3">
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 1 節</div>
+<h3 class="h6">5.1 前言</h3>
+<ul class='mb-2 small'>
+<li>在國際經濟情勢瞬息萬變下,企業經營面臨相當嚴峻之考驗,為提昇企業經營綜效及建立企業長期競爭優勢,企業可能透過併購方式來建立競爭優勢,主要考…</li>
+</ul>
+<a class="small" href="#5-1-前言" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 2 節</div>
+<h3 class="h6">5.2 國際併購手法</h3>
+<ul class='mb-2 small'>
+<li>國際上常見併購方式,即私募股權基金與管理階層收購方式,以下作解析說明,首先私募股權基金「多係以併購為專業的投資組合,企業可透過引進國際資金…</li>
+</ul>
+<a class="small" href="#5-2-國際併購手法" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 3 節</div>
+<h3 class="h6">5.3 企業併購法及併購特別委員會行使職權辦法</h3>
+<ul class='mb-2 small'>
+<li>保障股東權益:</li>
+<li>放寬非對稱併購適用範圍:</li>
+<li>擴大彈性租稅措施:</li>
+<li>有關特別委員會組成、資格條件及審議方法:</li>
+</ul>
+<a class="small" href="#5-3-企業併購法及併購特別委員會行使職權辦法" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 4 節</div>
+<h3 class="h6">5.4 併購特別委員會實務小百科</h3>
+<ul class='mb-2 small'>
+<li>問：設置特別委員會,是否需於公司章程中記載?</li>
+<li>問：特別委員會第一次會議召集人如何產生?</li>
+<li>問：特別委員會是否均應由獨立董事組成,還是可以包括獨立董事以外之人員?如何遴選?</li>
+<li>問：所定特別委員會成員中至少1人應具備會計或財務專長之定義或標準為何?</li>
+</ul>
+<a class="small" href="#5-4-併購特別委員會實務小百科" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 5 節</div>
+<h3 class="h6">5.5 結語</h3>
+<ul class='mb-2 small'>
+<li>就現行國內投資法規制度下,如國外之私募股權基金欲併購或投資國內之企業時,應依外國人投資條例之規定,先向主管機關經濟部投審會(下稱投審會)申…</li>
+</ul>
+<a class="small" href="#5-5-結語" data-jump-lecture>看完整講義</a>
+</div></div>
+</div></div>
+    <div class="tab-pane fade" id="tab-quiz" role="tabpanel"><article class="sec-block" id="5-6-練習題">
+<div class="sec-kicker">課後練習</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">5.6 練習題</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">練習檢核</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-6-練習題" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5.6 練習題」。首先，1. 併購特別委員會成員至少應有幾人? (A)3人 (B)4人 (C)5人 (D)未有規定 解答：(A) 2. 公開發行公司設置併購特別委員會,其組織規程應明訂事項,尚不包括下列何事項: (A)成員組成及人數。(B) 職權事項。(C) 議事錄應記載事項。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><ol>
+<li><p><strong>併購特別委員會成員至少應有幾人?</strong>
+(A)3人 (B)4人 (C)5人 (D)未有規定
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(A)&lt;/p&gt;</span></div></div>
+<li><p><strong>公開發行公司設置併購特別委員會,其組織規程應明訂事項,尚不包括下列何事項:</strong>
+(A)成員組成及人數。 (B) 職權事項。 (C) 議事錄應記載事項。 (D)議事規則。
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(C)&lt;/p&gt;</span></div></div>
+<li><p><strong>併購特別委員會成員之資格限制,下列何者為非:</strong>
+(A)不得為公司或其係企業之董事、監察人。 (B) 不得為公司或其係企業之董事、監察人之三親等以內親屬關係。 (C)不得為公司或其係企業之受僱人。 (D)不得為公司或其係企業之受僱人之配偶。
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(B)&lt;/p&gt;</span></div></div>
+<li><p><strong>併購特別委員會成員之至少一席應具有下列專業資格:</strong>
+(A)律師資格。 (B) 產業經驗。 (C) 會計或財務專長。 (D)管理專長。
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(C)&lt;/p&gt;</span></div></div>
+<li><p><strong>併購特別委員會於審議前,應委請獨立專家就併購價格合理性提供意見,下列何者不符前開獨立專家資格:</strong>
+(A)會計師。 (B)資產合估價師。 (C) 律師。 (D)證券承銷商。
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(B)&lt;/p&gt;</span></div></div>
+<li><p><strong>併購特別委員會之決議門檻:</strong>
+(A)全體成員二分之一以上同意。 (B) 過半成員出席,出席成員二分之一以上同意。 (C) 過半成員出席,出席成員三分之二以上同意。 (D)三分之二以上成員出席,出席成員二分之一以上同意。
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(A)&lt;/p&gt;</span></div></div>
+<li><p><strong>公司章程記載併購特別委員會設置情形,下列何者為真?</strong>
+(A)屬企業併購法明訂應於公司章程載明事項 (B)屬公司法明訂應於公司章程載明事項 (C)屬公開發行公司併購特別委員會設置及應遵循事項辦法應於公司章程載明事項 (D)屬公司自治事項
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(D)&lt;/p&gt;</span></div></div>
+<li><p><strong>併購特別委員會之議事錄,應保存幾年:</strong>
+(A)3年 (B)5年 (C)10年 (D)永久保存
+<div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(D)&lt;/p&gt;</span></div></div>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">併購特別委員會成員至少應有幾人?</span>
+<span class="tag-chip chip-mint">公開發行公司設置併購特別委員會,其組織規程應明訂事項,尚不包括下列何事項</span>
+<span class="tag-chip chip-amber">併購特別委員會成員之資格限制,下列何者為非</span>
+<span class="tag-chip chip-coral">併購特別委員會成員之至少一席應具有下列專業資格</span>
+<span class="tag-chip chip-violet">併購特別委員會於審議前,應委請獨立專家就併購價格合理性提供意見,下列何者不符前開獨立專家資格</span>
+</div>
+</div>
+</article></div>
+  </div>
+</div>
+
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script>
+window.markmap = {
+  autoLoader: {
+    manual: true,
+    toolbar: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18.11"></script>
+<script>
+(function(){
+  try {
+    if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "loose" });
+  } catch (e) {}
+})();
+</script>
+<script>
+(function(){
+  const body = document.body;
+  const key = 'gov-ebook-side-collapsed';
+  const backdrop = document.getElementById('side-backdrop');
+  const mq = window.matchMedia('(max-width:900px)');
+  const isMobile = () => mq.matches;
+  const edge = document.getElementById('edge-toggle');
+  const burger = document.getElementById('burger-fab');
+  function setCollapsed(v){
+    body.classList.toggle('side-collapsed', !!v);
+    try{ localStorage.setItem(key, v ? '1' : '0'); }catch(e){}
+  }
+  function openMobile(v){
+    body.classList.toggle('side-open-mobile', !!v);
+    if(backdrop) backdrop.hidden = !v;
+    body.style.overflow = v ? 'hidden' : '';
+    if(burger){
+      burger.setAttribute('aria-expanded', v ? 'true' : 'false');
+      burger.title = v ? '關閉目錄' : '打開目錄';
+      burger.setAttribute('aria-label', v ? '關閉目錄' : '打開目錄');
+    }
+  }
+  function syncViewport(){
+    if(isMobile()){
+      setCollapsed(true);
+      openMobile(false);
+    } else {
+      openMobile(false);
+      try{
+        setCollapsed(localStorage.getItem(key)==='1');
+      }catch(e){ setCollapsed(false); }
+    }
+  }
+  syncViewport();
+  if(mq.addEventListener) mq.addEventListener('change', syncViewport);
+  else if(mq.addListener) mq.addListener(syncViewport);
+  if(edge) edge.addEventListener('click', ()=>{ if(isMobile()) openMobile(false); else setCollapsed(true); });
+  if(burger) burger.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(isMobile()){
+      openMobile(!body.classList.contains('side-open-mobile'));
+    } else {
+      setCollapsed(false);
+    }
+  });
+  if(backdrop) backdrop.addEventListener('click', ()=> openMobile(false));
+
+  document.querySelectorAll('[data-nav-jump], [data-jump-lecture], .milestone-link, .path-card').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href')||'';
+      const hashIdx = href.indexOf('#');
+      if(hashIdx < 0) return;
+      const hash = href.slice(hashIdx);
+      const file = href.slice(0, hashIdx);
+      const cur = decodeURIComponent(location.pathname.split('/').pop()||'');
+      if(file && file !== cur) return;
+      const btn = document.getElementById('tab-lecture-btn');
+      if(btn && window.bootstrap){
+        e.preventDefault();
+        bootstrap.Tab.getOrCreateInstance(btn).show();
+        if(isMobile()) openMobile(false);
+        setTimeout(()=>{ const t=document.querySelector(hash); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }, 160);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-reveal-answer]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const row = btn.closest('.ans-row');
+      const box = row && row.querySelector('[data-secret-box]');
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      if(box) box.classList.toggle('is-masked', !show);
+      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+      btn.textContent = show ? '隱藏解答' : '顯示解答';
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function parsePayload(){
+    const el = document.getElementById('note-viz-data');
+    if(!el) return {};
+    try { return JSON.parse(el.textContent || '{}'); } catch(e){ return {}; }
+  }
+  const data = parsePayload();
+  const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+  const compares = Array.isArray(data.compares) ? data.compares : [];
+  const evolution = Array.isArray(data.evolution) ? data.evolution : [];
+  const outline = Array.isArray(data.outline) ? data.outline : [];
+  const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+  const edges = Array.isArray(data.edges) ? data.edges : [];
+  const charts = Array.isArray(data.charts) ? data.charts : [];
+  const mermaids = Array.isArray(data.mermaids) ? data.mermaids : [];
+
+  const state = {
+    ready: false,
+    echarts: [],
+    cy: null,
+    network: null,
+    timeline: null,
+    markmapSvg: null
+  };
+
+  function showEmpty(id, on){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('d-none', !on);
+  }
+  function short(s, n){
+    s = String(s||'');
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+  }
+  function isNarrow(){ return window.matchMedia('(max-width:767px)').matches; }
+  function tableH(desktop){ return isNarrow() ? Math.max(180, Math.min(260, Math.round(window.innerHeight*0.32))) + 'px' : desktop; }
+  function boxSize(el){
+    if(!el) return { w: 320, h: 240 };
+    const w = Math.max(el.clientWidth || el.offsetWidth || 0, 280);
+    const h = Math.max(el.clientHeight || el.offsetHeight || 0, 200);
+    return { w, h };
+  }
+  function chartsTabVisible(){
+    const pane = document.getElementById('tab-charts');
+    if(!pane) return true;
+    return pane.classList.contains('active') || pane.classList.contains('show');
+  }
+
+  function buildOutlineMd(){
+    let md = '# 講義大綱\n';
+    if(outline.length){
+      outline.forEach((o,i)=>{
+        const title = String(o.title||('節 '+(i+1))).replace(/\n/g,' ');
+        md += `\n## ${i+1}. ${title}`;
+        (o.kids||[]).forEach(k=>{
+          md += `\n- ${String(k).replace(/\n/g,' ')}`;
+        });
+      });
+    } else if(nodes.length){
+      nodes.forEach(n=>{ md += `\n## ${n.label||n.id}`; });
+    } else {
+      md += '\n## （尚無大綱）\n- 請見章節講義';
+    }
+    return md;
+  }
+
+  function waitMarkmapReady(){
+    return new Promise((resolve)=>{
+      const al = window.markmap && markmap.autoLoader;
+      if(!al){ resolve(false); return; }
+      if(al.ready && typeof al.ready.then === 'function'){
+        al.ready.then(()=>resolve(true)).catch(()=>resolve(!!al.renderAll));
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        n++;
+        const ok = !!(window.markmap && markmap.autoLoader && (markmap.autoLoader.render || markmap.autoLoader.renderAll));
+        if(ok || n > 50){ clearInterval(t); resolve(ok); }
+      }, 120);
+    });
+  }
+
+  async function renderMarkmap(){
+    const host = document.getElementById('viz-markmap');
+    if(!host) return;
+    const md = buildOutlineMd();
+    host.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'markmap';
+    const tpl = document.createElement('script');
+    tpl.type = 'text/template';
+    tpl.textContent = md;
+    el.appendChild(tpl);
+    host.appendChild(el);
+
+    const ok = await waitMarkmapReady();
+    const al = window.markmap && markmap.autoLoader;
+    if(!ok || !al){
+      host.innerHTML = '<p class="viz-empty">心智圖套件尚未載入完成，請重新整理頁面。</p>';
+      return;
+    }
+    try {
+      if(typeof al.render === 'function') await al.render(el);
+      else if(typeof al.renderAllUnder === 'function') await al.renderAllUnder(host);
+      else if(typeof al.renderAll === 'function') await al.renderAll();
+      // 強制 SVG 填滿容器
+      const svg = host.querySelector('svg');
+      if(svg){
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        state.markmapSvg = svg;
+      }
+      // 觸發 fit：模擬 resize
+      setTimeout(()=> window.dispatchEvent(new Event('resize')), 60);
+    } catch(e){
+      console.warn('markmap render', e);
+      host.innerHTML = '<p class="viz-empty">心智圖渲染失敗：' + String(e && e.message || e) + '</p>';
+    }
+  }
+
+  function fitAll(){
+    state.echarts.forEach(c=>{ try{ c.resize(); }catch(e){} });
+    if(state.cy){ try{ state.cy.resize(); state.cy.fit(undefined, 24); }catch(e){} }
+    if(state.network){ try{ state.network.redraw(); state.network.fit(); }catch(e){} }
+    if(state.timeline){ try{ state.timeline.redraw(); }catch(e){} }
+    if(window.Plotly){
+      document.querySelectorAll('#viz-plotly-timeline .js-plotly-plot, #viz-plotly-timeline').forEach(el=>{
+        try{ Plotly.Plots.resize(el); }catch(e){}
+      });
+    }
+    const host = document.getElementById('viz-markmap');
+    const svg = host && host.querySelector('svg');
+    if(svg){
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+    }
+    // D3 重畫交由 init 內的資料；窄螢幕時僅調整既有 svg 寬度
+    const d3svg = document.querySelector('#viz-d3-evolve svg');
+    if(d3svg){
+      const wrap = document.getElementById('viz-d3-evolve');
+      const { w } = boxSize(wrap);
+      d3svg.setAttribute('width', String(w));
+    }
+  }
+
+  function initViz(){
+    if(state.ready){ fitAll(); return; }
+    state.ready = true;
+
+    /* —— markmap —— */
+    renderMarkmap();
+
+    /* —— timeline —— */
+    if(timeline.length){
+      const rows = timeline.map(r=>({ when:r.when||r[0]||'', what:r.what||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-timeline')){
+        new Tabulator('#viz-tabulator-timeline', {
+          data: rows, layout:'fitDataStretch', height: tableH('220px'),
+          columns:[
+            {title:'時點', field:'when', minWidth:88, widthGrow:1, headerFilter: isNarrow()?false:'input'},
+            {title:'事件／規範重點', field:'what', minWidth:160, widthGrow:3, headerFilter: isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      if(window.Chart){
+        const ctx = document.getElementById('viz-chartjs-timeline');
+        if(ctx){
+          new Chart(ctx, {
+            type:'bar',
+            data:{
+              labels: rows.map(r=>short(r.when, isNarrow()?8:12)),
+              datasets:[{ label:'事件數', data: rows.map(()=>1), backgroundColor:'rgba(94,200,255,.55)' }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{ legend:{ labels:{ color:'#c9d7ea', boxWidth:12 } } },
+              scales:{
+                x:{ ticks:{ color:'#93a4b8', maxRotation:45, minRotation:0, autoSkip:true }, grid:{ color:'#2a3544' } },
+                y:{ ticks:{ color:'#93a4b8', stepSize:1 }, grid:{ color:'#2a3544' }, beginAtZero:true }
+              }
+            }
+          });
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-timeline');
+        if(el){
+          const chart = echarts.init(el, 'dark');
+          chart.setOption({
+            backgroundColor:'transparent',
+            grid:{ left:36, right:16, top:24, bottom: isNarrow()?64:40, containLabel:true },
+            tooltip:{ trigger:'axis' },
+            xAxis:{ type:'category', data: rows.map(r=>short(r.when, isNarrow()?8:14)), axisLabel:{ color:'#9fb0c6', hideOverlap:true } },
+            yAxis:{ type:'value', show:false },
+            series:[{
+              type:'line', smooth:true, symbolSize:10,
+              data: rows.map((_,i)=>i+1),
+              areaStyle:{ color:'rgba(94,200,255,.15)' },
+              lineStyle:{ color:'#5ec8ff' },
+              itemStyle:{ color:'#3ee0a2' }
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.vis && vis.Timeline){
+        const el = document.getElementById('viz-vis-timeline');
+        if(el){
+          const items = new vis.DataSet(rows.map((r,i)=>{
+            const y = String(r.when).match(/(19|20)\d{2}/);
+            const start = y ? (y[0]+'-01-01') : (`2020-0${(i%9)+1}-01`);
+            return { id:i+1, content: short(r.what, isNarrow()?22:40), start };
+          }));
+          state.timeline = new vis.Timeline(el, items, {
+            stack:true, horizontalScroll:true, zoomKey:'ctrlKey',
+            orientation:'top', margin:{ item:8 },
+            height: isNarrow() ? 200 : 240
+          });
+        }
+      }
+      if(window.Plotly){
+        const el = document.getElementById('viz-plotly-timeline');
+        if(el){
+          Plotly.newPlot(el, [{
+            type:'scatter', mode:'lines+markers',
+            x: rows.map(r=>r.when), y: rows.map((_,i)=>i+1),
+            text: rows.map(r=>r.what),
+            marker:{ color:'#5ec8ff', size:10 },
+            line:{ color:'#3ee0a2' }
+          }], {
+            paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+            font:{ color:'#c9d7ea', size: isNarrow()?11:12 },
+            margin:{ t:20,r:12,b: isNarrow()?70:40, l:36 },
+            yaxis:{ title:'序', gridcolor:'#2a3544' },
+            xaxis:{ gridcolor:'#2a3544', tickangle: isNarrow()?-35:0 }
+          }, {responsive:true, displayModeBar:false});
+        }
+      }
+    }
+
+    /* —— compare —— */
+    const firstCompare = compares[0] || null;
+    if(firstCompare){
+      const headers = firstCompare.headers || firstCompare[0] || [];
+      const body = firstCompare.rows || firstCompare[1] || [];
+      const fields = headers.map((h,i)=> 'c'+i);
+      const dataRows = body.map(r=>{
+        const o={}; fields.forEach((f,i)=>{ o[f]= (r&&r[i]!=null)? String(r[i]) : ''; }); return o;
+      });
+      if(window.Tabulator && document.getElementById('viz-tabulator-compare')){
+        new Tabulator('#viz-tabulator-compare', {
+          data: dataRows, layout:'fitDataStretch', height: tableH('240px'),
+          columns: headers.map((h,i)=>({
+            title:String(h), field:fields[i], minWidth:100, widthGrow:1,
+            headerFilter: isNarrow()?false:'input', formatter:'textarea'
+          }))
+        });
+      }
+      if(window.gridjs && document.getElementById('viz-gridjs-compare')){
+        new gridjs.Grid({
+          columns: headers.map(String),
+          data: body.map(r=> (r||[]).map(c=> String(c??''))),
+          search: !isNarrow(), sort: true,
+          pagination: { enabled:true, limit: isNarrow()?5:8 },
+          style: { table:{ 'font-size': isNarrow()?'12px':'13px' } }
+        }).render(document.getElementById('viz-gridjs-compare'));
+      }
+    }
+
+    /* —— evolution —— */
+    if(evolution.length){
+      const rows = evolution.map(r=>({ stage:r.stage||r[0]||'', content:r.content||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-evolve')){
+        new Tabulator('#viz-tabulator-evolve', {
+          data: rows, layout:'fitDataStretch', height: tableH('200px'),
+          columns:[
+            {title:'階段', field:'stage', minWidth:90, widthGrow:1, headerFilter:isNarrow()?false:'input'},
+            {title:'重點內容', field:'content', minWidth:140, widthGrow:3, headerFilter:isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      const mEl = document.getElementById('viz-mermaid-evolve');
+      if(mEl && window.mermaid){
+        const dir = isNarrow() ? 'TD' : 'LR';
+        let code = 'flowchart ' + dir + '\n';
+        rows.forEach((r,i)=>{
+          const id = 'S'+(i+1);
+          const label = short(r.stage, isNarrow()?14:18).replace(/"/g,"'");
+          code += `  ${id}["${label}"]\n`;
+          if(i>0) code += `  S${i} --> ${id}\n`;
+        });
+        mEl.removeAttribute('data-processed');
+        mEl.textContent = code;
+        try { mermaid.run({ nodes: [mEl] }); } catch(e){
+          try { mermaid.init(undefined, mEl); } catch(_e){}
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-evolve');
+        if(el){
+          const { w, h } = boxSize(el);
+          const chart = echarts.init(el, 'dark');
+          const n = rows.length || 1;
+          chart.setOption({
+            backgroundColor:'transparent',
+            tooltip:{ formatter: p => (p.data && (p.data.name + '<br/>' + (p.data.value||''))) || '' },
+            series:[{
+              type:'graph', layout:'none', roam:true,
+              label:{ show:true, color:'#e8eef7', fontSize: isNarrow()?10:12 },
+              edgeSymbol:['none','arrow'],
+              data: rows.map((r,i)=>({
+                name: short(r.stage, isNarrow()?10:12),
+                x: isNarrow() ? (w*0.5) : (40 + i * Math.max(70, (w-80)/Math.max(n-1,1))),
+                y: isNarrow() ? (30 + i * Math.max(42, (h-60)/Math.max(n-1,1))) : (h*0.45),
+                value: r.content
+              })),
+              links: rows.slice(1).map((_,i)=>({ source:i, target:i+1 }))
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.d3){
+        const el = document.getElementById('viz-d3-evolve');
+        if(el){
+          el.innerHTML = '';
+          const { w } = boxSize(el);
+          const height = Math.max(el.clientHeight || 240, 200);
+          const svg = d3.select(el).append('svg').attr('width', w).attr('height', height);
+          const root = { name:'演進', children: rows.map(r=>({ name: short(r.stage, isNarrow()?12:16), children:[{ name: short(r.content, isNarrow()?20:28) }] })) };
+          const hier = d3.hierarchy(root);
+          d3.tree().size([height-36, Math.max(120, w-120)])(hier);
+          const g = svg.append('g').attr('transform','translate(56,18)');
+          g.selectAll('.link').data(hier.links()).enter().append('path')
+            .attr('class','link').attr('fill','none')
+            .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+          const node = g.selectAll('.node').data(hier.descendants()).enter().append('g')
+            .attr('class','node').attr('transform', d=>`translate(${d.y},${d.x})`);
+          node.append('circle').attr('r',4);
+          node.append('text').attr('dy',3).attr('x', d=> d.children? -8:8)
+            .attr('text-anchor', d=> d.children? 'end':'start').text(d=>d.data.name);
+        }
+      }
+    }
+
+    /* —— graphs —— */
+    if(document.getElementById('viz-cytoscape') || document.getElementById('viz-vis-network')){
+      const gNodes = nodes.length ? nodes : outline.map((o,i)=>({ id:'n'+i, label: short(o.title||('節'+(i+1)), 18) }));
+      const gEdges = edges.length ? edges : gNodes.slice(1).map((n,i)=>({ from: gNodes[i].id, to: n.id }));
+      if(window.cytoscape && gNodes.length && document.getElementById('viz-cytoscape')){
+        state.cy = cytoscape({
+          container: document.getElementById('viz-cytoscape'),
+          elements: [
+            ...gNodes.map(n=>({ data:{ id:String(n.id), label:n.label||String(n.id) } })),
+            ...gEdges.map((e,i)=>({ data:{ id:'e'+i, source:String(e.from||e.source), target:String(e.to||e.target) } }))
+          ],
+          style:[
+            { selector:'node', style:{ 'background-color':'#5ec8ff', 'label':'data(label)', 'color':'#e8eef7', 'font-size': isNarrow()?'9px':'10px', 'text-wrap':'wrap', 'text-max-width': isNarrow()?64:80 } },
+            { selector:'edge', style:{ 'width':2, 'line-color':'#3ee0a2', 'target-arrow-color':'#3ee0a2', 'target-arrow-shape':'triangle', 'curve-style':'bezier' } }
+          ],
+          layout:{ name:'cose', animate:false, padding:16 }
+        });
+      }
+      if(window.vis && vis.Network && gNodes.length && document.getElementById('viz-vis-network')){
+        const el = document.getElementById('viz-vis-network');
+        const ns = new vis.DataSet(gNodes.map(n=>({ id:n.id, label:n.label||String(n.id) })));
+        const es = new vis.DataSet(gEdges.map((e,i)=>({ id:i, from:e.from||e.source, to:e.to||e.target })));
+        state.network = new vis.Network(el, { nodes:ns, edges:es }, {
+          nodes:{ shape:'dot', size: isNarrow()?11:14, font:{ color:'#e8eef7', size: isNarrow()?11:13 }, color:{ background:'#5ec8ff', border:'#3ee0a2' } },
+          edges:{ color:'#6ee7f5', arrows:'to' },
+          physics:{ stabilization:true },
+          interaction:{ zoomView:true, dragView:true }
+        });
+      }
+    }
+
+    /* —— extra（HTML 已為每張圖建獨立格） —— */
+    if(charts.length && window.Chart){
+      charts.forEach((c, i)=>{
+        const canvas = document.getElementById('viz-extra-chart-'+i);
+        if(!canvas) return;
+        const cfg = c.config || {};
+        new Chart(canvas, {
+          type: cfg.type || c.type || 'bar',
+          data: cfg.data || { labels:c.labels||[], datasets:c.datasets||[] },
+          options: Object.assign({
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#c9d7ea' } } },
+            scales:{
+              x:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } },
+              y:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } }
+            }
+          }, cfg.options||{})
+        });
+      });
+    }
+    const mHost = document.getElementById('viz-extra-mermaids');
+    if(mHost && mermaids.length){
+      mermaids.forEach((code)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'mb-3 mermaid-host';
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = code;
+        wrap.appendChild(pre);
+        mHost.appendChild(wrap);
+      });
+      if(window.mermaid){
+        try { mermaid.run({ querySelector: '#viz-extra-mermaids .mermaid' }); } catch(e){}
+      }
+    }
+
+    setTimeout(fitAll, 80);
+    setTimeout(fitAll, 320);
+  }
+
+  function requestInit(){
+    // 等一幀確保 tab 已顯示、容器有寬度
+    requestAnimationFrame(()=> requestAnimationFrame(initViz));
+  }
+
+  // 圖表 tab 顯示後才初始化（避免隱藏 tab 寬度為 0）
+  const chartsBtn = document.getElementById('tab-charts-btn');
+  if(chartsBtn){
+    chartsBtn.addEventListener('shown.bs.tab', ()=> requestInit());
+  }
+  document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn=>{
+    btn.addEventListener('shown.bs.tab', (ev)=>{
+      const target = (ev.target && ev.target.getAttribute('data-bs-target')) || '';
+      if(target === '#tab-charts') requestInit();
+      else if(state.ready) setTimeout(fitAll, 50);
+    });
+  });
+
+  // 若圖表本來就是作用中（或沒有 tabs），直接初始化
+  if(chartsTabVisible()){
+    requestInit();
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+  });
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize', ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  if(!('speechSynthesis' in window)){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      const st = root.querySelector('[data-tts-status]');
+      if(st) st.textContent = '此瀏覽器不支援語音播放，仍可閱讀講解稿。';
+      root.querySelectorAll('button[data-tts-play],button[data-tts-pause],button[data-tts-stop]').forEach(b=> b.disabled = true);
+      root.querySelectorAll('[data-tts-voice]').forEach(s=> s.disabled = true);
+    });
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const STORE_KEY = 'note-tts-voice-uri-v2';
+  let currentRoot = null;
+  let currentUtter = null;
+  let voicesReady = false;
+
+  function voiceScore(v){
+    const blob = ((v.name||'') + ' ' + (v.lang||'')).toLowerCase();
+    let s = 0;
+    if(/zh|chinese|中文|國語|台|hong|澳門|yue/.test(blob)) s += 100;
+    // 預設優先 Google 中文語音
+    if(/google/.test(blob)) s += 200;
+    if(/zh-tw|taiwan|國語（台灣）|國語 \(台灣\)|chinese \(taiwan\)/.test(blob)) s += 90;
+    if(/hanhan|hsia.?chen|yunjhe|yun-jie|zhiwei|meijia|tingting/.test(blob)) s += 70;
+    if(/zh-cn|xiaoxiao|xiaoyi|yunxi|yunyang|huihui|普通话|國語（中國）/.test(blob)) s += 50;
+    if(/natural|neural|online|自然|神經|雲端/.test(blob)) s += 35;
+    if(/microsoft|edge/.test(blob)) s += 8;
+    if(/desktop|sapi|espeak|compact/.test(blob)) s -= 15;
+    return s;
+  }
+  function listVoices(){
+    const all = synth.getVoices() || [];
+    const zh = all.filter(v => voiceScore(v) >= 100).sort((a,b)=> voiceScore(b)-voiceScore(a));
+    if(zh.length) return zh;
+    return all.slice().sort((a,b)=> voiceScore(b)-voiceScore(a));
+  }
+  function voiceKey(v){
+    return (v.voiceURI || (v.name + '|' + v.lang) || '').trim();
+  }
+  function savedVoiceKey(){
+    try{ return localStorage.getItem(STORE_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveVoiceKey(key){
+    try{ localStorage.setItem(STORE_KEY, key || ''); }catch(e){}
+  }
+  function findVoiceByKey(key){
+    if(!key) return null;
+    const voices = synth.getVoices() || [];
+    return voices.find(v => voiceKey(v) === key) || null;
+  }
+  function defaultVoice(){
+    const voices = listVoices();
+    if(!voices.length) return null;
+    const saved = findVoiceByKey(savedVoiceKey());
+    if(saved) return saved;
+    const googleTw = voices.find(v => /google/i.test(v.name) && /zh-tw|taiwan|台灣|台湾/i.test(v.name + v.lang));
+    const googleZh = voices.find(v => /google/i.test(v.name) && /zh|chinese|中文|國語|普通话/i.test(v.name + v.lang));
+    const googleAny = voices.find(v => /google/i.test(v.name));
+    return googleTw || googleZh || googleAny || voices[0];
+  }
+  function fillVoiceSelects(){
+    const voices = listVoices();
+    const preferred = defaultVoice();
+    const preferredKey = preferred ? voiceKey(preferred) : '';
+    document.querySelectorAll('[data-tts-voice]').forEach(sel=>{
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if(!voices.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '（尚無可用語音）';
+        sel.appendChild(opt);
+        return;
+      }
+      voices.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = voiceKey(v);
+        let tag = '';
+        if(/google/i.test(v.name)) tag = ' ★Google';
+        else if(/natural|neural|online|自然/i.test(v.name)) tag = ' ★較自然';
+        opt.textContent = (v.name || '語音') + '（' + (v.lang || '?') + '）' + tag;
+        sel.appendChild(opt);
+      });
+      const want = prev || preferredKey || voiceKey(voices[0]);
+      if([...sel.options].some(o => o.value === want)) sel.value = want;
+      else sel.selectedIndex = 0;
+    });
+    voicesReady = true;
+  }
+  function selectedVoice(root){
+    const sel = root && root.querySelector('[data-tts-voice]');
+    const key = sel && sel.value;
+    return findVoiceByKey(key) || defaultVoice();
+  }
+  function setStatus(root, text){
+    const st = root && root.querySelector('[data-tts-status]');
+    if(st) st.textContent = text || '';
+  }
+  function setSpeaking(root, on){
+    const box = root && root.querySelector('[data-tts-text]');
+    if(box) box.classList.toggle('is-speaking', !!on);
+  }
+  function stopAll(){
+    try{ synth.cancel(); }catch(e){}
+    if(currentRoot){
+      setSpeaking(currentRoot, false);
+      setStatus(currentRoot, '使用系統語音朗讀（可自選聲線）');
+    }
+    currentRoot = null;
+    currentUtter = null;
+  }
+  function playRoot(root){
+    const textEl = root.querySelector('[data-tts-text]');
+    const text = (textEl && (textEl.innerText || textEl.textContent) || '').trim();
+    if(!text){ setStatus(root, '尚無講解稿'); return; }
+    if(!voicesReady) fillVoiceSelects();
+    stopAll();
+    const u = new SpeechSynthesisUtterance(text);
+    const voice = selectedVoice(root);
+    if(voice){
+      u.voice = voice;
+      u.lang = voice.lang || 'zh-TW';
+      saveVoiceKey(voiceKey(voice));
+    }else{
+      u.lang = 'zh-TW';
+    }
+    const rateEl = root.querySelector('[data-tts-rate]');
+    u.rate = rateEl ? Number(rateEl.value || 1) : 1;
+    u.pitch = 1;
+    u.onstart = ()=>{
+      currentRoot = root;
+      setSpeaking(root, true);
+      setStatus(root, '播放中… ' + ((voice && voice.name) || ''));
+    };
+    u.onend = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放結束');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    u.onerror = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放中斷（可改選其他語音）');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    currentUtter = u;
+    // Chrome 偶發 cancel 後立刻 speak 會失敗
+    setTimeout(()=> synth.speak(u), 40);
+  }
+
+  function bindRoots(){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      if(root.dataset.ttsBound) return;
+      root.dataset.ttsBound = '1';
+      const play = root.querySelector('[data-tts-play]');
+      const pause = root.querySelector('[data-tts-pause]');
+      const stop = root.querySelector('[data-tts-stop]');
+      const voiceSel = root.querySelector('[data-tts-voice]');
+      if(play) play.addEventListener('click', ()=>{
+        if(synth.paused && currentRoot === root){ synth.resume(); setStatus(root, '繼續播放…'); return; }
+        playRoot(root);
+      });
+      if(pause) pause.addEventListener('click', ()=>{
+        if(synth.speaking && !synth.paused){ synth.pause(); setStatus(root, '已暫停'); }
+      });
+      if(stop) stop.addEventListener('click', ()=> stopAll());
+      if(voiceSel) voiceSel.addEventListener('change', ()=>{
+        saveVoiceKey(voiceSel.value);
+        document.querySelectorAll('[data-tts-voice]').forEach(other=>{
+          if(other !== voiceSel) other.value = voiceSel.value;
+        });
+        setStatus(root, '已選語音，按朗讀試聽');
+      });
+    });
+  }
+
+  fillVoiceSelects();
+  bindRoots();
+  try{
+    synth.getVoices();
+    synth.addEventListener('voiceschanged', ()=>{ fillVoiceSelects(); });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

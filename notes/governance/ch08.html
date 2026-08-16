@@ -1,0 +1,3656 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>第 8 章 股東會及委託書使用之解析</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/theme/mermaid.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-alpine-dark.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+.viz-toolkit-badge{display:inline-flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 1rem;}
+.viz-pill{font-size:.68rem;font-weight:750;padding:.18rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(18,24,33,.85);}
+.viz-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+  align-items:stretch;
+}
+@media (min-width:768px){
+  .viz-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media (min-width:1200px){
+  .viz-grid.viz-grid-dense{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+.viz-cell{
+  margin:0;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(16,22,30,.92);
+  max-width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.viz-cell-wide{grid-column:1 / -1;}
+.viz-panel-h,.viz-cell-h{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:720;
+}
+.viz-lib{font-size:.7rem;font-weight:800;padding:.15rem .45rem;border-radius:999px;background:rgba(94,200,255,.16);color:var(--cyan);}
+.viz-body,.viz-cell-b{padding:.75rem .85rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.viz-box{min-height:clamp(180px,42vw,260px);width:100%;max-width:100%;position:relative;}
+.viz-box-sm{min-height:clamp(160px,38vw,220px);}
+.viz-box-lg{min-height:clamp(220px,48vw,340px);}
+.viz-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0;}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.tabulator,.tabulator-header,.tabulator-row{background:transparent !important;color:var(--text) !important;}
+.tabulator{border:1px solid rgba(255,255,255,.08) !important;border-radius:10px;overflow:hidden;max-width:100%;}
+.gridjs-wrapper{overflow-x:auto !important;max-width:100%;}
+.gridjs-th,.gridjs-td{background:#121821 !important;border-color:rgba(255,255,255,.1) !important;color:#e8eef7 !important;}
+table.dataTable{color:var(--text);width:100% !important;}
+.ag-theme-alpine-dark{--ag-background-color:#121821;--ag-header-background-color:#0d1520;height:clamp(220px,50vw,300px);width:100%;max-width:100%;}
+.markmap-host{position:relative;width:100%;max-width:100%;height:clamp(280px,58vw,420px);border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;overflow:hidden;}
+.markmap-host .markmap{position:relative;width:100%;height:100%;}
+.markmap-host .markmap > svg,
+.markmap > svg{width:100% !important;height:100% !important;min-height:260px;display:block;}
+.cy-host,.vis-host{height:clamp(240px,55vw,340px);width:100%;max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;}
+.vis-timeline{border:0 !important;background:transparent !important;width:100% !important;}
+.vis-item{background:rgba(94,200,255,.25) !important;border-color:rgba(94,200,255,.55) !important;color:#e8eef7 !important;font-size:12px !important;}
+.d3-host{height:clamp(220px,50vw,300px);width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;}
+.d3-host text{fill:#c9d7ea;font-size:11px;}
+.d3-host .link{stroke:rgba(94,200,255,.35);}
+.d3-host .node circle{fill:#5ec8ff;}
+.mermaid-host{padding:.5rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#0a0e14;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.mermaid-host .mermaid,.mermaid-host svg{max-width:100%;}
+@media (max-width:767px){
+  .viz-cell-b{padding:.65rem .7rem .85rem;}
+  .viz-cell-h{padding:.55rem .7rem;font-size:.92rem;}
+  .viz-toolkit-badge{gap:.28rem;}
+  .viz-pill{font-size:.62rem;padding:.14rem .42rem;}
+  .tabulator .tabulator-header-filter input{font-size:12px;}
+}
+@media (max-width:420px){
+  .markmap-host{height:260px;}
+  .cy-host,.vis-host{height:220px;}
+}
+.narration-box{
+  margin:.85rem 0 1.1rem;border:1px solid rgba(110,231,245,.28);border-radius:14px;
+  background:linear-gradient(135deg,rgba(110,231,245,.08),rgba(16,22,30,.95));
+  overflow:hidden;
+}
+.narration-box > summary{
+  list-style:none;cursor:pointer;padding:.7rem .9rem;font-weight:750;
+  display:flex;align-items:center;gap:.45rem;color:#e8eef7;
+}
+.narration-box > summary::-webkit-details-marker{display:none;}
+.narration-box > summary::before{content:"▸";color:var(--sky,#6ee7f5);}
+.narration-box[open] > summary::before{content:"▾";}
+.narration-badge{
+  font-size:.7rem;font-weight:800;padding:.14rem .45rem;border-radius:999px;
+  background:rgba(110,231,245,.18);color:var(--sky,#6ee7f5);
+}
+.narration-body{padding:0 .9rem 1rem;}
+.narration-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 .65rem;
+}
+.narration-toolbar button{
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  background:rgba(18,24,33,.9);color:#e8eef7;padding:.32rem .75rem;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+}
+.narration-toolbar button.main{
+  background:linear-gradient(135deg,rgba(94,200,255,.9),rgba(62,224,162,.75));
+  color:#071018;border:0;
+}
+.narration-toolbar button:hover{filter:brightness(1.08);}
+.narration-toolbar button:disabled{opacity:.45;cursor:not-allowed;}
+.narration-rate{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);}
+.narration-rate input{width:90px;accent-color:#5ec8ff;}
+.narration-voice{
+  display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);
+  flex:1 1 220px;min-width:180px;
+}
+.narration-voice select{
+  flex:1;min-width:0;max-width:100%;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  background:rgba(18,24,33,.95);color:#e8eef7;
+  padding:.28rem .7rem;font-size:.78rem;
+}
+.narration-hint{font-size:.72rem;color:var(--muted,#9fb0c6);margin:.15rem 0 .45rem;line-height:1.45;}
+.narration-status{font-size:.78rem;color:var(--mint,#3ee0a2);min-height:1.1em;}
+.narration-script{
+  white-space:pre-wrap;line-height:1.75;color:#d7e2f0;font-size:.92rem;
+  padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(110,231,245,.25);
+  background:rgba(10,14,20,.72);max-height:280px;overflow:auto;-webkit-overflow-scrolling:touch;
+}
+.narration-script.is-speaking{border-color:rgba(62,224,162,.55);box-shadow:inset 3px 0 0 var(--mint,#3ee0a2);}
+@media (max-width:560px){
+  .narration-toolbar{gap:.35rem;}
+  .narration-voice{flex-basis:100%;}
+  .narration-script{max-height:220px;font-size:.88rem;}
+}
+:root{
+  --bg:#0b0f14; --text:#e8eef7; --muted:#9fb0c6;
+  --cyan:#5ec8ff; --mint:#3ee0a2; --amber:#ffc857; --coral:#ff7b72;
+  --violet:#c3a6ff; --sky:#6ee7f5; --side-w:320px; --side-blue:#0d2137;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;}
+body{
+  background:
+    radial-gradient(1100px 480px at 8% -8%, rgba(94,200,255,.12), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgba(195,166,255,.10), transparent 50%),
+    var(--bg);
+  color:var(--text);
+}
+
+.layout{min-height:100vh;}
+.sidebar{
+  position:fixed; inset:0 auto 0 0; width:min(var(--side-w), 88vw); z-index:40;
+  background:linear-gradient(180deg, #0a2744 0%, var(--side-blue) 40%, #0b1a2a 100%);
+  border-right:1px solid rgba(94,200,255,.18);
+  display:flex; flex-direction:column;
+  transform:translateX(0); transition:transform .22s ease;
+  box-shadow:8px 0 28px rgba(0,0,0,.25);
+}
+body.side-collapsed .sidebar{transform:translateX(-105%);}
+.side-scroll{overflow:auto; -webkit-overflow-scrolling:touch; padding:.85rem .75rem 5rem; flex:1;}
+.side-brand-block{padding:.35rem .45rem 0.85rem; border-bottom:1px solid rgba(94,200,255,.15); margin-bottom:.75rem;}
+.side-brand{font-weight:850; font-size:1.05rem; color:#fff; letter-spacing:.04em;}
+.side-sub{font-size:.75rem; color:rgba(158,200,230,.85); margin-top:.15rem;}
+.side-home{
+  display:inline-flex; margin-top:.55rem; font-size:.78rem; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+}
+.side-home:hover{color:#fff;}
+.chap-drop{
+  border:1px solid rgba(94,200,255,.14); border-radius:12px;
+  background:rgba(8,24,40,.72); margin:0 0 .45rem; overflow:hidden;
+}
+.chap-drop.active-chap{border-color:rgba(94,200,255,.45); box-shadow:inset 3px 0 0 var(--cyan);}
+.chap-drop > summary{
+  list-style:none; cursor:pointer; padding:.55rem .65rem;
+  display:flex; align-items:center; gap:.35rem;
+  font-size:.84rem; font-weight:750; color:#e8f4ff;
+}
+.chap-drop > summary::-webkit-details-marker{display:none;}
+.chap-drop > summary::before{content:"▸"; color:rgba(158,200,230,.7); width:1rem; flex:0 0 auto;}
+.chap-drop[open] > summary::before{content:"▾"; color:var(--cyan);}
+.chap-sum-link{color:inherit; text-decoration:none; flex:1; min-width:0; word-break:break-word;}
+.chap-sum-link:hover{color:var(--cyan);}
+.toc-kids{padding:0 .35rem .55rem .35rem; display:flex; flex-direction:column; gap:.08rem;}
+.toc-h3{
+  display:flex; align-items:flex-start; gap:.4rem; text-decoration:none; color:rgba(200,220,235,.88);
+  font-size:.78rem; padding:.32rem .45rem; border-radius:8px; line-height:1.35;
+}
+.toc-h3:hover{background:rgba(94,200,255,.12); color:#fff;}
+.toc-sub{padding-left:1.15rem; font-size:.74rem; color:rgba(170,195,215,.8);}
+.toc-mark{flex:0 0 auto; width:1.1rem; text-align:center; color:var(--cyan); font-size:.85rem;}
+.toc-sub .toc-mark{color:var(--amber); font-size:.78rem;}
+.toc-text{flex:1; min-width:0; overflow-wrap:anywhere;}
+.edge-toggle{
+  position:fixed; left:calc(min(var(--side-w), 88vw) - 16px); top:max(12px, env(safe-area-inset-top));
+  z-index:50; width:32px; height:32px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(13,33,55,.95); color:#fff; cursor:pointer;
+  display:grid; place-items:center; transition:left .22s ease, opacity .2s ease;
+}
+body.side-collapsed .edge-toggle{display:none;}
+.burger-fab{
+  display:none; position:fixed;
+  left:max(12px, env(safe-area-inset-left));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:55; width:42px; height:42px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(94,200,255,.45),rgba(62,224,162,.32));
+  color:#071018; font-size:1.1rem; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+body.side-collapsed .burger-fab{display:grid; place-items:center;}
+.content{margin-left:min(var(--side-w), 88vw); min-width:0; width:auto; transition:margin-left .22s ease;}
+body.side-collapsed .content{margin-left:0;}
+.wrap{max-width:980px; margin:0 auto; padding:1.25rem 1.15rem 3.2rem; overflow-x:clip;}
+body.side-collapsed .wrap{padding-top:4.2rem;}
+.meta-line{color:var(--muted); font-size:.82rem; margin-bottom:.9rem;}
+.backdrop{display:none; position:fixed; inset:0; z-index:35; background:rgba(0,0,0,.45);}
+body.side-open-mobile .backdrop{display:block;}
+
+@media (max-width:1100px){
+  :root{ --side-w:280px; }
+  .milestone-track{grid-template-columns:repeat(auto-fit,minmax(132px,1fr));}
+}
+@media (max-width:900px){
+  .sidebar{
+    width:min(86vw, 320px);
+    transform:translateX(-105%);
+    box-shadow:12px 0 40px rgba(0,0,0,.45);
+  }
+  body.side-open-mobile .sidebar{transform:translateX(0);}
+  body.side-collapsed .sidebar{transform:translateX(-105%);}
+  /* 開啟時必須蓋過 collapsed，否則漢堡按了側欄仍關著 */
+  body.side-collapsed.side-open-mobile .sidebar{transform:translateX(0);}
+  .content{margin-left:0 !important; width:100%;}
+  .edge-toggle{display:none !important;}
+  .burger-fab{display:grid !important; place-items:center;}
+  body.side-open-mobile .burger-fab{opacity:1;}
+  .wrap{
+    padding:4.4rem max(.85rem, env(safe-area-inset-right))
+            calc(2.5rem + env(safe-area-inset-bottom))
+            max(.85rem, env(safe-area-inset-left));
+  }
+  .note-title{font-size:clamp(1.2rem, 5.5vw, 1.65rem);}
+  .lecture-nav{
+    display:flex; flex-wrap:nowrap; gap:.35rem;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:.35rem; margin-bottom:.75rem;
+    scrollbar-width:thin;
+  }
+  .lecture-nav .nav-item{flex:0 0 auto;}
+  .lecture-nav .nav-link{padding:.38rem .75rem; font-size:.82rem; white-space:nowrap;}
+  .lecture-tab-content{padding:.85rem .7rem 1.1rem; border-radius:12px;}
+  .milestone-track{grid-template-columns:1fr 1fr; gap:.55rem;}
+  .path-cards{grid-template-columns:1fr;}
+  .sec-head{align-items:flex-start;}
+  .sec-title{font-size:1.05rem; line-height:1.35;}
+  .sec-num{flex:0 0 auto;}
+  .struct-table td:first-child{white-space:normal; min-width:4.5rem;}
+  .struct-table table{font-size:.8rem;}
+  .struct-cap{flex-wrap:wrap; font-size:.86rem;}
+  .row.g-3 > [class*="col-"]{flex:0 0 100%; max-width:100%;}
+  .ans-row{flex-direction:column;}
+  .ans-box{width:100%;}
+}
+@media (max-width:560px){
+  .milestone-track{grid-template-columns:1fr;}
+  .chip-row{gap:.35rem;}
+  .tag-chip{font-size:.72rem; padding:.22rem .55rem;}
+  .summary-chip{padding:.65rem .75rem; font-size:.9rem;}
+  .unit-badge{font-size:.7rem;}
+  .ms-desc,.path-desc{font-size:.74rem;}
+  .table-responsive{margin:0 -.15rem; border-radius:0 0 12px 12px;}
+  .struct-table .table th,.struct-table .table td{padding:.4rem .45rem;}
+}
+@media (min-width:901px){
+  body.side-open-mobile .backdrop{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.content,.edge-toggle{transition:none;}
+}
+@media print{
+  .sidebar,.burger-fab,.edge-toggle,.backdrop,.lecture-nav{display:none !important;}
+  .content{margin-left:0 !important;}
+  .wrap{padding:0; max-width:100%;}
+  .tab-pane{display:block !important; opacity:1 !important;}
+}
+
+.lecture-hero{margin-bottom:1rem;}
+.unit-badge{display:inline-block;font-size:.75rem;font-weight:800;padding:.28rem .7rem;border-radius:999px;background:linear-gradient(135deg,rgba(94,200,255,.25),rgba(195,166,255,.25));border:1px solid rgba(255,255,255,.1);margin-bottom:.55rem;}
+.note-title{font-weight:780;line-height:1.28;font-size:clamp(1.4rem,3vw,1.95rem);margin:0 0 .7rem;}
+.chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 1rem;}
+.tag-chip{display:inline-flex;align-items:center;padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:650;border:1px solid transparent;background:rgba(18,24,33,.95);}
+.chip-cyan{border-color:rgba(94,200,255,.4);box-shadow:inset 3px 0 0 var(--cyan);}
+.chip-mint{border-color:rgba(62,224,162,.4);box-shadow:inset 3px 0 0 var(--mint);}
+.chip-amber{border-color:rgba(255,200,87,.4);box-shadow:inset 3px 0 0 var(--amber);}
+.chip-coral{border-color:rgba(255,123,114,.4);box-shadow:inset 3px 0 0 var(--coral);}
+.chip-violet{border-color:rgba(195,166,255,.4);box-shadow:inset 3px 0 0 var(--violet);}
+.chip-sky{border-color:rgba(110,231,245,.4);box-shadow:inset 3px 0 0 var(--sky);}
+.summary-chips{display:flex;flex-direction:column;gap:.55rem;}
+.summary-chip{border-radius:12px;padding:.75rem .95rem;border:1px solid transparent;background:rgba(18,24,33,.9);line-height:1.55;}
+.panel{background:rgba(18,24,33,.88);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;}
+.panel-mint{border-left:4px solid var(--mint);}
+.section-kicker{font-size:.75rem;font-weight:800;letter-spacing:.08em;color:var(--cyan);margin-bottom:.25rem;}
+.section-title{font-size:1.1rem;font-weight:720;margin-bottom:.7rem;}
+.tab-hint{color:var(--muted);font-size:.9rem;}
+.milestone-wrap{margin:0 0 1.2rem;}
+.milestone-track{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;}
+.milestone-link{display:flex;flex-direction:column;gap:.3rem;height:100%;padding:.8rem .85rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.92);border:1px solid rgba(255,255,255,.08);}
+.milestone-link:hover{border-color:rgba(94,200,255,.45);color:inherit;}
+.ms-dot{width:1.6rem;height:1.6rem;border-radius:999px;display:grid;place-items:center;font-size:.78rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.ms-label{font-weight:720;font-size:.92rem;}
+.ms-desc{font-size:.76rem;color:var(--muted);line-height:1.4;}
+.path-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;}
+.path-card{display:block;padding:1rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.path-card:hover{border-color:rgba(195,166,255,.5);color:inherit;}
+.path-idx{font-size:.75rem;font-weight:800;color:var(--violet);}
+.path-title{font-weight:720;margin:.25rem 0;}
+.path-desc{font-size:.82rem;color:var(--muted);}
+.path-go{margin-top:.5rem;font-size:.82rem;color:var(--cyan);}
+.lecture-nav{gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lecture-nav .nav-link{border-radius:999px;color:var(--muted);background:rgba(18,24,33,.8);border:1px solid rgba(255,255,255,.08);padding:.4rem .9rem;}
+.lecture-nav .nav-link.active{color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));border-color:transparent;font-weight:750;}
+.lecture-tab-content{background:rgba(12,16,22,.45);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.1rem 1rem 1.4rem;}
+.sec-block{padding:1rem 0 1.35rem;border-bottom:1px solid rgba(255,255,255,.06);scroll-margin-top:1.2rem;}
+.sec-block:last-child{border-bottom:0;}
+.sec-kicker{font-size:.72rem;font-weight:800;color:var(--amber);letter-spacing:.04em;margin-bottom:.3rem;}
+.sec-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.45rem;}
+.sec-num{display:inline-grid;place-items:center;min-width:1.85rem;height:1.85rem;border-radius:999px;font-size:.9rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));flex:0 0 auto;}
+.sec-title{margin:0;font-size:1.15rem;font-weight:720;}
+.subhead{font-size:1rem;font-weight:700;margin:1rem 0 .45rem;color:var(--sky);scroll-margin-top:1.2rem;}
+.sec-body p,.sec-body li,.sub-sec p,.sub-sec li{line-height:1.75;color:#d7e2f0;overflow-wrap:anywhere;}
+.sec-body table,.sub-sec table{width:100%;margin:1rem 0;border-collapse:collapse;font-size:.88rem;}
+.sec-body th,.sec-body td,.sub-sec th,.sub-sec td{border:1px solid rgba(255,255,255,.12);padding:.45rem .55rem;}
+.sec-body th,.sub-sec th{background:rgba(94,200,255,.12);}
+.sec-body blockquote,.sub-sec blockquote{border-left:3px solid var(--violet);margin:1rem 0;padding:.4rem .9rem;color:var(--muted);background:rgba(195,166,255,.06);}
+.kp-box{margin:.75rem 0 .2rem;padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(94,200,255,.35);background:rgba(94,200,255,.06);}
+.callout{border-radius:14px;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.08);background:rgba(16,22,30,.92);margin:.7rem 0;}
+.callout-label{font-size:.75rem;font-weight:800;letter-spacing:.06em;margin-bottom:.3rem;color:var(--cyan);}
+.callout-warn{border-color:rgba(255,200,87,.45);background:linear-gradient(135deg,rgba(255,200,87,.14),rgba(16,22,30,.95));}
+.callout-warn .callout-label{color:var(--amber);}
+.quick-card{padding:1rem;border-radius:14px;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);height:100%;}
+.quick-kicker{font-size:.72rem;font-weight:800;color:var(--cyan);}
+.ans-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:.35rem 0 .7rem;}
+.ans-btn{border-radius:10px;border:1px solid rgba(195,166,255,.4);background:rgba(195,166,255,.12);color:var(--violet);font-size:.82rem;font-weight:700;padding:.35rem .7rem;}
+.ans-box{flex:1 1 180px;min-height:2.2rem;display:flex;align-items:center;padding:.4rem .7rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0a0e14;font-family:ui-monospace,Consolas,monospace;}
+.ans-text{color:var(--mint);overflow-wrap:anywhere;}
+.ans-box.is-masked .ans-text{-webkit-text-security:disc;text-security:disc;color:var(--muted);user-select:none;}
+.struct-table{margin:1rem 0 1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:rgba(16,22,30,.92);}
+.struct-cap{display:flex;align-items:center;gap:.55rem;padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;font-size:.92rem;}
+.struct-badge{font-size:.72rem;font-weight:800;padding:.18rem .5rem;border-radius:999px;letter-spacing:.04em;}
+.table-timeline .struct-badge{background:rgba(94,200,255,.18);color:var(--cyan);}
+.table-compare .struct-badge{background:rgba(195,166,255,.18);color:var(--violet);}
+.table-evolve .struct-badge{background:rgba(62,224,162,.16);color:var(--mint);}
+.struct-table .table-responsive{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.struct-table table{margin:0;--bs-table-bg:transparent;--bs-table-color:var(--text);font-size:.88rem;min-width:100%;}
+.struct-table thead th{background:rgba(94,200,255,.1);color:#e8eef7;}
+.table-compare thead th{background:rgba(195,166,255,.12);}
+.table-evolve thead th{background:rgba(62,224,162,.1);}
+.struct-table td:first-child{font-weight:700;color:var(--amber);vertical-align:top;}
+.table-compare td:first-child{color:var(--violet);}
+.table-evolve td:first-child{color:var(--mint);}
+.structs-wrap .struct-table{margin-bottom:1.35rem;}
+</style>
+</head>
+<body>
+<div class="backdrop" id="side-backdrop" hidden></div>
+<button type="button" class="burger-fab" id="burger-fab" title="打開目錄" aria-label="打開目錄">☰</button>
+<button type="button" class="edge-toggle" id="edge-toggle" title="收起目錄" aria-label="收起目錄">‹</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="左側目錄">
+    <div class="side-scroll"><div class="side-brand-block"><div class="side-brand">公司治理</div><div class="side-sub">詳盡學習講義</div><a class="side-home" href="../index.html">← 筆記首頁</a></div>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch01.html">第1章 台灣公司治理之導論</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch01.html#1-1-前言" data-nav-jump="ch01.html"><span class="toc-mark">◆</span><span class="toc-text">1.1 | 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-2-國際公司治理之發展與趨勢" data-nav-jump="ch01.html"><span class="toc-mark">◇</span><span class="toc-text">1.2 | 國際公司治理之發展與趨勢</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-3-台灣公司治理之發展" data-nav-jump="ch01.html"><span class="toc-mark">›</span><span class="toc-text">1.3 | 台灣公司治理之發展</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-4-台灣公司治理之挑戰與前瞻" data-nav-jump="ch01.html"><span class="toc-mark">▹</span><span class="toc-text">1.4 | 台灣公司治理之挑戰與前瞻</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-1-近期金融事件之挑戰與省思" data-nav-jump="ch01.html"><span class="toc-mark">●</span><span class="toc-text">1.4.1 近期金融事件之挑戰與省思</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-2-2018年公司治理藍圖" data-nav-jump="ch01.html"><span class="toc-mark">○</span><span class="toc-text">1.4.2 2018年公司治理藍圖</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-3-推動建置商業法院" data-nav-jump="ch01.html"><span class="toc-mark">■</span><span class="toc-text">1.4.3 推動建置商業法院</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-4-董事績效評估制度" data-nav-jump="ch01.html"><span class="toc-mark">□</span><span class="toc-text">1.4.4 董事績效評估制度</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-5-引導家族企業結合良好公司治理" data-nav-jump="ch01.html"><span class="toc-mark">✦</span><span class="toc-text">1.4.5 引導家族企業結合良好公司治理</span></a>
+<a class="toc-h3 toc-sub" href="ch01.html#1-4-6-董事成員多元化" data-nav-jump="ch01.html"><span class="toc-mark">✧</span><span class="toc-text">1.4.6 董事成員多元化</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-5-公司治理未來發展" data-nav-jump="ch01.html"><span class="toc-mark">●</span><span class="toc-text">1.5 | 公司治理未來發展</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-6-公司治理-3-0-永續發展藍圖" data-nav-jump="ch01.html"><span class="toc-mark">○</span><span class="toc-text">1.6 | 公司治理 3.0-永續發展藍圖</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-7-上市櫃公司永續發展行動方案-2023年" data-nav-jump="ch01.html"><span class="toc-mark">■</span><span class="toc-text">1.7 | 上市櫃公司永續發展行動方案 (2023年)</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-8-結語" data-nav-jump="ch01.html"><span class="toc-mark">□</span><span class="toc-text">1.8 | 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch01.html#1-9-練習題" data-nav-jump="ch01.html"><span class="toc-mark">✦</span><span class="toc-text">1.9 | 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch02.html">第 2 章 公司董事會議事辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch02.html#2-1-前言" data-nav-jump="ch02.html"><span class="toc-mark">◆</span><span class="toc-text">2.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-2-公開發行公司董事會議事辦法" data-nav-jump="ch02.html"><span class="toc-mark">◇</span><span class="toc-text">2.2 公開發行公司董事會議事辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-1-董事會議事規範" data-nav-jump="ch02.html"><span class="toc-mark">›</span><span class="toc-text">2.2.1 董事會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-2-設立議事事務專責機構" data-nav-jump="ch02.html"><span class="toc-mark">▹</span><span class="toc-text">2.2.2 設立議事事務專責機構</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-3-董事會議事召集" data-nav-jump="ch02.html"><span class="toc-mark">●</span><span class="toc-text">2.2.3 董事會議事召集</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-4-董事會開會時間地點" data-nav-jump="ch02.html"><span class="toc-mark">○</span><span class="toc-text">2.2.4 董事會開會時間地點</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-5-董事會議事內容" data-nav-jump="ch02.html"><span class="toc-mark">■</span><span class="toc-text">2.2.5 董事會議事內容</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-6-董事會會議進行及程序等相關規定" data-nav-jump="ch02.html"><span class="toc-mark">□</span><span class="toc-text">2.2.6 董事會會議進行及程序等相關規定</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-7-董事利益迴避" data-nav-jump="ch02.html"><span class="toc-mark">✦</span><span class="toc-text">2.2.7 董事利益迴避</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-8-董事會議事錄" data-nav-jump="ch02.html"><span class="toc-mark">✧</span><span class="toc-text">2.2.8 董事會議事錄</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-9-公告申報" data-nav-jump="ch02.html"><span class="toc-mark">◆</span><span class="toc-text">2.2.9 公告申報</span></a>
+<a class="toc-h3 toc-sub" href="ch02.html#2-2-10-其他事項" data-nav-jump="ch02.html"><span class="toc-mark">◇</span><span class="toc-text">2.2.10 其他事項</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-3-董事會議事實務小百科" data-nav-jump="ch02.html"><span class="toc-mark">›</span><span class="toc-text">2.3 董事會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-4-結語" data-nav-jump="ch02.html"><span class="toc-mark">▹</span><span class="toc-text">2.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch02.html#2-5-練習題" data-nav-jump="ch02.html"><span class="toc-mark">●</span><span class="toc-text">2.5 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch03.html">第3章 審計委員會行使職權辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch03.html#3-2-國際間審計委員會制度概況" data-nav-jump="ch03.html"><span class="toc-mark">◆</span><span class="toc-text">3.2 國際間審計委員會制度概況</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#美國" data-nav-jump="ch03.html"><span class="toc-mark">◇</span><span class="toc-text">美國</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#德國" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">德國</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#日本" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">日本</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#韓國" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">韓國</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-3-我國審計委員會制度及發展沿革" data-nav-jump="ch03.html"><span class="toc-mark">◇</span><span class="toc-text">3.3 我國審計委員會制度及發展沿革</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-3-1-審計委員會緣起" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">3.3.1 審計委員會緣起</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-3-2-審計委員會發展沿革" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.3.2 審計委員會發展沿革</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-4-我國審計委員會制度相關規範" data-nav-jump="ch03.html"><span class="toc-mark">›</span><span class="toc-text">3.4 我國審計委員會制度相關規範</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-1-審計委員會之設置及組成" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.4.1 審計委員會之設置及組成</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-2-審計委員會之職責" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">3.4.2 審計委員會之職責</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-3-審計委員會會議" data-nav-jump="ch03.html"><span class="toc-mark">○</span><span class="toc-text">3.4.3 審計委員會會議</span></a>
+<a class="toc-h3 toc-sub" href="ch03.html#3-4-4-審計委員會會議其他事項及實務運作" data-nav-jump="ch03.html"><span class="toc-mark">■</span><span class="toc-text">3.4.4 審計委員會會議其他事項及實務運作</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-5-審計委員會議事實務小百科" data-nav-jump="ch03.html"><span class="toc-mark">▹</span><span class="toc-text">3.5 審計委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-6-結語" data-nav-jump="ch03.html"><span class="toc-mark">●</span><span class="toc-text">3.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch03.html#3-7-練習題" data-nav-jump="ch03.html"><span class="toc-mark">○</span><span class="toc-text">3.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch04.html">第4章 薪資報酬委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch04.html#4-1-前言" data-nav-jump="ch04.html"><span class="toc-mark">◆</span><span class="toc-text">4.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-2-國際發展現況" data-nav-jump="ch04.html"><span class="toc-mark">◇</span><span class="toc-text">4.2 國際發展現況</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-3-股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法" data-nav-jump="ch04.html"><span class="toc-mark">›</span><span class="toc-text">4.3 股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-1-適用範圍" data-nav-jump="ch04.html"><span class="toc-mark">▹</span><span class="toc-text">4.3.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-2-組織規程訂定" data-nav-jump="ch04.html"><span class="toc-mark">●</span><span class="toc-text">4.3.2 組織規程訂定</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-3-委員會成員組成" data-nav-jump="ch04.html"><span class="toc-mark">○</span><span class="toc-text">4.3.3 委員會成員組成</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-4-委員會職權行使" data-nav-jump="ch04.html"><span class="toc-mark">■</span><span class="toc-text">4.3.4 委員會職權行使</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-5-委員會議事規範" data-nav-jump="ch04.html"><span class="toc-mark">□</span><span class="toc-text">4.3.5 委員會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="ch04.html#4-3-6-薪資報酬委員會與董事會決議" data-nav-jump="ch04.html"><span class="toc-mark">✦</span><span class="toc-text">4.3.6 薪資報酬委員會與董事會決議</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-4-薪資報酬委員會議事實務小百科" data-nav-jump="ch04.html"><span class="toc-mark">▹</span><span class="toc-text">4.4 薪資報酬委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-5-結語" data-nav-jump="ch04.html"><span class="toc-mark">●</span><span class="toc-text">4.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch04.html#4-6-練習題" data-nav-jump="ch04.html"><span class="toc-mark">○</span><span class="toc-text">4.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch05.html">第5章 併購特別委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch05.html#5-1-前言" data-nav-jump="ch05.html"><span class="toc-mark">◆</span><span class="toc-text">5.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-2-國際併購手法" data-nav-jump="ch05.html"><span class="toc-mark">◇</span><span class="toc-text">5.2 國際併購手法</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-3-企業併購法及併購特別委員會行使職權辦法" data-nav-jump="ch05.html"><span class="toc-mark">›</span><span class="toc-text">5.3 企業併購法及併購特別委員會行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="ch05.html#5-3-1-企業併購法" data-nav-jump="ch05.html"><span class="toc-mark">▹</span><span class="toc-text">5.3.1 企業併購法</span></a>
+<a class="toc-h3 toc-sub" href="ch05.html#5-3-2-併購特別委員會" data-nav-jump="ch05.html"><span class="toc-mark">●</span><span class="toc-text">5.3.2 併購特別委員會</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-4-併購特別委員會實務小百科" data-nav-jump="ch05.html"><span class="toc-mark">▹</span><span class="toc-text">5.4 併購特別委員會實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-5-結語" data-nav-jump="ch05.html"><span class="toc-mark">●</span><span class="toc-text">5.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch05.html#5-6-練習題" data-nav-jump="ch05.html"><span class="toc-mark">○</span><span class="toc-text">5.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch06.html">第6章 資訊揭露制度與法制之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch06.html#6-1-前言" data-nav-jump="ch06.html"><span class="toc-mark">◆</span><span class="toc-text">6.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-2-公開發行公司資訊揭露原則" data-nav-jump="ch06.html"><span class="toc-mark">◇</span><span class="toc-text">6.2 公開發行公司資訊揭露原則</span></a>
+<a class="toc-h3 toc-sub" href="ch06.html#6-2-1-定期揭露事項" data-nav-jump="ch06.html"><span class="toc-mark">›</span><span class="toc-text">6.2.1 定期揭露事項</span></a>
+<a class="toc-h3 toc-sub" href="ch06.html#6-2-2-不定期揭露之重大事項" data-nav-jump="ch06.html"><span class="toc-mark">▹</span><span class="toc-text">6.2.2 不定期揭露之重大事項</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-3-法制規範與責任" data-nav-jump="ch06.html"><span class="toc-mark">›</span><span class="toc-text">6.3 法制規範與責任</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-4-公開發行公司應建立之機制" data-nav-jump="ch06.html"><span class="toc-mark">▹</span><span class="toc-text">6.4 公開發行公司應建立之機制</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-5-資訊揭露實務小百科" data-nav-jump="ch06.html"><span class="toc-mark">●</span><span class="toc-text">6.5 資訊揭露實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-6-結語" data-nav-jump="ch06.html"><span class="toc-mark">○</span><span class="toc-text">6.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch06.html#6-7-練習題" data-nav-jump="ch06.html"><span class="toc-mark">■</span><span class="toc-text">6.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch07.html">第7章 內線交易之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch07.html#7-1-前言" data-nav-jump="ch07.html"><span class="toc-mark">◆</span><span class="toc-text">7.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-2-構成要件-5個-w" data-nav-jump="ch07.html"><span class="toc-mark">◇</span><span class="toc-text">7.2 構成要件-5個 W</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-1-why-為什麼要禁止內線交易" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">7.2.1 WHY:為什麼要禁止內線交易</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-2-who-內線交易的受規範對象" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.2 WHO:內線交易的受規範對象</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-3-how-怎樣會構成內線交易" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.2.3 HOW:怎樣會構成內線交易</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-4-what-規範的買賣標的及重大消息" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.2.4 WHAT:規範的買賣標的及重大消息</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-3-刑事責任與民事責任" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">7.3 刑事責任與民事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#內線交易法律責任" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">內線交易法律責任</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-4-法院判決實務" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.4 法院判決實務</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-4-1-案例事實" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.4.1 案例事實</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-4-2-法院見解" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.4.2 法院見解</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-5-如何避免誤觸內線交易" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">7.5 如何避免誤觸內線交易</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-6-內線交易實務小百科" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.6 內線交易實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-7-結語" data-nav-jump="ch07.html"><span class="toc-mark">■</span><span class="toc-text">7.7 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#7-8-練習題" data-nav-jump="ch07.html"><span class="toc-mark">□</span><span class="toc-text">7.8 練習題</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#1-內線交易規範的買賣標的為何" data-nav-jump="ch07.html"><span class="toc-mark">✦</span><span class="toc-text">1. 內線交易規範的買賣標的為何</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="ch07.html"><span class="toc-mark">✧</span><span class="toc-text">2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="ch07.html"><span class="toc-mark">◆</span><span class="toc-text">3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#4-什麼是-公司有重大影響其支付本息能力之消息" data-nav-jump="ch07.html"><span class="toc-mark">◇</span><span class="toc-text">4. 什麼是「公司有重大影響其支付本息能力之消息」</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#5-重大消息之-公開方式" data-nav-jump="ch07.html"><span class="toc-mark">›</span><span class="toc-text">5. 重大消息之「公開方式」</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-2-5-when-內線交易的禁止交易期間" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.5 WHEN:內線交易的禁止交易期間</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#刑事責任" data-nav-jump="ch07.html"><span class="toc-mark">▹</span><span class="toc-text">刑事責任</span></a>
+<a class="toc-h3 toc-sec" href="ch07.html#民事責任" data-nav-jump="ch07.html"><span class="toc-mark">●</span><span class="toc-text">民事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-3-1-刑事責任" data-nav-jump="ch07.html"><span class="toc-mark">○</span><span class="toc-text">7.3.1 刑事責任</span></a>
+<a class="toc-h3 toc-sub" href="ch07.html#7-3-2-民事責任" data-nav-jump="ch07.html"><span class="toc-mark">■</span><span class="toc-text">7.3.2 民事責任</span></a>
+</div></details>
+<details class="chap-drop active-chap" open>
+<summary><a class="chap-sum-link" href="ch08.html">第 8 章 股東會及委託書使用之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch08.html#8-1-前言" data-nav-jump="ch08.html"><span class="toc-mark">◆</span><span class="toc-text">8.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-2-股東會議事規則參考範例" data-nav-jump="ch08.html"><span class="toc-mark">◇</span><span class="toc-text">8.2 股東會議事規則參考範例</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-1-股東會召集及開會通知" data-nav-jump="ch08.html"><span class="toc-mark">›</span><span class="toc-text">8.2.1 股東會召集及開會通知</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-2-召開股東會地點-時間及開會時間之原則" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.2.2 召開股東會地點、時間及開會時間之原則</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-3-股東會議事手冊-資料公告及簽名簿等文件之備置" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-4-股東會主席及列席人員" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.2.4 股東會主席及列席人員</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-5-股東會開會過程錄音或錄影之存證" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.2.5 股東會開會過程錄音或錄影之存證</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-6-議案討論及股東發言" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.2.6 議案討論及股東發言</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-7-表決股數之計算-電子投票-股東會視訊會議" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.2.7 表決股數之計算、電子投票、股東會視訊會議</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-8-議事錄及公告" data-nav-jump="ch08.html"><span class="toc-mark">✧</span><span class="toc-text">8.2.8 議事錄及公告</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-2-9-休息及續行集會" data-nav-jump="ch08.html"><span class="toc-mark">◆</span><span class="toc-text">8.2.9 休息及續行集會</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-3-出席股東會使用委託書規則" data-nav-jump="ch08.html"><span class="toc-mark">›</span><span class="toc-text">8.3 出席股東會使用委託書規則</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-1-委託書之徵求與非屬徵求" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.3.1 委託書之徵求與非屬徵求</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-2-徵求人之資格條件及代理股數" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.3.2 徵求人之資格條件及代理股數</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-3-委託書徵求資訊之揭露" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.3.3 委託書徵求資訊之揭露</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-4-委託書使用及取得方式之限制" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.3.4 委託書使用及取得方式之限制</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-5-違反委託書規則之效果" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.3.5 違反委託書規則之效果</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-3-6-委託書規則最新修正重點" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.3.6 委託書規則最新修正重點</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-4-股東會召集-會場實務及會後辦理事項" data-nav-jump="ch08.html"><span class="toc-mark">▹</span><span class="toc-text">8.4 股東會召集、會場實務及會後辦理事項</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-1-股東會召集" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.4.1 股東會召集</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-2-股東會會場實務" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.4.2 股東會會場實務</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-4-3-股東會會後辦理事項" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.4.3 股東會會後辦理事項</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-5-獨立董事之提名及選舉" data-nav-jump="ch08.html"><span class="toc-mark">●</span><span class="toc-text">8.5 獨立董事之提名及選舉</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-1-強制設立" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.5.1 強制設立</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-2-獨立董事之提名方式" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.5.2 獨立董事之提名方式</span></a>
+<a class="toc-h3 toc-sub" href="ch08.html#8-5-3-獨立董事之選舉方式" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.5.3 獨立董事之選舉方式</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-6-常見違規案例" data-nav-jump="ch08.html"><span class="toc-mark">○</span><span class="toc-text">8.6 常見違規案例</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-7-股東會及委託書使用實務小百科" data-nav-jump="ch08.html"><span class="toc-mark">■</span><span class="toc-text">8.7 股東會及委託書使用實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-8-結語" data-nav-jump="ch08.html"><span class="toc-mark">□</span><span class="toc-text">8.8 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch08.html#8-9-練習題" data-nav-jump="ch08.html"><span class="toc-mark">✦</span><span class="toc-text">8.9 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch09.html">第 9 章 上市上櫃公司治理實務守則之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch09.html#9-1-前言" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">9.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-2-上市上櫃公司治理實務守則" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9.2 上市上櫃公司治理實務守則</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-1-公司治理之原則" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">9.2.1 公司治理之原則</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-2-建立內部控制制度" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">9.2.2 建立內部控制制度</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-3-公司治理主管" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">9.2.3 公司治理主管</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-4-保障股東權益" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">9.2.4 保障股東權益</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-3-上市上櫃公司治理實務守則實務小百科" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">9.3 上市上櫃公司治理實務守則實務小百科</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#1-由證券交易所及櫃檯買賣中心共同制定之-上市上櫃公司治理實務守則-法律效果為何-上市-櫃-公司可採何種規範形式以建置其公司治理機制" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">1. 由證券交易所及櫃檯買賣中心共同制定之「上市上櫃公司治理實務守則」法律效果為何？上市(櫃)公司可採何種規範形式以建置其公司治理機制？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#2-公司治理主管需要董事會委任嗎-其薪資是否需提到薪資報酬委員會討論-得否由其他職位兼任-兼任者之原職位如已經董事會任命-其兼任公司治理主管是否需再經董事會決議" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">2. 公司治理主管需要董事會委任嗎？其薪資是否需提到薪資報酬委員會討論？得否由其他職位兼任？兼任者之原職位如已經董事會任命，其兼任公司治理主管是否需再經董事會決議？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#3-集團公司指派同一人擔任公司治理主管可不可以" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">3. 集團公司指派同一人擔任公司治理主管可不可以?</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#4-公司治理主管之進修範圍-時數為何" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">4. 公司治理主管之進修範圍、時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#5-上市上櫃公司治理實務守則-第-13-條之-1-及第-13-條之-2-所定上市上櫃公司建立與股東之互動機制-應如何落實" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">5. 「上市上櫃公司治理實務守則」第 13 條之 1 及第 13 條之 2 所定上市上櫃公司建立與股東之互動機制，應如何落實？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#6-上市-櫃-公司選任董事時-應考量之事項為何" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">6. 上市(櫃)公司選任董事時，應考量之事項為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#7-獨立董事是否得由法人或其代表人擔任-是否可兼任其他公司之董事-監察人或經理人" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">7. 獨立董事是否得由法人或其代表人擔任？是否可兼任其他公司之董事、監察人或經理人？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#8-上市-櫃-公司對董事會績效之評估範圍-評估內容宜包含哪些構面-自何時須開始進行評鑑" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">8. 上市(櫃)公司對董事會績效之評估範圍？評估內容宜包含哪些構面？自何時須開始進行評鑑？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#10-法人說明會之資訊揭露規定" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">10. 法人說明會之資訊揭露規定？</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-4-結語" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">9.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#9-5-練習題" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">9.5 練習題</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#1-依上市上櫃公司治理實務守則-董事會成員組成應考量多元化-兼任公司經理人之董事不宜逾董事席次比例" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 依上市上櫃公司治理實務守則，董事會成員組成應考量多元化，兼任公司經理人之董事不宜逾董事席次比例？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#2-依證券交易法第-26-條之-3-規定-公開發行公司董事間至少應有多少席次-不得具有配偶或二親等以內之親屬關係" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 依證券交易法第 26 條之 3 規定，公開發行公司董事間至少應有多少席次，不得具有配偶或二親等以內之親屬關係？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#3-依上市上櫃公司治理實務守則-獨立董事應具備專業知識-其持股應予限制-除應依相關法令規定辦理外-不宜同時擔任超過幾家上市上櫃公司之董事-含獨立董事-或監察人" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 依上市上櫃公司治理實務守則，獨立董事應具備專業知識，其持股應予限制，除應依相關法令規定辦理外，不宜同時擔任超過幾家上市上櫃公司之董事（含獨立董事）或監察人？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#4-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">4. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#5-依上市上櫃公司治理實務守則-上市上櫃公司董事因故解任-致不足幾人者-公司應於最近一次股東會補選之-但董事缺額達章程所定席次三分之一者-公司應自事實發生之日起幾日內-召開股東臨時會補選之" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">5. 依上市上櫃公司治理實務守則，上市上櫃公司董事因故解任，致不足幾人者，公司應於最近一次股東會補選之。但董事缺額達章程所定席次三分之一者，公司應自事實發生之日起幾日內，召開股東臨時會補選之？</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-鼓勵股東參與公司治理" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 鼓勵股東參與公司治理：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-建立與股東互動機制" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 建立與股東互動機制：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-公司與關係人間之公司治理關係" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 公司與關係人間之公司治理關係：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-5-強化董事會職能" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">9.2.5 強化董事會職能</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-董事會結構" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">1. 董事會結構：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-獨立董事制度" data-nav-jump="ch09.html"><span class="toc-mark">✧</span><span class="toc-text">2. 獨立董事制度：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-功能性委員會" data-nav-jump="ch09.html"><span class="toc-mark">◆</span><span class="toc-text">3. 功能性委員會：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-6-尊重利害關係人權益" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">9.2.6 尊重利害關係人權益</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-應與公司之利害關係人保持溝通並維護權益-第-51-條" data-nav-jump="ch09.html"><span class="toc-mark">◇</span><span class="toc-text">1. 應與公司之利害關係人保持溝通並維護權益（第 51 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-對於往來銀行及其他債權人-應提供充足之資訊-第-52-條" data-nav-jump="ch09.html"><span class="toc-mark">›</span><span class="toc-text">2. 對於往來銀行及其他債權人，應提供充足之資訊（第 52 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-建立員工溝通管道-第-53-條" data-nav-jump="ch09.html"><span class="toc-mark">▹</span><span class="toc-text">3. 建立員工溝通管道（第 53 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#4-公司之社會責任-第-54-條" data-nav-jump="ch09.html"><span class="toc-mark">●</span><span class="toc-text">4. 公司之社會責任（第 54 條）：</span></a>
+<a class="toc-h3 toc-sub" href="ch09.html#9-2-7-提升資訊透明度" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">9.2.7 提升資訊透明度</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#1-資訊公開及網路申報系統-第-55-條" data-nav-jump="ch09.html"><span class="toc-mark">○</span><span class="toc-text">1. 資訊公開及網路申報系統（第 55 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#2-設置發言人-第-56-條" data-nav-jump="ch09.html"><span class="toc-mark">■</span><span class="toc-text">2. 設置發言人（第 56 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#3-架設公司治理網站-第-57-條" data-nav-jump="ch09.html"><span class="toc-mark">□</span><span class="toc-text">3. 架設公司治理網站（第 57 條）：</span></a>
+<a class="toc-h3 toc-sec" href="ch09.html#4-召開法人說明會" data-nav-jump="ch09.html"><span class="toc-mark">✦</span><span class="toc-text">4. 召開法人說明會：</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="ch10.html">第 10 永續發展之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="ch10.html#10-1" data-nav-jump="ch10.html"><span class="toc-mark">◆</span><span class="toc-text">10.1</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-2-永續發展之演進歷程" data-nav-jump="ch10.html"><span class="toc-mark">◇</span><span class="toc-text">10.2 永續發展之演進歷程</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-3-金管會推動永續發展相關措施" data-nav-jump="ch10.html"><span class="toc-mark">›</span><span class="toc-text">10.3 金管會推動永續發展相關措施</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-4-上市上櫃公司永續發展實務守則" data-nav-jump="ch10.html"><span class="toc-mark">▹</span><span class="toc-text">10.4 上市上櫃公司永續發展實務守則</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-1-適用範圍" data-nav-jump="ch10.html"><span class="toc-mark">●</span><span class="toc-text">10.4.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-2-實踐永續發展之效益" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.4.2 實踐永續發展之效益</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-3-永續發展之實踐原則" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.4.3 永續發展之實踐原則</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-4-永續發展政策之訂定程序" data-nav-jump="ch10.html"><span class="toc-mark">□</span><span class="toc-text">10.4.4 永續發展政策之訂定程序</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-4-5-實踐永續發展" data-nav-jump="ch10.html"><span class="toc-mark">✦</span><span class="toc-text">10.4.5 實踐永續發展</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-5-永續發展資訊揭露之相關規範" data-nav-jump="ch10.html"><span class="toc-mark">●</span><span class="toc-text">10.5 永續發展資訊揭露之相關規範</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-5-1-年報及公開說明書揭露推動永續發展執行情形" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.5.1 年報及公開說明書揭露推動永續發展執行情形</span></a>
+<a class="toc-h3 toc-sub" href="ch10.html#10-5-2-上市-櫃-公司編製與申報永續報告書作業辦法" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.5.2 上市(櫃)公司編製與申報永續報告書作業辦法</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-6-永續發展實務小百科" data-nav-jump="ch10.html"><span class="toc-mark">○</span><span class="toc-text">10.6 永續發展實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-7" data-nav-jump="ch10.html"><span class="toc-mark">■</span><span class="toc-text">10.7</span></a>
+<a class="toc-h3 toc-sec" href="ch10.html#10-8-練習題" data-nav-jump="ch10.html"><span class="toc-mark">□</span><span class="toc-text">10.8 練習題</span></a>
+</div></details></div>
+  </aside>
+  <div class="content">
+    <main class="wrap">
+      <p class="meta-line">公司治理講義 · 全套視覺化 · 里程碑／Tabs／Chips · 2026-08-17 00:53</p>
+      
+<div class="lecture-tabs">
+  <ul class="nav nav-pills lecture-nav" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button" role="tab">總覽</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-charts-btn" data-bs-toggle="pill" data-bs-target="#tab-charts" type="button" role="tab">圖表</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-path-btn" data-bs-toggle="pill" data-bs-target="#tab-path" type="button" role="tab">學習路徑</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-lecture-btn" data-bs-toggle="pill" data-bs-target="#tab-lecture" type="button" role="tab">章節講義</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick" type="button" role="tab">速查卡片</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quiz-btn" data-bs-toggle="pill" data-bs-target="#tab-quiz" type="button" role="tab">練習</button></li>
+  </ul>
+  <div class="tab-content lecture-tab-content">
+    <div class="tab-pane fade show active" id="tab-overview" role="tabpanel"><header class="lecture-hero"><span class="unit-badge">公司治理 · 詳盡講義</span><h1 class='note-title'>第 8 章 股東會及委託書使用之解析</h1><div class="chip-row">
+<span class="tag-chip chip-cyan">公司治理</span>
+<span class="tag-chip chip-mint">董事</span>
+<span class="tag-chip chip-amber">股東</span>
+<span class="tag-chip chip-coral">委託書</span>
+<span class="tag-chip chip-violet">練習題</span>
+</div></header><section class="milestone-wrap" aria-label="學習里程碑">
+<div class="section-kicker">學習路徑</div>
+<h2 class="section-title">本章里程碑</h2>
+<ol class="milestone-track">
+<li class="milestone-item"><a class="milestone-link" href="#8-1-前言" data-jump-lecture><span class="ms-dot">1</span><span class="ms-label">前言</span><span class="ms-desc">股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業 概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-2-股東會議事規則參考範例" data-jump-lecture><span class="ms-dot">2</span><span class="ms-label">股東會議事規則參考範例</span><span class="ms-desc">為建立公司良好股東會治理制度、健全監督功能及強化管理機能,證交所及 櫃買中心爰依上市上櫃公司治理實務守則第5條訂定「○○股份有限公司股東會…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-3-出席股東會使用委託書規則" data-jump-lecture><span class="ms-dot">3</span><span class="ms-label">出席股東會使用委託書規則</span><span class="ms-desc">因委託書之使用足以影響重要議案之決議,進而影響公司經營,為有效管理 委託書之使用,證券交易法第25條之1明文授權金融監督管理委員會(以下簡…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-4-股東會召集-會場實務及會後辦理事項" data-jump-lecture><span class="ms-dot">4</span><span class="ms-label">股東會召集、會場實務及會後辦理事項</span><span class="ms-desc">8.4.1 股東會召集</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-5-獨立董事之提名及選舉" data-jump-lecture><span class="ms-dot">5</span><span class="ms-label">獨立董事之提名及選舉</span><span class="ms-desc">獨立董事應具備專業知識,其持股及兼職應予限制,且於執行業務範圍內應 保持獨立性,不得與公司有直接或間接之利害關係。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-6-常見違規案例" data-jump-lecture><span class="ms-dot">6</span><span class="ms-label">常見違規案例</span><span class="ms-desc">1. 價購委託書 公司經營權一旦產生紛爭,價購委託書之市場傳聞不斷,鑑於「價購委託書」 嚴重扭曲委託書功能,且易造成日後利益輸送、假公濟私…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-7-股東會及委託書使用實務小百科" data-jump-lecture><span class="ms-dot">7</span><span class="ms-label">股東會及委託書使用實務小百科</span><span class="ms-desc">問題 1. 甲公司為乙公司之從屬公司(乙公司持有甲公司已發行有表決權之股份總 數超過半數),又甲公司及乙公司合計持有丙公司已發行有表決權之…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#8-8-結語" data-jump-lecture><span class="ms-dot">8</span><span class="ms-label">結語</span><span class="ms-desc">公司法第170 條規範股份有限公司每年應至少召集一次股東常會,而股東臨 時會則於必要時召集之。</span></a></li>
+</ol></section><section class="panel panel-mint mb-3"><h2 class="section-title">學習目標</h2><ul class="mb-0"><li>能說明「前言」的重點</li><li>能說明「股東會議事規則參考範例」的重點</li><li>能說明「出席股東會使用委託書規則」的重點</li><li>能說明「股東會召集、會場實務及會後辦理事項」的重點</li><li>能完成本章練習題並核對解答</li></ul></section><section class="mb-3"><h2 class="section-title">重點摘要</h2><div class="summary-chips"><div class="summary-chip chip-cyan">股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業 概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見 以避免自身權益受損,而經濟合作與發展組織(OECD)更明確指出公司治理原 則應以保障股東權益為重心…</div><div class="summary-chip chip-mint">為建立公司良好股東會治理制度、健全監督功能及強化管理機能,證交所及 櫃買中心爰依上市上櫃公司治理實務守則第5條訂定「○○股份有限公司股東會 議事規則」參考範例(以下簡稱議事規則),以資遵循。</div><div class="summary-chip chip-amber">因委託書之使用足以影響重要議案之決議,進而影響公司經營,為有效管理 委託書之使用,證券交易法第25條之1明文授權金融監督管理委員會(以下簡 稱金管會)訂定「公開發行公司出席股東會使用委託書規則」(以下簡稱「委 託書規則」)藉以管理委託書之…</div><div class="summary-chip chip-coral">1. 召開董事會決定股東會議案、日期地點,並依證券交易法第36條規定於 每會計年度終了後三個月內,公告並申報由董事長、經理人及會計主管簽 名或蓋章,並經會計師查核簽證、董事會通過及監察人承認之年度財務報 告承認財務報表。</div><div class="summary-chip chip-violet">獨立董事應具備專業知識,其持股及兼職應予限制,且於執行業務範圍內應 保持獨立性,不得與公司有直接或間接之利害關係。</div></div></section><p class="tab-hint">建議路徑：總覽 → 圖表（時序／對照／演進）→ 學習路徑 → 章節講義 → 速查 → 練習。</p><div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>本章時序速覽（完整見「圖表」分頁）</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>1996年12月</td>
+<td>修正,明文禁止不得以給付金錢或其他利益為條件取得委託書(即</td>
+</tr>
+</tbody></table></div></div></div>
+    <div class="tab-pane fade" id="tab-charts" role="tabpanel"><div class="structs-wrap"><div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>全章時序總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>1996年12月</td>
+<td>修正,明文禁止不得以給付金錢或其他利益為條件取得委託書(即</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 1</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>類別</th>
+<th>公司性質</th>
+<th>股東會無選舉案</th>
+<th>股東會上選舉案</th>
+</tr></thead><tbody>
+<tr>
+<td>一般徵求&lt;br&gt;→股東,代理&lt;br&gt;上限為公司已&lt;br&gt;發行股份總數&lt;br&gt;3%【委§5、&lt;br&gt;20】</td>
+<td>金融機構</td>
+<td>1.持股期間不限&lt;br&gt;2. 持有5萬股以上</td>
+<td>1. 持股期間繼續1年以上&lt;br&gt;2. 持股條件以下之一:&lt;br&gt;●200萬股以上&lt;br&gt;●發行股份總數千分之5&lt;br&gt;以上</td>
+</tr>
+<tr>
+<td></td>
+<td>其他公司</td>
+<td></td>
+<td>1. 持股期間繼續6個月以上&lt;br&gt;2. 持股條件以下之一:&lt;br&gt;●80萬股以上&lt;br&gt;●發行股份總數千分之2&lt;br&gt;以上且不低於10萬股</td>
+</tr>
+<tr>
+<td>類別</td>
+<td>公司性質</td>
+<td>股東會無選舉案</td>
+<td>股東會上選舉案</td>
+</tr>
+<tr>
+<td>無限徵求→委&lt;br&gt;託信託事業或金融機構&lt;br&gt;股務代理機構&lt;br&gt;擔任徵求人&lt;br&gt;【委§6】</td>
+<td>其他公司</td>
+<td>1.持股期間繼續1年以上&lt;br&gt;2. 持有發行股份總數 10%以上</td>
+<td>個人或共同委託徵求之股東:&lt;br&gt;1. 持股期間繼續1年以上&lt;br&gt;2. 持股條件以下之一:&lt;br&gt;●持有發行股份總數10%以上&lt;br&gt;●持有發行股份總數8%以上,且於股東會有選任&lt;br&gt;董事或監察人議案時,其所擬支持被選舉人之一&lt;br&gt;符合獨立董事資格</td>
+</tr>
+<tr>
+<td>一般代理&lt;br&gt;【委§211】</td>
+<td>金融機構&lt;br&gt;其他公司</td>
+<td>1.受託代理人須具股東身分,受3人以上股東委託,&lt;br&gt;不超過30人&lt;br&gt;2.受託股數上限:代理之股數除不得超過本身持股之&lt;br&gt;4倍外,亦不得超過公司已發行股數總數之3%</td>
+<td></td>
+</tr>
+<tr>
+<td>無限受託代理&lt;br&gt;【委§14\</td>
+<td>】</td>
+<td>金融機構&lt;br&gt;其他公司</td>
+<td>1.由召開股東會之公&lt;br&gt;司委任股務代理機&lt;br&gt;構擔任股東之受託&lt;br&gt;代理人&lt;br&gt;2. 受託之人數及代理&lt;br&gt;之股數不受限制</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 2</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>5.停止過戶期間</td>
+<td>公司股東名簿記載之變更,於股東常會開會前三十日內,</td>
+</tr>
+<tr>
+<td>東參閱</td>
+<td>(1) 公司召開實體股東會者,應於股東會現場發放。</td>
+</tr>
+<tr>
+<td>1. 股東會後1日</td>
+<td>公司應即編製議事錄。股東會之議決事項,應作成議事錄,</td>
+</tr>
+<tr>
+<td>2. 股東會次一營業日交易時間開始二小時前</td>
+<td>若股東會之決議事項屬於臺灣</td>
+</tr>
+<tr>
+<td>3. 股東會後五日內</td>
+<td>股務代理機構受委任擔任委託書之受託代理人者,不得</td>
+</tr>
+<tr>
+<td>4. 股東會後20日內</td>
+<td>股東會之議決事項,應作成議事錄,由主席簽名或蓋章,</td>
+</tr>
+<tr>
+<td>5. 上網下載(http</td>
+<td>//dsp.twse.com.tw/點選「上市公司」/點選「上市公司</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 3</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>上工作經驗</td>
+<td>(「獨立董事設置及應遵循事項辦法」第2條第1項)</td>
+</tr>
+<tr>
+<td>合獨立董事所應具備條件後,送請股東會選任之</td>
+<td>(「獨立董事設置及應</td>
+</tr>
+<tr>
+<td>有下列情事之一者外,應將其列入獨立董事候選人名單</td>
+<td>(「獨立董事設</td>
+</tr>
+<tr>
+<td>依公司法第198 條第1項規定</td>
+<td>「股東會選任董事時,每一股份</td>
+</tr>
+<tr>
+<td>(2)依公司法第192條之1第3項規定</td>
+<td>「持有已發行股份總數1%以上</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>演進／架構總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>公司應於股東常會開會三十日前或股東臨時會開會十五日前,將股東會開</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>選任或解任董事、監察人、變更章程、減資、申請停止公開發行、董事競</td>
+</tr>
+<tr>
+<td>階段 6</td>
+<td>持有已發行股份總數百分之一以上股份之股東,得以書面向公司提出股東</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>公司應於股東常會召開前之停止股票過戶日前公告受理股東之提案、書面</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>公司應於股東會召集通知日前,將處理結果通知提案股東,並將合於規定</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>股東會召開之地點,應於公司所在地或便利股東出席且適合股東會召開之</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條)</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>已屆開會時間,主席應即宣布開會,惟未有代表已發行股份總數過半數之</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>承上,延後二次仍不足額而有代表已發行股份總數三分之一以上股東出席</td>
+</tr>
+</tbody></table></div></div></div>
+<div class="structs-wrap viz-root" id="viz-root">
+  <p class="tab-hint mb-2">以下僅顯示本章有資料的圖表；每張圖獨立一格，可分別操作。</p>
+  <div class="viz-toolkit-badge"><span class="viz-pill">markmap</span><span class="viz-pill">Tabulator</span><span class="viz-pill">Chart.js</span><span class="viz-pill">ECharts</span><span class="viz-pill">vis-timeline</span><span class="viz-pill">Plotly</span><span class="viz-pill">Grid.js</span><span class="viz-pill">Mermaid</span><span class="viz-pill">D3</span><span class="viz-pill">Cytoscape</span><span class="viz-pill">vis-network</span></div>
+  <script type="application/json" id="note-viz-data">{"title": "第 8 章 股東會及委託書使用之解析", "timeline": [{"when": "1996年12月", "what": "修正,明文禁止不得以給付金錢或其他利益為條件取得委託書(即"}], "compares": [{"headers": ["類別", "公司性質", "股東會無選舉案", "股東會上選舉案"], "rows": [["一般徵求<br>→股東,代理<br>上限為公司已<br>發行股份總數<br>3%【委§5、<br>20】", "金融機構", "1.持股期間不限<br>2. 持有5萬股以上", "1. 持股期間繼續1年以上<br>2. 持股條件以下之一:<br>●200萬股以上<br>●發行股份總數千分之5<br>以上"], ["", "其他公司", "", "1. 持股期間繼續6個月以上<br>2. 持股條件以下之一:<br>●80萬股以上<br>●發行股份總數千分之2<br>以上且不低於10萬股"], ["類別", "公司性質", "股東會無選舉案", "股東會上選舉案"], ["無限徵求→委<br>託信託事業或金融機構<br>股務代理機構<br>擔任徵求人<br>【委§6】", "其他公司", "1.持股期間繼續1年以上<br>2. 持有發行股份總數 10%以上", "個人或共同委託徵求之股東:<br>1. 持股期間繼續1年以上<br>2. 持股條件以下之一:<br>●持有發行股份總數10%以上<br>●持有發行股份總數8%以上,且於股東會有選任<br>董事或監察人議案時,其所擬支持被選舉人之一<br>符合獨立董事資格"], ["一般代理<br>【委§211】", "金融機構<br>其他公司", "1.受託代理人須具股東身分,受3人以上股東委託,<br>不超過30人<br>2.受託股數上限:代理之股數除不得超過本身持股之<br>4倍外,亦不得超過公司已發行股數總數之3%", ""], ["無限受託代理<br>【委§14\\", "】", "金融機構<br>其他公司", "1.由召開股東會之公<br>司委任股務代理機<br>構擔任股東之受託<br>代理人<br>2. 受託之人數及代理<br>之股數不受限制"]]}, {"headers": ["項目", "說明／對照"], "rows": [["5.停止過戶期間", "公司股東名簿記載之變更,於股東常會開會前三十日內,"], ["東參閱", "(1) 公司召開實體股東會者,應於股東會現場發放。"], ["1. 股東會後1日", "公司應即編製議事錄。股東會之議決事項,應作成議事錄,"], ["2. 股東會次一營業日交易時間開始二小時前", "若股東會之決議事項屬於臺灣"], ["3. 股東會後五日內", "股務代理機構受委任擔任委託書之受託代理人者,不得"], ["4. 股東會後20日內", "股東會之議決事項,應作成議事錄,由主席簽名或蓋章,"], ["5. 上網下載(http", "//dsp.twse.com.tw/點選「上市公司」/點選「上市公司"]]}, {"headers": ["項目", "說明／對照"], "rows": [["上工作經驗", "(「獨立董事設置及應遵循事項辦法」第2條第1項)"], ["合獨立董事所應具備條件後,送請股東會選任之", "(「獨立董事設置及應"], ["有下列情事之一者外,應將其列入獨立董事候選人名單", "(「獨立董事設"], ["依公司法第198 條第1項規定", "「股東會選任董事時,每一股份"], ["(2)依公司法第192條之1第3項規定", "「持有已發行股份總數1%以上"]]}], "evolution": [{"stage": "階段 1", "content": "股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司"}, {"stage": "階段 2", "content": "公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定"}, {"stage": "階段 3", "content": "公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書"}, {"stage": "階段 4", "content": "公司應於股東常會開會三十日前或股東臨時會開會十五日前,將股東會開"}, {"stage": "階段 5", "content": "選任或解任董事、監察人、變更章程、減資、申請停止公開發行、董事競"}, {"stage": "階段 6", "content": "持有已發行股份總數百分之一以上股份之股東,得以書面向公司提出股東"}, {"stage": "階段 7", "content": "公司應於股東常會召開前之停止股票過戶日前公告受理股東之提案、書面"}, {"stage": "階段 8", "content": "公司應於股東會召集通知日前,將處理結果通知提案股東,並將合於規定"}, {"stage": "階段 1", "content": "股東會召開之地點,應於公司所在地或便利股東出席且適合股東會召開之"}, {"stage": "階段 2", "content": "公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條)"}, {"stage": "階段 3", "content": "已屆開會時間,主席應即宣布開會,惟未有代表已發行股份總數過半數之"}, {"stage": "階段 4", "content": "承上,延後二次仍不足額而有代表已發行股份總數三分之一以上股東出席"}], "outline": [{"title": "8.1 前言", "kids": []}, {"title": "8.2 股東會議事規則參考範例", "kids": ["8.2.1 股東會召集及開會通知", "8.2.2 召開股東會地點、時間及開會時間之原則", "8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置", "8.2.4 股東會主席及列席人員", "8.2.5 股東會開會過程錄音或錄影之存證", "8.2.6 議案討論及股東發言", "8.2.7 表決股數之計算、電子投票、股東會視訊會議", "8.2.8 議事錄及公告"]}, {"title": "8.3 出席股東會使用委託書規則", "kids": ["8.3.1 委託書之徵求與非屬徵求", "8.3.2 徵求人之資格條件及代理股數", "8.3.3 委託書徵求資訊之揭露", "8.3.4 委託書使用及取得方式之限制", "8.3.5 違反委託書規則之效果", "8.3.6 委託書規則最新修正重點"]}, {"title": "8.4 股東會召集、會場實務及會後辦理事項", "kids": ["8.4.1 股東會召集", "8.4.2 股東會會場實務", "8.4.3 股東會會後辦理事項"]}, {"title": "8.5 獨立董事之提名及選舉", "kids": ["8.5.1 強制設立", "8.5.2 獨立董事之提名方式", "8.5.3 獨立董事之選舉方式"]}, {"title": "8.6 常見違規案例", "kids": []}, {"title": "8.7 股東會及委託書使用實務小百科", "kids": []}, {"title": "8.8 結語", "kids": []}], "nodes": [{"id": "n0", "label": "8.1 前言"}, {"id": "n1", "label": "8.2 股東會議事規則參考範例"}, {"id": "n1k0", "label": "8.2.1 股東會召集及開會通知"}, {"id": "n1k1", "label": "8.2.2 召開股東會地點、時間及開"}, {"id": "n1k2", "label": "8.2.3 股東會議事手冊、資料公告"}, {"id": "n1k3", "label": "8.2.4 股東會主席及列席人員"}, {"id": "n2", "label": "8.3 出席股東會使用委託書規則"}, {"id": "n2k0", "label": "8.3.1 委託書之徵求與非屬徵求"}, {"id": "n2k1", "label": "8.3.2 徵求人之資格條件及代理股"}, {"id": "n2k2", "label": "8.3.3 委託書徵求資訊之揭露"}, {"id": "n2k3", "label": "8.3.4 委託書使用及取得方式之限"}, {"id": "n3", "label": "8.4 股東會召集、會場實務及會後辦理事項"}, {"id": "n3k0", "label": "8.4.1 股東會召集"}, {"id": "n3k1", "label": "8.4.2 股東會會場實務"}, {"id": "n3k2", "label": "8.4.3 股東會會後辦理事項"}, {"id": "n4", "label": "8.5 獨立董事之提名及選舉"}, {"id": "n4k0", "label": "8.5.1 強制設立"}, {"id": "n4k1", "label": "8.5.2 獨立董事之提名方式"}, {"id": "n4k2", "label": "8.5.3 獨立董事之選舉方式"}, {"id": "n5", "label": "8.6 常見違規案例"}, {"id": "n6", "label": "8.7 股東會及委託書使用實務小百科"}, {"id": "n7", "label": "8.8 結語"}], "edges": [{"from": "n0", "to": "n1"}, {"from": "n1", "to": "n1k0"}, {"from": "n1", "to": "n1k1"}, {"from": "n1", "to": "n1k2"}, {"from": "n1", "to": "n1k3"}, {"from": "n1", "to": "n2"}, {"from": "n2", "to": "n2k0"}, {"from": "n2", "to": "n2k1"}, {"from": "n2", "to": "n2k2"}, {"from": "n2", "to": "n2k3"}, {"from": "n2", "to": "n3"}, {"from": "n3", "to": "n3k0"}, {"from": "n3", "to": "n3k1"}, {"from": "n3", "to": "n3k2"}, {"from": "n3", "to": "n4"}, {"from": "n4", "to": "n4k0"}, {"from": "n4", "to": "n4k1"}, {"from": "n4", "to": "n4k2"}, {"from": "n4", "to": "n5"}, {"from": "n5", "to": "n6"}, {"from": "n6", "to": "n7"}], "charts": [], "mermaids": []}</script>
+  <div class="viz-grid viz-grid-dense">
+    <article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">markmap</span>章節心智圖</div><div class="viz-cell-b"><div class="markmap-host" id="viz-markmap" aria-label="章節心智圖"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>時序表</div><div class="viz-cell-b"><div id="viz-tabulator-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Chart.js</span>時序長條圖</div><div class="viz-cell-b"><div class="viz-box viz-box-sm"><canvas id="viz-chartjs-timeline"></canvas></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>時序折線</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-timeline</span>時間軸</div><div class="viz-cell-b"><div class="viz-box" id="viz-vis-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Plotly</span>時序互動圖</div><div class="viz-cell-b"><div class="viz-box" id="viz-plotly-timeline"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>對照表</div><div class="viz-cell-b"><div id="viz-tabulator-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Grid.js</span>對照表（可搜尋）</div><div class="viz-cell-b"><div id="viz-gridjs-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>演進表</div><div class="viz-cell-b"><div id="viz-tabulator-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>演進流程</div><div class="viz-cell-b"><div class="mermaid-host"><pre class="mermaid" id="viz-mermaid-evolve"></pre></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>演進關係</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">D3</span>演進樹狀圖</div><div class="viz-cell-b"><div class="d3-host viz-box" id="viz-d3-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Cytoscape</span>章節關係網</div><div class="viz-cell-b"><div class="cy-host" id="viz-cytoscape"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-network</span>概念網路</div><div class="viz-cell-b"><div class="vis-host" id="viz-vis-network"></div></div></article>
+  </div>
+</div></div>
+    <div class="tab-pane fade" id="tab-path" role="tabpanel"><div class="path-cards">
+<a class="path-card" href="#8-1-前言" data-jump-lecture><div class="path-idx">站 1</div><div class="path-title">前言</div><div class="path-desc">股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業 概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-2-股東會議事規則參考範例" data-jump-lecture><div class="path-idx">站 2</div><div class="path-title">股東會議事規則參考範例</div><div class="path-desc">為建立公司良好股東會治理制度、健全監督功能及強化管理機能,證交所及 櫃買中心爰依上市上櫃公司治理實務守則第5條訂定「○○股份有限公司股東會…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-3-出席股東會使用委託書規則" data-jump-lecture><div class="path-idx">站 3</div><div class="path-title">出席股東會使用委託書規則</div><div class="path-desc">因委託書之使用足以影響重要議案之決議,進而影響公司經營,為有效管理 委託書之使用,證券交易法第25條之1明文授權金融監督管理委員會(以下簡…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-4-股東會召集-會場實務及會後辦理事項" data-jump-lecture><div class="path-idx">站 4</div><div class="path-title">股東會召集、會場實務及會後辦理事項</div><div class="path-desc">8.4.1 股東會召集</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-5-獨立董事之提名及選舉" data-jump-lecture><div class="path-idx">站 5</div><div class="path-title">獨立董事之提名及選舉</div><div class="path-desc">獨立董事應具備專業知識,其持股及兼職應予限制,且於執行業務範圍內應 保持獨立性,不得與公司有直接或間接之利害關係。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-6-常見違規案例" data-jump-lecture><div class="path-idx">站 6</div><div class="path-title">常見違規案例</div><div class="path-desc">1. 價購委託書 公司經營權一旦產生紛爭,價購委託書之市場傳聞不斷,鑑於「價購委託書」 嚴重扭曲委託書功能,且易造成日後利益輸送、假公濟私…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-7-股東會及委託書使用實務小百科" data-jump-lecture><div class="path-idx">站 7</div><div class="path-title">股東會及委託書使用實務小百科</div><div class="path-desc">問題 1. 甲公司為乙公司之從屬公司(乙公司持有甲公司已發行有表決權之股份總 數超過半數),又甲公司及乙公司合計持有丙公司已發行有表決權之…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#8-8-結語" data-jump-lecture><div class="path-idx">站 8</div><div class="path-title">結語</div><div class="path-desc">公司法第170 條規範股份有限公司每年應至少召集一次股東常會,而股東臨 時會則於必要時召集之。</div><div class="path-go">前往講義 →</div></a>
+</div></div>
+    <div class="tab-pane fade" id="tab-lecture" role="tabpanel"><article class="sec-block" id="8-1-前言">
+<div class="sec-kicker">站 1｜前言</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">8.1 前言</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-1-前言" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.1 前言」。首先，股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業 概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見 以避免自身權益受損,而經濟合作與發展組織(OECD)更明確指出公司治理原 則應以保障股東權益為重心,即落實股東參加股東會並行使表決之權利。依公司法第182 條之1第2項規定,公司應訂定議事規則,另為便於各上市 上櫃公司訂定完備之股東會議事規則,臺灣證券交易所股份有限公司及財團法人 中華民國證券櫃檯買賣中心爰訂定「○○股份有限公司股東會議事規則」參考範 例,俾供公司訂定議事規則參考。又為便利股東權之行使,並考量股東會法定出席數,公司法第177條規定, 股東得於股東會出具公司印發之委託書,載明授權範圍,委託代理人,出席股東 會。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業
+概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見
+以避免自身權益受損,而經濟合作與發展組織(OECD)更明確指出公司治理原
+則應以保障股東權益為重心,即落實股東參加股東會並行使表決之權利。
+依公司法第182 條之1第2項規定,公司應訂定議事規則,另為便於各上市
+上櫃公司訂定完備之股東會議事規則,臺灣證券交易所股份有限公司及財團法人
+中華民國證券櫃檯買賣中心爰訂定「○○股份有限公司股東會議事規則」參考範
+例,俾供公司訂定議事規則參考。
+又為便利股東權之行使,並考量股東會法定出席數,公司法第177條規定,
+股東得於股東會出具公司印發之委託書,載明授權範圍,委託代理人,出席股東
+會。但公開發行股票之公司,證券主管機關另有規定者,從其規定。且鑑於部分
+公開發行公司資本額龐大、股東人數眾多,多須藉由委託書之使用,始能達到法
+定出席門檻,俾順利進行股東會議案之表決。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業 概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-2-股東會議事規則參考範例">
+<div class="sec-kicker">站 2｜股東會議事規則參考範例</div>
+<div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">8.2 股東會議事規則參考範例</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-2-股東會議事規則參考範例" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2 股東會議事規則參考範例」。首先，為建立公司良好股東會治理制度、健全監督功能及強化管理機能,證交所及 櫃買中心爰依上市上櫃公司治理實務守則第5條訂定「○○股份有限公司股東會 議事規則」參考範例(以下簡稱議事規則),以資遵循。接著，關於可以這樣記。8.2.1 股東會召集及開會通知：1. 股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司 法第171條) 2. 公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定 外,應以章程載明,並經董事會決議,且視訊股東會應經董事會以董事三 分之二以上之出席及出席董事過半數同意之決議行之。(議事規則第3條 /公開發行股票公司股務處理準則第44條之9) 3. 公司股東會召開方式；8.2.2 召開股東會地點、時間及開會時間之原則：1. 股東會召開之地點,應於公司所在地或便利股東出席且適合股東會召開之 地點為之,會議開始時間不得早於上午九時或晚於下午三時,召開之地點 及時間,應充分考量獨立董事之意見。(議事規則第5條) 2. 公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條) 3. 已屆開會時間,主席應即宣布開會,惟未有代表已發行股份總數過半數之 股東出席時,主席得宣布延；8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置：1. 股東會議事手冊及資料公告,請參閱「公開發行公司股東會議事手冊應行 記載及遵循事項辦法」。 2. 公司受理股東報到時間至少應於會議開始前三十分鐘辦理之;報到處應有 明確標示,並派適足適任人員辦理之;股東會視訊會議應於會議開始前 三十分鐘,於股東會視訊會議平台受理報到,完成報到之股東,視為親自 出席股東會。(議事規則第6條) 3. 公司應設簽名簿供出席股東；8.2.4 股東會主席及列席人員：1. 股東會如由董事會召集者,其主席由董事長擔任之,董事長請假或因故不 能行使職權時,由副董事長代理之,無副董事長或副董事長亦請假或因故 不能行使職權時,由董。以上是這一節的聽讀重點。</div>
+  </div>
+</details>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>股東會議事規則參考範例｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 8</td>
+<td>2.1 股東會召集及開會通知</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>公司應於股東常會開會三十日前或股東臨時會開會十五日前,將股東會開</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>選任或解任董事、監察人、變更章程、減資、申請停止公開發行、董事競</td>
+</tr>
+<tr>
+<td>階段 6</td>
+<td>持有已發行股份總數百分之一以上股份之股東,得以書面向公司提出股東</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>公司應於股東常會召開前之停止股票過戶日前公告受理股東之提案、書面</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>公司應於股東會召集通知日前,將處理結果通知提案股東,並將合於規定</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>2.2 召開股東會地點、時間及開會時間之原則</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>股東會召開之地點,應於公司所在地或便利股東出席且適合股東會召開之</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條)</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>為建立公司良好股東會治理制度、健全監督功能及強化管理機能,證交所及
+櫃買中心爰依上市上櫃公司治理實務守則第5條訂定「○○股份有限公司股東會
+議事規則」參考範例(以下簡稱議事規則),以資遵循。</p>
+</div>
+<section class="sub-sec" id="8-2-1-股東會召集及開會通知">
+<h3 class="subhead">8.2.1 股東會召集及開會通知</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-1-股東會召集及開會通知" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.1 股東會召集及開會通知」。首先，1. 股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司 法第171條) 2. 公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定 外,應以章程載明,並經董事會決議,且視訊股東會應經董事會以董事三 分之二以上之出席及出席董事過半數同意之決議行之。(議事規則第3條 /公開發行股票公司股務處理準則第44條之9) 3. 公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書 寄發前為之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司
+法第171條)</li>
+<li>公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定
+外,應以章程載明,並經董事會決議,且視訊股東會應經董事會以董事三
+分之二以上之出席及出席董事過半數同意之決議行之。(議事規則第3條
+/公開發行股票公司股務處理準則第44條之9)</li>
+<li>公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書
+寄發前為之。(議事規則第3條)</li>
+<li>公司應於股東常會開會三十日前或股東臨時會開會十五日前,將股東會開
+會通知書、委託書用紙、有關承認案、討論案、選任或解任董事、監察人
+事項等各項議案之案由及說明資料製作成電子檔案傳送至公開資訊觀測
+站,並於股東常會開會二十一日前或股東臨時會開會十五日前,將股東會
+議事手冊及會議補充資料,製作電子檔案傳送至公開資訊觀測站,但上市
+上櫃公司於最近會計年度終了日實收資本額達新臺幣一百億元以上或最近
+會計年度召開股東常會其股東名簿記載之外資及陸資持股比率合計達百分
+之三十以上者,應應於股東常會開會三十日前完成前開電子檔案之傳送。股
+東會開會十五日前,備妥當次股東會議事手冊及會議補充資料,供股東隨
+時索閱,並陳列於公司及公司所委任之專業股務代理機構,且應於股東會
+現場發放。(議事規則第3條/公司法第172條/股東會議事手冊應行記
+載及遵循事項辦法第5條、第6條)</li>
+<li>選任或解任董事、監察人、變更章程、減資、申請停止公開發行、董事競
+業許可、盈餘轉增資、公積轉增資、公司解散、合併、分割或公司法第
+185條第1項各款之事項,應在召集事由中列舉並說明其主要內容,不得
+以臨時動議提出。(議事規則第3條/公司法第172條/證券交易法第26
+條之1亦有類似規定,請讀者自行參閱)</li>
+<li>持有已發行股份總數百分之一以上股份之股東,得以書面向公司提出股東
+常會議案。但以一項為限,提案超過一項者,均不列入議案。另股東所提
+議案除有公司法第172條之1第4項各款情形之一者外,董事會應為議案,
+但股東提案係為敦促公司增進公共利益或善盡社會責任之建議,董事會仍
+得列入議案。(議事規則第3條/公司法第172條之1)</li>
+<li>公司應於股東常會召開前之停止股票過戶日前公告受理股東之提案、書面
+或電子受理方式、受理處所及受理期間;其受理期間不得少於十日。股東
+所提議案以三百字為限,超過三百字或提案超過一項者,董事會得不予列</li>
+</ol>
+
+<p>入議案;提案股東應親自或委託他人出席股東常會,並參與該項議案討論。
+(議事規則第3條/公司法第172條之1)</p>
+
+<ol start="8">
+<li>公司應於股東會召集通知日前,將處理結果通知提案股東,並將合於規定
+之議案列於開會通知。對於未列入議案之股東提案,董事會應於股東會說
+明未列入之理由。(議事規則第3條/公司法第172條之1)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-2-召開股東會地點-時間及開會時間之原則">
+<h3 class="subhead">8.2.2 召開股東會地點、時間及開會時間之原則</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-2-召開股東會地點-時間及開會時間之原則" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.2 召開股東會地點、時間及開會時間之原則」。首先，1. 股東會召開之地點,應於公司所在地或便利股東出席且適合股東會召開之 地點為之,會議開始時間不得早於上午九時或晚於下午三時,召開之地點 及時間,應充分考量獨立董事之意見。(議事規則第5條) 2. 公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條) 3. 已屆開會時間,主席應即宣布開會,惟未有代表已發行股份總數過半數之 股東出席時,主席得宣布延後開會,其延後次數以二次為限,延後時間合 計不得超過一小時。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會召開之地點,應於公司所在地或便利股東出席且適合股東會召開之
+地點為之,會議開始時間不得早於上午九時或晚於下午三時,召開之地點
+及時間,應充分考量獨立董事之意見。(議事規則第5條)</li>
+<li>公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條)</li>
+<li>已屆開會時間,主席應即宣布開會,惟未有代表已發行股份總數過半數之
+股東出席時,主席得宣布延後開會,其延後次數以二次為限,延後時間合
+計不得超過一小時。延後二次仍不足有代表已發行股份總數三分之一以上
+股東出席時,由主席宣布流會。(議事規則第9條)</li>
+<li>承上,延後二次仍不足額而有代表已發行股份總數三分之一以上股東出席
+時,得依公司法第175條第1項規定為假決議,並將假決議通知各股東於
+一個月內再行召集股東會。(議事規則第9條/公司法第175條)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-3-股東會議事手冊-資料公告及簽名簿等文件之備置">
+<h3 class="subhead">8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-3-股東會議事手冊-資料公告及簽名簿等文件之備置" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置」。首先，1. 股東會議事手冊及資料公告,請參閱「公開發行公司股東會議事手冊應行 記載及遵循事項辦法」。2. 公司受理股東報到時間至少應於會議開始前三十分鐘辦理之;報到處應有 明確標示,並派適足適任人員辦理之;股東會視訊會議應於會議開始前 三十分鐘,於股東會視訊會議平台受理報到,完成報到之股東,視為親自 出席股東會。(議事規則第6條) 3. 公司應設簽名簿供出席股東簽到,或由出席股東繳交簽到卡以代簽到。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會議事手冊及資料公告,請參閱「公開發行公司股東會議事手冊應行
+記載及遵循事項辦法」。</li>
+<li>公司受理股東報到時間至少應於會議開始前三十分鐘辦理之;報到處應有
+明確標示,並派適足適任人員辦理之;股東會視訊會議應於會議開始前
+三十分鐘,於股東會視訊會議平台受理報到,完成報到之股東,視為親自
+出席股東會。(議事規則第6條)</li>
+<li>公司應設簽名簿供出席股東簽到,或由出席股東繳交簽到卡以代簽到。公
+司並應將議事手冊、年報、出席證、發言條、表決票及其他會議資料,交
+付予出席股東會之股東;有選舉董事、監察人者,應另附選舉票。(議事
+規則第6條)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-4-股東會主席及列席人員">
+<h3 class="subhead">8.2.4 股東會主席及列席人員</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-4-股東會主席及列席人員" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.4 股東會主席及列席人員」。首先，1. 股東會如由董事會召集者,其主席由董事長擔任之,董事長請假或因故不 能行使職權時,由副董事長代理之,無副董事長或副董事長亦請假或因故 不能行使職權時,由董事長指定常務董事一人代理之;其未設常務董事者, 指定董事一人代理之,董事長未指定代理人者,由常務董事或董事互推一 人代理之。(議事規則第7條/公司法第182條之1、第208條) 2. 公司得指派所委任之律師、會計師或相關人員列席股東會。(議事規則第 7條)。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會如由董事會召集者,其主席由董事長擔任之,董事長請假或因故不
+能行使職權時,由副董事長代理之,無副董事長或副董事長亦請假或因故
+不能行使職權時,由董事長指定常務董事一人代理之;其未設常務董事者,
+指定董事一人代理之,董事長未指定代理人者,由常務董事或董事互推一
+人代理之。(議事規則第7條/公司法第182條之1、第208條)</li>
+<li>公司得指派所委任之律師、會計師或相關人員列席股東會。(議事規則第
+7條)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-5-股東會開會過程錄音或錄影之存證">
+<h3 class="subhead">8.2.5 股東會開會過程錄音或錄影之存證</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-5-股東會開會過程錄音或錄影之存證" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.5 股東會開會過程錄音或錄影之存證」。首先，1. 公司應於受理股東報到時起將股東報到過程、會議進行過程、投票計票過 程全程連續不間斷錄音及錄影。(議事規則第8條) 2.承上,影音資料應至少保存一年。但經股東依公司法第189條提起訴訟者, 應保存至訴訟終結為止。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>公司應於受理股東報到時起將股東報到過程、會議進行過程、投票計票過
+程全程連續不間斷錄音及錄影。(議事規則第8條)
+2.承上,影音資料應至少保存一年。但經股東依公司法第189條提起訴訟者,
+應保存至訴訟終結為止。(議事規則第8條)</li>
+<li>股東會以視訊會議召開者,公司應對股東之註冊、登記、報到、提問、投
+票及公司計票結果等資料進行記錄保存,並對視訊會議全程連續不間斷錄
+音及錄影。(議事規則第8條/公開發行股票公司股務處理準則第44條
+之23)</li>
+<li>前項資料及錄音錄影,公司應於存續期間妥善保存,並將錄音錄影提供受
+託辦理視訊會議事務者保存。(議事規則第8條/公開發行股票公司股務
+處理準則第44條之23)</li>
+<li>股東會以視訊會議召開者,公司宜對視訊會議平台後台操作介面進行錄
+音錄影。(議事規則第8條/公開發行股票公司股務處理準則第44條之
+23)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-6-議案討論及股東發言">
+<h3 class="subhead">8.2.6 議案討論及股東發言</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-6-議案討論及股東發言" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.6 議案討論及股東發言」。首先，1. 股東會議應依排定之議程進行,非經股東會決議不得變更之。排定之議程 於議事(含臨時動議)未終結前,非經決議,主席不得逕行宣布散會;主 席違反議事規則,宣布散會者,董事會其他成員應迅速協助出席股東依法 定程序,以出席股東表決權過半數之同意推選一人擔任主席,繼續開會。(議事規則第10條、公司法第182條之1) 2. 主席對於議案及股東所提之修正案或臨時動議,應給予充分說明及討論之 機會,認為已達可付表決之程度時,得宣布停止討論,提付表決。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會議應依排定之議程進行,非經股東會決議不得變更之。排定之議程
+於議事(含臨時動議)未終結前,非經決議,主席不得逕行宣布散會;主
+席違反議事規則,宣布散會者,董事會其他成員應迅速協助出席股東依法
+定程序,以出席股東表決權過半數之同意推選一人擔任主席,繼續開會。
+(議事規則第10條、公司法第182條之1)</li>
+<li>主席對於議案及股東所提之修正案或臨時動議,應給予充分說明及討論之
+機會,認為已達可付表決之程度時,得宣布停止討論,提付表決。(議事
+規則第10條)</li>
+<li>出席股東發言前,須先填具發言條載明發言要旨、股東戶號(或出席證
+編號)及戶名,由主席定其發言順序。同一議案每一股東發言,非經主席
+之同意不得超過兩次,每次不得超過五分鐘,惟股東發言違反規定或超出
+議題範圍者,主席得制止其發言。(議事規則第11條)</li>
+<li>出席股東發言時,其他股東除經徵得主席及發言股東同意外,不得發言干
+擾,違反者主席應予制止。出席股東發言後,主席得親自或指定相關人員
+答覆。(議事規則第11條)</li>
+<li>股東會以視訊會議召開者,以視訊方式參與之股東,得於主席宣布開會
+,至宣布散會前,於股東會視訊會議平台以文字方式提問,每一議案提
+問次數不得超過兩次,每次以二百字為限,不適用第一項至第五項規定。
+則第11條/公開發行股票公司股務處理準則第44條之17)</li>
+<li>前項提問未違反規定或未超出議案範圍者,宜將該提問揭露於股東會視訊
+會議平台,以為周知。(議事規則第11條)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-7-表決股數之計算-電子投票-股東會視訊會議">
+<h3 class="subhead">8.2.7 表決股數之計算、電子投票、股東會視訊會議</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-7-表決股數之計算-電子投票-股東會視訊會議" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.7 表決股數之計算、電子投票、股東會視訊會議」。首先，1. 股東會之決議,對無表決權股東之股份數,不算入已發行股份之總數。股 東對於會議之事項,有自身利害關係致有害於本公司利益之虞時,不得加 入表決,並不得代理他股東行使其表決權。(議事規則第12條/公司法 第178條~第180條) 2. 公司召開股東會時,採行書面或電子方式行使表決權者,其行使方法應載 明於股東會召集通知。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會之決議,對無表決權股東之股份數,不算入已發行股份之總數。股
+東對於會議之事項,有自身利害關係致有害於本公司利益之虞時,不得加
+入表決,並不得代理他股東行使其表決權。(議事規則第12條/公司法
+第178條~第180條)</li>
+<li>公司召開股東會時,採行書面或電子方式行使表決權者,其行使方法應載
+明於股東會召集通知。以書面或電子方式行使表決權之股東,視為親自出
+席股東會。但就該次股東會之臨時動議及原議案之修正,視為棄權。另依
+2017年1月8日金管證交字第1060000381號令規定,2018年1月1日起
+上市(櫃)公司股東會應全面採行電子投票;依2022年1月18日金管證
+交字第1110380064號令規定,2023年1月1日起興櫃公司股東會應全面
+採行電子投票。(議事規則第13條/公司法第177條之1)</li>
+<li>以書面或電子方式行使表決權者,其意思表示應於股東會開會二日前送達
+公司,意思表示有重複時,以最先送達者為準。但聲明撤銷前意思表示者,
+不在此限。(議事規則第13條/公司法第177條之2)</li>
+<li>股東以書面或電子方式行使表決權後,如欲親自或以視訊方式出席股東會
+者,應於股東會開會二日前以與行使表決權相同之方式撤銷前項行使表決
+權之意思表示;逾期撤銷者,以書面或電子方式行使之表決權為準。如以
+書面或電子方式行使表決權並以委託書委託代理人出席股東會者,以委託
+代理人出席行使之表決權為準。(議事規則第13條/公司法第177條之2)</li>
+<li>公司召開視訊輔助股東會時,已依議事規則第六條規定登記以視訊方式出
+席股東會之股東,欲親自出席實體股東會者,應於股東會開會二日前,以
+與登記相同之方式撤銷登記;逾期撤銷者,僅得以視訊方式出席股東會。
+(議事規則第13條/公開發行股票公司股務處理準則第44條之13)</li>
+<li>以書面或電子方式行使表決權,未撤銷其意思表示,並以視訊方式參與股
+東會者,除臨時動議外,不得再就原議案行使表決權或對原議案提出修正
+或對原議案之修正行使表決權。(議事規則第13條/公開發行股票公司
+股務處理準則第44條之14)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-8-議事錄及公告">
+<h3 class="subhead">8.2.8 議事錄及公告</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-8-議事錄及公告" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.8 議事錄及公告」。首先，1. 股東會之議決事項,應作成議事錄,由主席簽名或蓋章,並於會後二十日 內,將議事錄分發各股東。議事錄之製作及分發,得以電子方式為之,並 得以輸入公開資訊觀測站之方式公告。(議事規則第15條/公司法第183 條) 2. 議事錄應確實依會議之年、月、日、場所、主席姓名、決議方法、議事經 過之要領及其結果記載之,在公司存續期間,應永久保存。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li><p>股東會之議決事項,應作成議事錄,由主席簽名或蓋章,並於會後二十日
+內,將議事錄分發各股東。議事錄之製作及分發,得以電子方式為之,並
+得以輸入公開資訊觀測站之方式公告。(議事規則第15條/公司法第183
+條)</p></li>
+<li><p>議事錄應確實依會議之年、月、日、場所、主席姓名、決議方法、議事經
+過之要領及其結果記載之,在公司存續期間,應永久保存。(議事規則第
+15條/公司法第173條)</p></li>
+<li>股東會以視訊會議召開者,其議事錄除依前項規定應記載事項外,並應記
+載股東會之開會起迄時間、會議之召開方式、主席及紀錄之姓名,及因天
+災、事變或其他不可抗力情事致視訊會議平台或以視訊方式參與發生障礙
+時之處理方式及處理情形。(議事規則第15條/公開發行股票公司股務
+處理準則第44條之21)</li>
+<li>公司召開視訊股東會,除應依前項規定辦理外,並應於議事錄載明,對於
+以視訊方式參與股東會有困難股東提供之替代措施。(議事規則第15條/
+公開發行股票公司股務處理準則第44條之21)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-2-9-休息及續行集會">
+<h3 class="subhead">8.2.9 休息及續行集會</h3>
+<details class="narration-box" data-tts-root id="narration-8-2-9-休息及續行集會" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.2.9 休息及續行集會」。首先，1. 會議進行時,主席得酌定時間宣布休息,發生不可抗拒之情事時,主席得 裁定暫時停止會議,並視情況宣布續行開會之時間。股東會排定之議程於 議事(含臨時動議)未終結前,開會之場地屆時未能繼續使用,得由股東 會決議另覓場地繼續開會。(議事規則第18條) 2. 股東會得依公司法第182條之規定,決議在五日內延期或續行集會。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>會議進行時,主席得酌定時間宣布休息,發生不可抗拒之情事時,主席得
+裁定暫時停止會議,並視情況宣布續行開會之時間。股東會排定之議程於
+議事(含臨時動議)未終結前,開會之場地屆時未能繼續使用,得由股東
+會決議另覓場地繼續開會。(議事規則第18條)</li>
+<li>股東會得依公司法第182條之規定,決議在五日內延期或續行集會。(議
+事規則第18條/公司法第183條)</li>
+</ol>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司</span>
+<span class="tag-chip chip-mint">公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定</span>
+<span class="tag-chip chip-amber">公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書</span>
+<span class="tag-chip chip-coral">公司應於股東常會開會三十日前或股東臨時會開會十五日前,將股東會開</span>
+<span class="tag-chip chip-violet">選任或解任董事、監察人、變更章程、減資、申請停止公開發行、董事競</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-3-出席股東會使用委託書規則">
+<div class="sec-kicker">站 3｜出席股東會使用委託書規則</div>
+<div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">8.3 出席股東會使用委託書規則</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-3-出席股東會使用委託書規則" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3 出席股東會使用委託書規則」。首先，因委託書之使用足以影響重要議案之決議,進而影響公司經營,為有效管理 委託書之使用,證券交易法第25條之1明文授權金融監督管理委員會(以下簡 稱金管會)訂定「公開發行公司出席股東會使用委託書規則」(以下簡稱「委 託書規則」)藉以管理委託書之使用。「委託書規則」的制定,即為市場建立一 套委託書使用及取得的標準,一方面保障徵求委託書之公平性,另一方面則保障 股東權益不受不當利用,促使委託書發揮其功能。以下針對「委託書規則」中委 託書徵求與非屬徵求、徵求人之資格條件及代理股數限制、徵求委託書之資訊揭 露、委託書取得方式之限制及違反委託書規則之效果等,分別進行介紹。接著，關於可以這樣記。8.3.1 委託書之徵求與非屬徵求：股東委託他人出席股東會,按照該代理出席者取得委託書之方式是否具備主 動性,可區分為徵求與非屬徵求。 以主動行為如公告、廣告、牌示、廣播、電傳視訊、信函、電話、發表會、 說明會、拜訪、詢問等方式向股東取得委託書藉以出席股東會者,稱之為徵求。 反之,非以前開方式,而係受股東之主動委託而取得委託書(即被動接受股東之 委託),代理出席股東會之行為,則為非屬徵求。不論；8.3.2 徵求人之資格條件及代理股數：依據徵求人代理之股數有無上限,可將徵求區分為由股東擔任徵求人,代理 上限為公司已發行股份總數百分之三的「一般徵求」,及由股東委託信託事業或 股務代理機構擔任徵求人,代理股數不受限制的「無限徵求」。 「一般徵求」及「無限徵求」因得代理之股數上限不同,自然所應具備之資 格條件也不同。原則上,「無限徵求」可代理股數不受限制,對於公司股東會各 項議案表決權之影響程度；8.3.3 委託書徵求資訊之揭露：落實資訊揭露原則是證券交易法相關法規中相當重要的一環,「委託書規 則」 樣的規範精神,可由委託書徵求的不同階段分別討論: 1. 徵求開始前之資訊揭露 為使股東得以儘速獲知完整之委託書徵求訊息,以判斷是否委託徵求人。以上是這一節的聽讀重點。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>出席股東會使用委託書規則｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>類別</th>
+<th>公司性質</th>
+<th>股東會無選舉案</th>
+<th>股東會上選舉案</th>
+</tr></thead><tbody>
+<tr>
+<td>一般徵求&lt;br&gt;→股東,代理&lt;br&gt;上限為公司已&lt;br&gt;發行股份總數&lt;br&gt;3%【委§5、&lt;br&gt;20】</td>
+<td>金融機構</td>
+<td>1.持股期間不限&lt;br&gt;2. 持有5萬股以上</td>
+<td>1. 持股期間繼續1年以上&lt;br&gt;2. 持股條件以下之一:&lt;br&gt;●200萬股以上&lt;br&gt;●發行股份總數千分之5&lt;br&gt;以上</td>
+</tr>
+<tr>
+<td></td>
+<td>其他公司</td>
+<td></td>
+<td>1. 持股期間繼續6個月以上&lt;br&gt;2. 持股條件以下之一:&lt;br&gt;●80萬股以上&lt;br&gt;●發行股份總數千分之2&lt;br&gt;以上且不低於10萬股</td>
+</tr>
+<tr>
+<td>類別</td>
+<td>公司性質</td>
+<td>股東會無選舉案</td>
+<td>股東會上選舉案</td>
+</tr>
+<tr>
+<td>無限徵求→委&lt;br&gt;託信託事業或金融機構&lt;br&gt;股務代理機構&lt;br&gt;擔任徵求人&lt;br&gt;【委§6】</td>
+<td>其他公司</td>
+<td>1.持股期間繼續1年以上&lt;br&gt;2. 持有發行股份總數 10%以上</td>
+<td>個人或共同委託徵求之股東:&lt;br&gt;1. 持股期間繼續1年以上&lt;br&gt;2. 持股條件以下之一:&lt;br&gt;●持有發行股份總數10%以上&lt;br&gt;●持有發行股份總數8%以上,且於股東會有選任&lt;br&gt;董事或監察人議案時,其所擬支持被選舉人之一&lt;br&gt;符合獨立董事資格</td>
+</tr>
+<tr>
+<td>一般代理&lt;br&gt;【委§211】</td>
+<td>金融機構&lt;br&gt;其他公司</td>
+<td>1.受託代理人須具股東身分,受3人以上股東委託,&lt;br&gt;不超過30人&lt;br&gt;2.受託股數上限:代理之股數除不得超過本身持股之&lt;br&gt;4倍外,亦不得超過公司已發行股數總數之3%</td>
+<td></td>
+</tr>
+<tr>
+<td>無限受託代理&lt;br&gt;【委§14\</td>
+<td>】</td>
+<td>金融機構&lt;br&gt;其他公司</td>
+<td>1.由召開股東會之公&lt;br&gt;司委任股務代理機&lt;br&gt;構擔任股東之受託&lt;br&gt;代理人&lt;br&gt;2. 受託之人數及代理&lt;br&gt;之股數不受限制</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>出席股東會使用委託書規則｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 8</td>
+<td>3.1 委託書之徵求與非屬徵求</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>3.2 徵求人之資格條件及代理股數</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>3.3 委託書徵求資訊之揭露</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>徵求開始前之資訊揭露</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>徵求委託書之書面及廣告內容揭露</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>徵求結束後之資訊揭露</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>3.4 委託書使用及取得方式之限制</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>禁止以價購等方式取得委託書</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>禁止空白委託</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>徵求人應依股東委託出席股東會及徵求作業公平性</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>3.5 違反委託書規則之效果</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>行政罰鍰</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>因委託書之使用足以影響重要議案之決議,進而影響公司經營,為有效管理
+委託書之使用,證券交易法第25條之1明文授權金融監督管理委員會(以下簡
+稱金管會)訂定「公開發行公司出席股東會使用委託書規則」(以下簡稱「委
+託書規則」)藉以管理委託書之使用。「委託書規則」的制定,即為市場建立一
+套委託書使用及取得的標準,一方面保障徵求委託書之公平性,另一方面則保障
+股東權益不受不當利用,促使委託書發揮其功能。以下針對「委託書規則」中委
+託書徵求與非屬徵求、徵求人之資格條件及代理股數限制、徵求委託書之資訊揭
+露、委託書取得方式之限制及違反委託書規則之效果等,分別進行介紹。</p>
+</div>
+<section class="sub-sec" id="8-3-1-委託書之徵求與非屬徵求">
+<h3 class="subhead">8.3.1 委託書之徵求與非屬徵求</h3>
+<details class="narration-box" data-tts-root id="narration-8-3-1-委託書之徵求與非屬徵求" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3.1 委託書之徵求與非屬徵求」。首先，股東委託他人出席股東會,按照該代理出席者取得委託書之方式是否具備主 動性,可區分為徵求與非屬徵求。以主動行為如公告、廣告、牌示、廣播、電傳視訊、信函、電話、發表會、 說明會、拜訪、詢問等方式向股東取得委託書藉以出席股東會者,稱之為徵求。反之,非以前開方式,而係受股東之主動委託而取得委託書(即被動接受股東之 委託),代理出席股東會之行為,則為非屬徵求。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>股東委託他人出席股東會,按照該代理出席者取得委託書之方式是否具備主
+動性,可區分為徵求與非屬徵求。
+以主動行為如公告、廣告、牌示、廣播、電傳視訊、信函、電話、發表會、
+說明會、拜訪、詢問等方式向股東取得委託書藉以出席股東會者,稱之為徵求。
+反之,非以前開方式,而係受股東之主動委託而取得委託書(即被動接受股東之
+委託),代理出席股東會之行為,則為非屬徵求。不論是徵求或非屬徵求,均須
+依照「委託書規則」之規定辦理。(「委託書規則」第3條)
+徵求係主動爭取股東之支持,取得其委託書代為出席股東會行使表決權,因
+對於公司股東會各項議案表決權之影響程度較大,「委託書規則」對於徵求人,
+除訂有持股數及持股期間等積極資格要求外,亦訂有不得擔任徵求人的消極資格
+限制,且對於徵求人取得委託書之限制、徵求前及徵求後應辦理之事項(徵求前
+應於一定期間內將徵求相關資料及持股證明等文件送達公司,徵求後則應編製徵
+求明細表報備公司)等,均有規範。
+相對於徵求人,非屬徵求之受託代理人因係被動接受股東委託而出席股東
+會,相關資格限制較少,惟為避免有心人士假非屬徵求之名,行徵求之實,依「委
+託書規則」第13 條及第21條規定,除股務代理機構依同規則第14條規定於公
+開發行公司股東會該次股東會無選舉董事或監察人議案,受公開發行公司之委任
+卜,受3人
+亦不
+得超過公司已發行股份總數之百分之三,另受委託之人數不得超過30人,以使
+徵求及非屬徵求能明確區隔。</p>
+
+</section>
+<section class="sub-sec" id="8-3-2-徵求人之資格條件及代理股數">
+<h3 class="subhead">8.3.2 徵求人之資格條件及代理股數</h3>
+<details class="narration-box" data-tts-root id="narration-8-3-2-徵求人之資格條件及代理股數" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3.2 徵求人之資格條件及代理股數」。首先，依據徵求人代理之股數有無上限,可將徵求區分為由股東擔任徵求人,代理 上限為公司已發行股份總數百分之三的「一般徵求」,及由股東委託信託事業或 股務代理機構擔任徵求人,代理股數不受限制的「無限徵求」。「一般徵求」及「無限徵求」因得代理之股數上限不同,自然所應具備之資 格條件也不同。原則上,「無限徵求」可代理股數不受限制,對於公司股東會各 項議案表決權之影響程度大,適用較嚴格之持股資格條件,其餘持股條件則視公 司該次股東會是否有選舉董事或監察人議案,及公司性質而有所不同。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>依據徵求人代理之股數有無上限,可將徵求區分為由股東擔任徵求人,代理
+上限為公司已發行股份總數百分之三的「一般徵求」,及由股東委託信託事業或</p>
+
+<p>股務代理機構擔任徵求人,代理股數不受限制的「無限徵求」。
+「一般徵求」及「無限徵求」因得代理之股數上限不同,自然所應具備之資
+格條件也不同。原則上,「無限徵求」可代理股數不受限制,對於公司股東會各
+項議案表決權之影響程度大,適用較嚴格之持股資格條件,其餘持股條件則視公
+司該次股東會是否有選舉董事或監察人議案,及公司性質而有所不同。於公司該
+次股東會有董事或監察人選舉案時,對於徵求之持股限制將提高。另對於公司性
+質屬於金融控股公司、銀行法所規範之銀行及保險法所規範之保險公司,對於股
+東會委託書徵求人的持股限制亦較一般公開發行公司嚴格,以加強對該等公司股
+東會委託書之管理(「委託書規則」第5條及第6條)。有關現行徵求及非屬徵
+求之資格條件及受託股數上限彙整如下:</p>
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:left;">類別</th>
+  <th style="text-align:left;">公司性質</th>
+  <th style="text-align:left;">股東會無選舉案</th>
+  <th style="text-align:left;">股東會上選舉案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left;">一般徵求<br>→股東,代理<br>上限為公司已<br>發行股份總數<br>3%【委§5、<br>20】</td>
+  <td style="text-align:left;">金融機構</td>
+  <td style="text-align:left;">1.持股期間不限<br>2. 持有5萬股以上</td>
+  <td style="text-align:left;">1. 持股期間繼續1年以上<br>2. 持股條件以下之一:<br>●200萬股以上<br>●發行股份總數千分之5<br>以上</td>
+</tr>
+<tr>
+  <td style="text-align:left;"></td>
+  <td style="text-align:left;">其他公司</td>
+  <td style="text-align:left;"></td>
+  <td style="text-align:left;">1. 持股期間繼續6個月以上<br>2. 持股條件以下之一:<br>●80萬股以上<br>●發行股份總數千分之2<br>以上且不低於10萬股</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:left;">類別</th>
+  <th style="text-align:left;">公司性質</th>
+  <th style="text-align:left;">股東會無選舉案</th>
+  <th style="text-align:left;">股東會上選舉案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left;">無限徵求→委<br>託信託事業或金融機構<br>股務代理機構<br>擔任徵求人<br>【委§6】</td>
+  <td style="text-align:left;">其他公司</td>
+  <td style="text-align:left;">1.持股期間繼續1年以上<br>2. 持有發行股份總數 10%以上</td>
+  <td style="text-align:left;">個人或共同委託徵求之股東:<br>1. 持股期間繼續1年以上<br>2. 持股條件以下之一:<br>●持有發行股份總數10%以上<br>●持有發行股份總數8%以上,且於股東會有選任<br>董事或監察人議案時,其所擬支持被選舉人之一<br>符合獨立董事資格</td>
+</tr>
+<tr>
+  <td style="text-align:left;">一般代理<br>【委§211】</td>
+  <td style="text-align:left;">金融機構<br>其他公司</td>
+  <td style="text-align:left;">1.受託代理人須具股東身分,受3人以上股東委託,<br>不超過30人<br>2.受託股數上限:代理之股數除不得超過本身持股之<br>4倍外,亦不得超過公司已發行股數總數之3%</td>
+  <td style="text-align:left;"></td>
+</tr>
+<tr>
+  <td style="text-align:left;">無限受託代理<br>【委§14|】</td>
+  <td style="text-align:left;">金融機構<br>其他公司</td>
+  <td style="text-align:left;">1.由召開股東會之公<br>司委任股務代理機<br>構擔任股東之受託<br>代理人<br>2. 受託之人數及代理<br>之股數不受限制</td>
+  <td style="text-align:left;">不適用</td>
+</tr>
+</tbody>
+</table>
+
+<p>1 依公司法第177條第2項及經濟部1966/12/21 商2922號函,受1人委託者,
+可不具股東身分,且代理之股數不受限制;受2人委託者,受託代理人可不具股東身分,
+但代理股數不得超過公司已發行股份總數之3%。</p>
+
+</section>
+<section class="sub-sec" id="8-3-3-委託書徵求資訊之揭露">
+<h3 class="subhead">8.3.3 委託書徵求資訊之揭露</h3>
+<details class="narration-box" data-tts-root id="narration-8-3-3-委託書徵求資訊之揭露" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3.3 委託書徵求資訊之揭露」。首先，落實資訊揭露原則是證券交易法相關法規中相當重要的一環,「委託書規 則」 樣的規範精神,可由委託書徵求的不同階段分別討論: 1. 徵求開始前之資訊揭露 為使股東得以儘速獲知完整之委託書徵求訊息,以判斷是否委託徵求人出席 股東會,同時考量徵求作業程序及公司股務作業流程,「委託書規則」第7條規 定,徵求人應應於股東常會開會 38 日前或股東臨時會開會 23 日前,檢附徵求人資 料、持股證明及其擬刊登之書面及廣告內容定稿等相關徵求資料送達公司,並副 知財團法人中華民國證券暨期貨市場發展基金會(以下簡稱證基會)。徵求人未 於規定期限前送達資料,不得有徵求行為。公司則應於股東常會開會30日前或股東臨時會開會15日前,彙整製作徵求 人徵求資料彙總表冊,以電子檔案傳送證基會對外公告,並於股東會開會通知上 載明相關上網查閱方法,以便利股東查詢。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>落實資訊揭露原則是證券交易法相關法規中相當重要的一環,「委託書規
+則」    樣的規範精神,可由委託書徵求的不同階段分別討論:</p>
+
+<ol>
+<li>徵求開始前之資訊揭露
+為使股東得以儘速獲知完整之委託書徵求訊息,以判斷是否委託徵求人出席
+股東會,同時考量徵求作業程序及公司股務作業流程,「委託書規則」第7條規
+定,徵求人應應於股東常會開會 38 日前或股東臨時會開會 23 日前,檢附徵求人資
+料、持股證明及其擬刊登之書面及廣告內容定稿等相關徵求資料送達公司,並副
+知財團法人中華民國證券暨期貨市場發展基金會(以下簡稱證基會)。徵求人未
+於規定期限前送達資料,不得有徵求行為。
+公司則應於股東常會開會30日前或股東臨時會開會15日前,彙整製作徵求
+人徵求資料彙總表冊,以電子檔案傳送證基會對外公告,並於股東會開會通知上
+載明相關上網查閱方法,以便利股東查詢。如公司該次股東會有選舉董事或監察
+人議案時,則應彙整徵求人名單及其擬支持董事被選舉人之經營理念,於寄發股
+東會召集通知時,同時附送股東。(「委託書規則」第7條)</li>
+<li>徵求委託書之書面及廣告內容揭露
+股東對於委託書徵求人通常認識不多,往往有賴徵求委託書之書面及廣告內
+容所提供之資訊,來判斷徵求人立場及是否交付委託書。為使股東有詳盡之徵求
+資訊得以進行決策,徵求委託書之書面及廣告受有相關規範:
+(1) 徵求委託書之書面及廣告應載明之內容:(「委託書規則」第8條第1項)
+A 對於當次股東會各項議案,逐項為贊成與否之明確表示;如與決議案有
+自身利害關係,則應加以說明。
+當次股東會各項議案持有相反意見時,應對該公司有關資料記載內
+容,提出反對之理由。
+於董事或監察人選任議案之記載事項:包含說明徵求委託書之目的、
+擬支持之被選舉人之相關資料、徵求人與擬支持之被選舉人間有無證券
+交易法施行細則第2條所定為利用他人名義持有股票之情形,及自行擔
+任徵求人或委託信託事業或股務代理機構擔任徵求人之股東,
+東,其白有持
+股是否支持徵求委託書書面及廣告內容記載之被選舉人。
+D徵求人之相關資料、徵求場所、電話及委託書交付方式。
+E徵求人所委託代為處理徵求事務者之資料。
+F徵求取得委託書後,應依股東委託出席股東會,女
+,如有違反致委託之股東
+受有損害者,依民法委任有關規定負損害賠償之責。
+G其他依規定應揭露之事項。
+(2)不得於徵求場所外徵求委託書:徵求之書面及廣告內容應明確揭示於徵求
+場所,且徵求人及其委託代為處理徵求事務者不得於徵求場所外徵求委託
+書。(「委託書規則」第8條第2項)
+(3) 公司應秉持中立性原則:徵求人或受其委託代為處理徵求事務者,不得委
+託公司代為寄發徵求信函或徵求資料予股東。另徵求人不得於徵求委託
+書之書面及廣告內容記載徵求人得不出席股東會等相關文字(「委託書規
+則」第7條第5項、第10條之1第2項)
+(4) 徵求人自行寄送或刊登之書面及廣告,應與其送達公司之資料內容相同。
+(「委託書規則」第9條)</li>
+<li>徵求結束後之資訊揭露
+徵求人徵得委託書後,應於股東會開會5日前,編製徵得之委託書明細,連
+同委託書送達公司或其股務代理機構;公司或其股務代理機構則應於股東會開會
+當日,將徵求人徵得之股數彙總編造統計表,於股東會開會場所進行明確揭示,
+並傳送電子檔案至證基會網站公告,以利股東查詢,貫徹資訊揭露原則。(「委
+託書規則」第12條)
+委託他人出席之股東(無論委託徵求人或受託代理人出席),則得於股東會
+後7日內,向公司或其股務代理機構查閱其委託書的使用情形。(「委託書規則」
+第18條)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-3-4-委託書使用及取得方式之限制">
+<h3 class="subhead">8.3.4 委託書使用及取得方式之限制</h3>
+<details class="narration-box" data-tts-root id="narration-8-3-4-委託書使用及取得方式之限制" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3.4 委託書使用及取得方式之限制」。首先，1. 禁止以價購等方式取得委託書 依「委託書規則」第11條規定,委託書的取得有以下限制: (1)不得以給付金錢或其他利益為條件。但代為發放股東會紀念品或徵求人支 付予代為處理徵求事務者之合理費用,不在此限。(2)不得利用他人名義為之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>禁止以價購等方式取得委託書
+依「委託書規則」第11條規定,委託書的取得有以下限制:
+(1)不得以給付金錢或其他利益為條件。但代為發放股東會紀念品或徵求人支
+付予代為處理徵求事務者之合理費用,不在此限。</li>
+</ol>
+
+<p>(2)不得利用他人名義為之。
+(3)不得將徵求之委託書作為非屬徵求之委託書出席股東會。
+以給付金錢或其他利益取得委託書(即俗稱之價購委託書),容易影響委託
+人之決定,使有心人士得以較低成本取得公司之經營權,嚴重扭曲委託書的本質
+功能,「委託書規則」自1996年起即已明文禁止價購委託書之行為。
+另由股東依「委託書規則」第5條規定自行擔任之徵求人(即有限徵求),
+因其有代理股數之上限限制,為避免徵求人規避法規,將徵求取得但超過代理上
+限之委託書,移轉給同集團之其他股東作為非屬徵求使用,爰明文禁止挪用委託
+書之行為,並禁止利用他人名義取得委託書,防止有心人士假借他人名義徵求委
+託書。</p>
+
+<ol start="2">
+<li>禁止空白委託
+為避免股東交付之委託書上未填寫徵求人或受託代理人之姓名,而造成委託
+書被移轉使用,「委託書規則」第10條第1項規定,委託書應由委託人親自簽
+名或蓋章,並應由委託人親自填具徵求人或受託代理人姓名。信託事業或股務代
+理機構依「委託書規則」第6條規定受股東委託擔任徵求人,及股務代理機構依
+「委託書規則」第14條規定受公司委任擔任委託書之受託代理人時,則得以蓋
+章方式代替,惟蓋章亦應當場為之,避免空白委託之疑慮。又依「委託書規則」
+第10條第2項,徵求人亦應於委託書上簽章,並不得轉讓他人使用。為強化徵
+求作業之管理,委託書應加蓋徵求場所章戳,並由徵求場所辦理徵求事務之人員
+於委託書上簽名或蓋章。</li>
+<li>徵求人應依股東委託出席股東會及徵求作業公平性
+為避免徵求人未出席股東會,影響股東委託出席行使表決權,及避免公司藉
+由股東會紀念品之發放,造成不同股東間委託書徵求作業不公之情事,「委託書
+規則」第10條之1規定,公司將徵求資料傳送或公告後,徵求人應依股東委託
+出席股東會,徵求人不得於徵求委託書之書面及廣告內容記載徵求人得不出席股
+東會等相關文字。此外為維持委託書徵求作業之公平性,「委託書規則」第11
+條明定公司交付股東會紀念品予徵求人,應以公平原則辦理。</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-3-5-違反委託書規則之效果">
+<h3 class="subhead">8.3.5 違反委託書規則之效果</h3>
+<details class="narration-box" data-tts-root id="narration-8-3-5-違反委託書規則之效果" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3.5 違反委託書規則之效果」。首先，1. 行政罰鍰 為強化委託書管理效能,證券交易法第25條之1授權金管會訂定「委託書 規則」之相關事項,如徵求人、受託代理人與代為處理徵求事務者之資格條件、 委託書取得、徵求與受託方式、紀念品發放公平原則等事項。如有違反前揭規定, 金管會得依證券交易法第178條第1項第7款規定,處新台幣 24 萬以上 480萬 元以下罰鍰。2. 代理之表決權不予計算 依「委託書規則」第22條規定,使用委託書有下列之情事之一者,其代理 之表決權不予計算,公司得拒絕發給當次股東會各項議案之表決票: (1) 委託書用紙非為公司印發者。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>行政罰鍰
+為強化委託書管理效能,證券交易法第25條之1授權金管會訂定「委託書
+規則」之相關事項,如徵求人、受託代理人與代為處理徵求事務者之資格條件、
+委託書取得、徵求與受託方式、紀念品發放公平原則等事項。如有違反前揭規定,
+金管會得依證券交易法第178條第1項第7款規定,處新台幣 24 萬以上 480萬
+元以下罰鍰。</li>
+<li>代理之表決權不予計算
+依「委託書規則」第22條規定,使用委託書有下列之情事之一者,其代理
+之表決權不予計算,公司得拒絕發給當次股東會各項議案之表決票:
+(1) 委託書用紙非為公司印發者。
+(2)因徵求而送達公司之委託書為轉讓而取得者。
+(3) 違反徵求人或代為處理徵求事務者所應具備之資格條件者。
+(4)於徵求場所外徵求委託書。
+(5) 徵求人擬支持之董事或監察人被選舉人,超過公司該次股東會議案或章程
+所定董事或監察人應選任人數。
+(6) 非法取得委託書者(以給付金錢或其他利益為條件;利用他人名義;將徵
+求之委託書作為非屬徵求之委託書出席股東會)。
+(7) 非屬徵求受託代理人出具之聲明書(聲明其受託代理之委託書非為自己或
+他人徵求而取得)有虛偽情事者,或未檢附聲明書及明細表送達公司或其
+代理股務機構者。
+(8) 委託人未於委託書上親自填具徵求人或受託代理人姓名。
+(9) 非屬徵求委託書之受託代理人,其所受委託之人數超過30人時,其全部
+代理之股數。
+(10)股務代理機構受公司委任擔任受託代理人未依相關規定辦理。
+(11)違反「委託書規則」第10條第1項、第13條第1項、第14條、第16條
+第1項、第19條第2項之規定者。</li>
+</ol>
+
+<p>(12)將出席證、出席簽到卡或其他出席證件轉讓他人使用者。
+(13)徵求人或非屬徵求受託代理人其代理股數超過規定限額者,其超過之部
+分。
+(14)徵求人之投票行為與徵求委託書之書面及廣告記載內容,或與委託人之委
+託內容,不相符合者。
+(15)其他違反「委託書規則」規定徵求委託書者。</p>
+
+</section>
+<section class="sub-sec" id="8-3-6-委託書規則最新修正重點">
+<h3 class="subhead">8.3.6 委託書規則最新修正重點</h3>
+<details class="narration-box" data-tts-root id="narration-8-3-6-委託書規則最新修正重點" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.3.6 委託書規則最新修正重點」。首先，金管會歷年配合實務運作,曾就委託書相關法令適時進行檢討修正,以期導 正委託書功能,進而提升股東會議事效率。為強化對代為處理徵求事務者之管理 及與徵求事務相關契約訂定之合理性,並提升徵求人及代為處理徵求事務者辦理 徵求事務之遵法性,金管會於111年8月17日修正「委託書規則」部分條文。1. 提升徵求人及代為處理徵求事務者辦理徵求事務之遵法性 對重大違反委託書規則情事經金管會處分者(包括價購委託書、利用他人名 義取得、將徵求之委託書作為非屬徵求之委託書出席股東會,及不符徵求人資格 等四類),於一年內限制其擔任徵求人或辦理代為處理徵求事務之資格。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>金管會歷年配合實務運作,曾就委託書相關法令適時進行檢討修正,以期導
+正委託書功能,進而提升股東會議事效率。為強化對代為處理徵求事務者之管理
+及與徵求事務相關契約訂定之合理性,並提升徵求人及代為處理徵求事務者辦理
+徵求事務之遵法性,金管會於111年8月17日修正「委託書規則」部分條文。</p>
+
+<ol>
+<li>提升徵求人及代為處理徵求事務者辦理徵求事務之遵法性
+對重大違反委託書規則情事經金管會處分者(包括價購委託書、利用他人名
+義取得、將徵求之委託書作為非屬徵求之委託書出席股東會,及不符徵求人資格
+等四類),於一年內限制其擔任徵求人或辦理代為處理徵求事務之資格。另配合
+增列違反該規定者所代理之表決權不予計算。(修正「委託書規則」第
+7條之1及第22條)</li>
+<li>提升代為處理徵求事務者之資格條件及專業素質
+參酌公開發行股票公司股務處理準則關於代辦股務機構之主管之實務工作經
+驗規定,增訂代為處理徵求事務者辦理徵求事務之主管至少一人須有五年以上之
+股務作業或辦理徵求事務實務經驗,並明定其辦理徵求事務之人員應參加股務相
+關教育訓練課程。為使代為處理徵求事務者足以因應前開所定之資格條件,爰訂
+定緩衝期至111年12月31日。(修正「委託書規則」第7條之1及第24條)</li>
+<li>強化徵求契約訂定之合理性及監理資訊
+明定受股東委託擔任徵求人或受徵求人委託代為處理徵求事務者,應於契約
+中訂明報酬,並應確實執行認識客戶作業,定期檢視契約內容之合理性,每年重
+新簽訂契約。另考量徵求事務相關契約訂定所需作業時間,訂定緩衝期至111年
+12月31日。(修正「委託書規則」第7條之3)</li>
+</ol>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">徵求開始前之資訊揭露</span>
+<span class="tag-chip chip-mint">徵求委託書之書面及廣告內容揭露</span>
+<span class="tag-chip chip-amber">徵求結束後之資訊揭露</span>
+<span class="tag-chip chip-coral">禁止以價購等方式取得委託書</span>
+<span class="tag-chip chip-violet">禁止空白委託</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-4-股東會召集-會場實務及會後辦理事項">
+<div class="sec-kicker">站 4｜股東會召集、會場實務及會後辦理事項</div>
+<div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">8.4 股東會召集、會場實務及會後辦理事項</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實務小百科</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-4-股東會召集-會場實務及會後辦理事項" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.4 股東會召集、會場實務及會後辦理事項」。首先，關於可以這樣記。8.4.1 股東會召集：1. 召開董事會決定股東會議案、日期地點,並依證券交易法第36條規定於 每會計年度終了後三個月內,公告並申報由董事長、經理人及會計主管簽 名或蓋章,並經會計師查核簽證、董事會通過及監察人承認之年度財務報 告承認財務報表。 2. 每會計年度終了,董事會應編造營業報告書、財務報表、盈餘分派或虧損 撥補之議案,於股東常會開會三十日前交監察人查核。(公司法第228條；8.4.2 股東會會場實務：1. 公司股東會舉行地點,公司法並無規定,如章程亦無特別規定時,可自由 選擇適當地點召開股東會。另股東會召開之地點,應於本公司所在地或便 利股東出席且適合股東會召開之地點為之,會議開始時間不得早於上午九 時或晚於下午三時,召開之地點及時間,應充分考量獨立董事之意見。另 公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條) 2. 公司召開視訊股東會；8.4.3 股東會會後辦理事項：1. 股東會後1日:公司應即編製議事錄。股東會之議決事項,應作成議事錄, 由主席簽名或蓋章,並於會後二十日內,將議事錄分發各股東。議事錄之 製作及分發,得以電子方式為之。議事錄之分發,公開發行股票之公司, 得以公告方式為之。(公司法第183條第1項至第3項)。董事會應將其 所造具之各項表冊,提出於股東常會請求承認,經股東常會承認後,董事 會應將財務報表及盈餘。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>股東會召集、會場實務及會後辦理事項｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>5.停止過戶期間</td>
+<td>公司股東名簿記載之變更,於股東常會開會前三十日內,</td>
+</tr>
+<tr>
+<td>東參閱</td>
+<td>(1) 公司召開實體股東會者,應於股東會現場發放。</td>
+</tr>
+<tr>
+<td>1. 股東會後1日</td>
+<td>公司應即編製議事錄。股東會之議決事項,應作成議事錄,</td>
+</tr>
+<tr>
+<td>2. 股東會次一營業日交易時間開始二小時前</td>
+<td>若股東會之決議事項屬於臺灣</td>
+</tr>
+<tr>
+<td>3. 股東會後五日內</td>
+<td>股務代理機構受委任擔任委託書之受託代理人者,不得</td>
+</tr>
+<tr>
+<td>4. 股東會後20日內</td>
+<td>股東會之議決事項,應作成議事錄,由主席簽名或蓋章,</td>
+</tr>
+<tr>
+<td>5. 上網下載(http</td>
+<td>//dsp.twse.com.tw/點選「上市公司」/點選「上市公司</td>
+</tr>
+</tbody></table></div></div>
+<section class="sub-sec" id="8-4-1-股東會召集">
+<h3 class="subhead">8.4.1 股東會召集</h3>
+<details class="narration-box" data-tts-root id="narration-8-4-1-股東會召集" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.4.1 股東會召集」。首先，1. 召開董事會決定股東會議案、日期地點,並依證券交易法第36條規定於 每會計年度終了後三個月內,公告並申報由董事長、經理人及會計主管簽 名或蓋章,並經會計師查核簽證、董事會通過及監察人承認之年度財務報 告承認財務報表。2. 每會計年度終了,董事會應編造營業報告書、財務報表、盈餘分派或虧損 撥補之議案,於股東常會開會三十日前交監察人查核。(公司法第228條 第1項) 3. 公司應於股東常會召開前之停止股票過戶日前,公告受理股東之提案、書 面或電子受理方式、受理處所及受理期間;其受理期間不得少於十日。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>召開董事會決定股東會議案、日期地點,並依證券交易法第36條規定於
+每會計年度終了後三個月內,公告並申報由董事長、經理人及會計主管簽
+名或蓋章,並經會計師查核簽證、董事會通過及監察人承認之年度財務報
+告承認財務報表。</li>
+<li>每會計年度終了,董事會應編造營業報告書、財務報表、盈餘分派或虧損
+撥補之議案,於股東常會開會三十日前交監察人查核。(公司法第228條
+第1項)</li>
+<li>公司應於股東常會召開前之停止股票過戶日前,公告受理股東之提案、書
+面或電子受理方式、受理處所及受理期間;其受理期間不得少於十日。(公
+司法第172 條之1第2項)</li>
+<li>公司應於股東會召開前之停止股票過戶日前,公告受理董事候選人提名之
+期間、董事應選名額、其受理處所及其他必要事項,受理期間不得少於十
+日。(公司法第192 條之1第2項/公司法第216條之1規定監察人候選
+人提名制度準用之)
+5.停止過戶期間:公司股東名簿記載之變更,於股東常會開會前三十日內,
+股東臨時會開會前十五日內,或公司決定分派股息及紅利或其他利益之基
+準日前五日內,不得為之。公開發行股票之公司辦理股東名簿記載之變
+更,於股東常會開會前六十日內,股東臨時會開會前三十日內,不得為之。
+(公司法第165條第2項及第3項)</li>
+<li>公司應於股東常會開會二十五日前或股東臨時會開會十五日前,將董事候
+選人名單及其學歷、經歷公告。但公開發行股票之公司應於股東常會開會</li>
+</ol>
+
+<p>四十日前或股東臨時會開會二十五日前為之。(公司法第192條之1第6
+項/公司法第216條之1規定監察人候選人提名制度準用之)</p>
+
+<ol start="7">
+<li>上市公司就合於公司法第 172 條之1規定之股東提案議案,至遲應於股東
+會召開前 40日,將股東會之公告完整上傳。(證交所94年12月29日台
+證上字第0940103516號函)</li>
+<li>公開發行股票之公司股東常會之召集,應於三十日前通知各股東;股東臨
+時會之召集,應於十五日前通知各股東。公司應於股東常會開會三十日前
+或股東臨時會開會十五日前,將股東會開會通知書、委託書用紙、有關承
+認案、討論案、選任或解任董事、監察人事項等各項議案之案由及說明資
+料製作成電子檔案傳送至公開資訊觀測站。(公司法第172條第3項/公
+開發行公司股東會議事手冊應行記載及遵行事項辦法第5條)</li>
+<li>公司應於股東常會開會二十一日前或股東臨時會開會十五日前,將股東會
+議事手冊及前項會議補充資料,製作電子檔案傳送至公開資訊觀測站。但
+上市上櫃公司於最近會計年度終了日實收資本額達新臺幣一百億元以上或
+最近會計年度召開股東常會其股東名簿記載之外資及陸資持股比率合計達
+百分之三十以上者,應於股東常會開會三十日前完成前開電子檔案之傳
+送。(公開發行公司股東會議事手冊應行記載及遵行事項辦法第6條第3
+項)</li>
+<li>應於股東會開會十五日前,備妥當次股東會議事手冊及會議補充資
+料,供股東隨時索閱,並陳列於公司及其股務代理機構,且應於股東會現
+場發放。(公開發行公司股東會議事手冊應行記載及遵行事項辦法第6條
+第1項)</li>
+<li>前項之議事手冊及會議補充資料,於股東會開會當日應依下列方式提供股
+東參閱:
+(1) 公司召開實體股東會者,應於股東會現場發放。
+(2) 公司召開視訊輔助股東會者,應於股東會現場發放,並以電子檔案傳
+送至視訊會議平台。
+(3) 公司召開視訊股東會者,應以電子檔案傳送至視訊會議平台。(公開
+發行公司股東會議事手冊應行記載及遵循事項辦法第6條第2項)</li>
+</ol>
+
+<ol start="12">
+<li>上市櫃公司應於股東會召開日七日前,將年報電子檔及年報前十大股東相
+互間關係上傳公開資訊觀測站。(臺灣證券交易所股份有限公司對有價證
+券上市公司及境外指數股票型基金上市之境外基金機構資訊申報作業辦法
+第3條第2項第24款)</li>
+</ol>
+
+<p>《股東常會日程預計表》</p>
+
+<ul>
+<li>召開董事會承認財務報表、決定股東會議案、日期地點、受理股東提案、提名期間及董事會提名候選人名單</li>
+<li>董事會編造表冊交監察人 (查核股東會 30 日前且 3 月 25 日前)</li>
+<li>受理股東提案及候選人名單起日, 受理期間不得少於 10 日</li>
+<li>停止過戶日 (停止過戶期間 60 日)</li>
+<li>輸入公開資訊觀測站公告董事候選人名單及其相關資料, 並將審查審查結果書面通知提名及提案股東 (40 日前)</li>
+<li>有關承認案、討論案、選任或解任董事、監察人事項等各項議案之案由及說明資料電子檔上傳公開資訊觀測站, 寄發股東會開會通知書, 將開會通知書、委託書用紙、 (30 日前)</li>
+<li>股東會議事手冊及會議補充資料電子檔上傳公開資訊觀測站 (21 日前)</li>
+<li>備妥股東會議事手冊及會議補充資料供股東隨時查閱 (15 日前)</li>
+<li>公開資訊觀測站年報電子檔及年報前十大股東相互關係上傳 (7 日前)</li>
+<li>股東常會</li>
+</ul>
+
+</section>
+<section class="sub-sec" id="8-4-2-股東會會場實務">
+<h3 class="subhead">8.4.2 股東會會場實務</h3>
+<details class="narration-box" data-tts-root id="narration-8-4-2-股東會會場實務" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.4.2 股東會會場實務」。首先，1. 公司股東會舉行地點,公司法並無規定,如章程亦無特別規定時,可自由 選擇適當地點召開股東會。另股東會召開之地點,應於本公司所在地或便 利股東出席且適合股東會召開之地點為之,會議開始時間不得早於上午九 時或晚於下午三時,召開之地點及時間,應充分考量獨立董事之意見。另 公司召開視訊股東會時,不受前項召開地點之限制。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>公司股東會舉行地點,公司法並無規定,如章程亦無特別規定時,可自由
+選擇適當地點召開股東會。另股東會召開之地點,應於本公司所在地或便
+利股東出席且適合股東會召開之地點為之,會議開始時間不得早於上午九
+時或晚於下午三時,召開之地點及時間,應充分考量獨立董事之意見。另
+公司召開視訊股東會時,不受前項召開地點之限制。(議事規則第5條)</li>
+<li>公司召開視訊股東會時,主席及紀錄人員應在國內之同一地點,主席並應
+於開會時宣布該地點之地址。(議事規則第5條)</li>
+<li>公司章程得訂明股東會開會時,以視訊會議或其他經中央主管機關公告之
+方式為之。但因天災、事變或其他不可抗力情事,中央主管機關得公告公
+司於一定期間內,得不經章程訂明,以視訊會議或其公告之方式開會(公
+司法第172 條之2第1項);股東會開會時,如以視訊會議為之,其股東
+以視訊參與會議者,視為親自出席(公司法第172條之2第2項);前二
+項規定,於公開發行股票之公司應符合之條件、作業程序及其他應遵行事
+項,證券主管機關另有規定者,從其規定(公司法第172條之2第3項)。</li>
+<li>一般公司依照慣例於股東會會場備置股東會議事手冊、年報、公開徵求及
+非屬徵求委託書之彙整明細內容、郵寄股東會開會通知書之舉證資料(如
+大宗掛號單、交寄證明)等。</li>
+<li>會議中如有股東發言時,司儀應請股東敘明股東戶號、戶名,並依公司之
+股東會議事規則,控制其發言時間及次數。</li>
+<li>股東依公司法第172條之1提案,董事會對於未列入議案之股東提案,應
+於股東會說明未列入之理由。(公司法第172條之1第6項)</li>
+<li>表決案於投票表決時,應逐案由主席或其指定人員宣佈出席股東之表決權
+總數後,由股東逐案進行投票表決,並於股東會召開後當日,將股東同意、
+反對及棄權之結果輸入公開資訊觀測站。(「○○股份有限公司股東會議
+事規則」參考範例第13條第5項)</li>
+<li>股東對於會議之事項,有自身利害關係致有害於公司利益之虞時,不得加
+入表決,並不得代理他股東行使其表決權。(公司法第178條)</li>
+<li>股東會會場為避免有干擾會議者,宜有保全或駐警人員協助,並全程錄
+音、錄影。為使股東會順利召開,如於股東會前已發現有股東可能利用會
+議干擾以牟取私利者,請即與檢警調機關連繫,以便事前蒐證。</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-4-3-股東會會後辦理事項">
+<h3 class="subhead">8.4.3 股東會會後辦理事項</h3>
+<details class="narration-box" data-tts-root id="narration-8-4-3-股東會會後辦理事項" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.4.3 股東會會後辦理事項」。首先，1. 股東會後1日:公司應即編製議事錄。股東會之議決事項,應作成議事錄, 由主席簽名或蓋章,並於會後二十日內,將議事錄分發各股東。議事錄之 製作及分發,得以電子方式為之。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>股東會後1日:公司應即編製議事錄。股東會之議決事項,應作成議事錄,
+由主席簽名或蓋章,並於會後二十日內,將議事錄分發各股東。議事錄之
+製作及分發,得以電子方式為之。議事錄之分發,公開發行股票之公司,
+得以公告方式為之。(公司法第183條第1項至第3項)。董事會應將其
+所造具之各項表冊,提出於股東常會請求承認,經股東常會承認後,董事
+會應將財務報表及盈餘分派或虧損撥補之決議,分發各股東。(公司法第
+230條第1項)</li>
+<li>股東會次一營業日交易時間開始二小時前:若股東會之決議事項屬於臺灣
+證券交易所股份有限公司對有價證券上市公司重大訊息之查證暨公開處理
+程序第4條規定之重大訊息者,公司應於股東會次一營業日交易時間開始
+二小時前,輸入公開資訊觀測站。(上櫃公司亦有類似規定)</li>
+<li>股東會後五日內:股務代理機構受委任擔任委託書之受託代理人者,不得
+接受股東全權委託;並應於各該公開發行公司股東會開會完畢五日內,將
+委託出席股東會之委託明細、代為行使表決權之情形,契約書副本及其他
+本會所規定之事項,製作受託代理出席股東會彙整報告備置於股務代理機
+構。(公開發行公司出席股東會使用委託書規則第14條第3項)</li>
+<li>股東會後20日內:股東會之議決事項,應作成議事錄,由主席簽名或蓋章,
+並於會後二十日內,將議事錄分發各股東。議事錄之分發,公開發行股票
+之公司,得以公告方式為之。(公司法第183條第1項及第2項)</li>
+<li>上網下載(http://dsp.twse.com.tw/點選「上市公司」/點選「上市公司
+文件下載」/點選(1)「董監事法規宣導手冊」、(2)「聲明書 -- 董事、監
+察人、經理人」、(3)「上市公司及其董事、監察人與大股東應行注意之
+證券市場規範事項」、(4)「獨立董事法規宣導手冊」及5.「獨立董事(選
+任時)聲明書參考範例」等)資料交付新選任之董、監事(含改選後續任</li>
+</ol>
+
+<p>公司治理理論與實務</p>
+
+<p>之董、監事)並簽收。上市公司應於董、監事就任之日起5日內,洽新選
+任之董、監事(含改選後續任之董、監事)完成簽署,並應於10日內將
+簽收情形及聲明書影本(包含獨立董事(選任時)聲明書)函送證交所,
+惟如有正當理由報經證交所同意者,得延長報備期限至就任之日起15日
+內;上市公司若設置獨立董事,應一併檢送「獨立董事(選任時)資格條
+件檢查表」(公司填寫)。(詳證交所發布之「上市有價證券發行人應辦
+業務事項一覽表」,櫃買中心亦有類似規定)</p>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">召開董事會承認財務報表、決定股東會議案、日期地點、受理股東提案、提名期間及董事會提名候選人名單</span>
+<span class="tag-chip chip-mint">董事會編造表冊交監察人 (查核股東會 30 日前且 3 月 25 日前)</span>
+<span class="tag-chip chip-amber">受理股東提案及候選人名單起日, 受理期間不得少於 10 日</span>
+<span class="tag-chip chip-coral">停止過戶日 (停止過戶期間 60 日)</span>
+<span class="tag-chip chip-violet">輸入公開資訊觀測站公告董事候選人名單及其相關資料, 並將審查審查結果書面通知提名及提案股東 (40 日前)</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-5-獨立董事之提名及選舉">
+<div class="sec-kicker">站 5｜獨立董事之提名及選舉</div>
+<div class="sec-head"><span class="sec-num">5</span><h2 class="sec-title">8.5 獨立董事之提名及選舉</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-5-獨立董事之提名及選舉" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.5 獨立董事之提名及選舉」。首先，獨立董事應具備專業知識,其持股及兼職應予限制,且於執行業務範圍內應 保持獨立性,不得與公司有直接或間接之利害關係。獨立董事之專業資格、持股 與兼職限制、獨立性之認定、提名方式及其他應遵行事項之辦法,依證券交易法 第14條之2第2項授權,金管會訂定「公開發行公司獨立董事設置及應遵循事 項辦法」。(以下簡稱「獨立董事設置及應遵循事項辦法」)。接著，關於可以這樣記。8.5.1 強制設立：1. 公開發行公司依章程規定設置獨立董事,獨立董事人數不得少於二人,且 不得少於董事席次五分之一。(證券交易法第14條之2第1項) 2. 所有上市櫃公司已於 111 年完成設置至少三席獨立董事;所有興櫃公司依 其董事、監察人任期屆滿情形,於109年至111年間逐步完成設置獨立董 事。 3. 公開發行公司之獨立董事,應取得下列專業資格條件之一,並具備五年以 上；8.5.2 獨立董事之提名方式：1. 上市櫃公司自110年1月1日起,董事及監察人選舉應採候選人提名制度, 並載明於章程,股東應就董事及監察人候選人名單中選任之。(108年4 月25日金管證交字第1080311451號令) 2. 公開發行公司獨立董事選舉,應依公司法第192條之1規定採候選人提名 制度,並載明於章程,股東應就獨立董事候選人名單中選任之。(「獨立 董事設置及應遵循事項辦法」第；8.5.3 獨立董事之選舉方式：1. 獨立董事及非獨立董事之候選人可一併進行選舉投票 (1) 股東會選任董事時,每一股份有與應選出董事人數相同之選舉權,得 集中選舉一人,或分配選舉數人,由所得選票代表選舉權較多者,當 選為董事。(公司法第198條第1項) (2)公司製作之選票應符合累積投票制之精神 依公司法第198 條第1項規定:「股東會選任董事時,每一股份 有與應選出董事人數相同之選舉權。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>獨立董事之提名及選舉｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>上工作經驗</td>
+<td>(「獨立董事設置及應遵循事項辦法」第2條第1項)</td>
+</tr>
+<tr>
+<td>合獨立董事所應具備條件後,送請股東會選任之</td>
+<td>(「獨立董事設置及應</td>
+</tr>
+<tr>
+<td>有下列情事之一者外,應將其列入獨立董事候選人名單</td>
+<td>(「獨立董事設</td>
+</tr>
+<tr>
+<td>依公司法第198 條第1項規定</td>
+<td>「股東會選任董事時,每一股份</td>
+</tr>
+<tr>
+<td>(2)依公司法第192條之1第3項規定</td>
+<td>「持有已發行股份總數1%以上</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>獨立董事之提名及選舉｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 8</td>
+<td>5.1 強制設立</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>公開發行公司依章程規定設置獨立董事,獨立董事人數不得少於二人,且</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>所有上市櫃公司已於 111 年完成設置至少三席獨立董事;所有興櫃公司依</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>公開發行公司之獨立董事,應取得下列專業資格條件之一,並具備五年以</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>有下列情事之一者,不得充任獨立董事,其已充任者,當然解任:(「獨</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>獨立董事因故解任,致人數不足證券交易法第14條之2第1項或章程規</td>
+</tr>
+<tr>
+<td>階段 8</td>
+<td>5.2 獨立董事之提名方式</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>上市櫃公司自110年1月1日起,董事及監察人選舉應採候選人提名制度,</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>公開發行公司獨立董事選舉,應依公司法第192條之1規定採候選人提名</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>公開發行公司應於股東會召開前之停止股票過戶日前,公告受理獨立董事</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>公開發行公司得以下列方式提出獨立董事候選人名單,經董事會評估其符</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>股東或董事會依前項提供推薦名單時,應檢附被提名人姓名、學歷、經歷、</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>獨立董事應具備專業知識,其持股及兼職應予限制,且於執行業務範圍內應
+保持獨立性,不得與公司有直接或間接之利害關係。獨立董事之專業資格、持股
+與兼職限制、獨立性之認定、提名方式及其他應遵行事項之辦法,依證券交易法
+第14條之2第2項授權,金管會訂定「公開發行公司獨立董事設置及應遵循事
+項辦法」。(以下簡稱「獨立董事設置及應遵循事項辦法」)</p>
+</div>
+<section class="sub-sec" id="8-5-1-強制設立">
+<h3 class="subhead">8.5.1 強制設立</h3>
+<details class="narration-box" data-tts-root id="narration-8-5-1-強制設立" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.5.1 強制設立」。首先，1. 公開發行公司依章程規定設置獨立董事,獨立董事人數不得少於二人,且 不得少於董事席次五分之一。(證券交易法第14條之2第1項) 2. 所有上市櫃公司已於 111 年完成設置至少三席獨立董事;所有興櫃公司依 其董事、監察人任期屆滿情形,於109年至111年間逐步完成設置獨立董 事。3. 公開發行公司之獨立董事,應取得下列專業資格條件之一,並具備五年以 上工作經驗:(「獨立董事設置及應遵循事項辦法」第2條第1項) (1) 商務、法務、財務、會計或公司業務所需相關科系之公私立大專院校 講師以上。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>公開發行公司依章程規定設置獨立董事,獨立董事人數不得少於二人,且
+不得少於董事席次五分之一。(證券交易法第14條之2第1項)</li>
+<li>所有上市櫃公司已於 111 年完成設置至少三席獨立董事;所有興櫃公司依
+其董事、監察人任期屆滿情形,於109年至111年間逐步完成設置獨立董
+事。</li>
+<li>公開發行公司之獨立董事,應取得下列專業資格條件之一,並具備五年以
+上工作經驗:(「獨立董事設置及應遵循事項辦法」第2條第1項)
+(1) 商務、法務、財務、會計或公司業務所需相關科系之公私立大專院校
+講師以上。
+(2)法官、檢察官、律師、會計師或其他與公司業務所需之國家考試及格
+領有證書之專門職業及技術人員。</li>
+</ol>
+
+<p>第8章股東會及委託書使用之解析</p>
+
+<p>(3) 具有商務、法務、財務、會計或公司業務所需之工作經驗。</p>
+
+<ol start="4">
+<li>有下列情事之一者,不得充任獨立董事,其已充任者,當然解任:(「獨
+立董事設置及應遵循事項辦法」第2條第2項)
+(1)有公司法第30條各款情事之一。
+(2) 依公司法第27條規定以政府、法人或其代表人當選。
+(3) 違反本辦法所定獨立董事之資格。</li>
+<li>獨立董事因故解任,致人數不足證券交易法第14條之2第1項或章程規
+定者,應於最近一次股東會補選之。獨立董事均解任時,公司應自事實發
+生之日起六十日內,召開股東臨時會補選之。(證券交易法第14條之2
+第6項)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-5-2-獨立董事之提名方式">
+<h3 class="subhead">8.5.2 獨立董事之提名方式</h3>
+<details class="narration-box" data-tts-root id="narration-8-5-2-獨立董事之提名方式" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.5.2 獨立董事之提名方式」。首先，1. 上市櫃公司自110年1月1日起,董事及監察人選舉應採候選人提名制度, 並載明於章程,股東應就董事及監察人候選人名單中選任之。(108年4 月25日金管證交字第1080311451號令) 2. 公開發行公司獨立董事選舉,應依公司法第192條之1規定採候選人提名 制度,並載明於章程,股東應就獨立董事候選人名單中選任之。(「獨立 董事設置及應遵循事項辦法」第5條第1項/公司法第192條之1第1項 參照) 3. 公開發行公司應於股東會召開前之停止股票過戶日前,公告受理獨立董事 候選人提名之期間、獨立董事應選名額、其受理處所及其他必要事項,受 理期間不得少於十日。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>上市櫃公司自110年1月1日起,董事及監察人選舉應採候選人提名制度,
+並載明於章程,股東應就董事及監察人候選人名單中選任之。(108年4
+月25日金管證交字第1080311451號令)</li>
+<li>公開發行公司獨立董事選舉,應依公司法第192條之1規定採候選人提名
+制度,並載明於章程,股東應就獨立董事候選人名單中選任之。(「獨立
+董事設置及應遵循事項辦法」第5條第1項/公司法第192條之1第1項
+參照)</li>
+<li>公開發行公司應於股東會召開前之停止股票過戶日前,公告受理獨立董事
+候選人提名之期間、獨立董事應選名額、其受理處所及其他必要事項,受
+理期間不得少於十日。(「獨立董事設置及應遵循事項辦法」第5條第2
+項/公司法第192條之1第2項參照)</li>
+<li>公開發行公司得以下列方式提出獨立董事候選人名單,經董事會評估其符
+合獨立董事所應具備條件後,送請股東會選任之:(「獨立董事設置及應
+遵循事項辦法」第5條第3項/公司法第192條之1第3項參照)
+(1) 持有已發行股份總數百分之一以上股份之股東,得以書面向公司提出
+獨立董事候選人名單,提名人數不得超過獨立董事應選名額。</li>
+</ol>
+
+<p>公司治理理論與實務</p>
+
+<p>(2) 由董事會提出獨立董事候選人名單,提名人數不得超過獨立董事應選
+名額。
+(3)其他經主管機關規定之方式。</p>
+
+<ol start="5">
+<li>股東或董事會依前項提供推薦名單時,應檢附被提名人姓名、學歷、經歷、
+當選後願任獨立董事之承諾書、無公司法第三十條規定情事之聲明書及其
+他相關證明文件。(「獨立董事設置及應遵循事項辦法」第5條第4項/
+公司法第192條之1第4項參照)
+6.董事會或其他召集權人召集股東會者,對獨立董事被提名人應予審查,除
+有下列情事之一者外,應將其列入獨立董事候選人名單:(「獨立董事設
+置及應遵循事項辦法」第5條第5項/公司法第192條之1第5項參照)
+(1)提名股東於公告受理期間外提出。
+(2) 提名股東於公司依公司法第一百六十五條第二項或第三項停止股票過
+戶時,持股未達百分之一。
+(3)提名人數超過獨立董事應選名額。
+(4)未檢附前項規定之相關證明文件。</li>
+<li>公開發行公司依前項規定列入之獨立董事候選人,其已連續擔任該公司獨
+立董事任期達三屆者,公司應於公告前項審查結果時併同公告繼續提名其
+擔任獨立董事之理由,並於股東會選任時向股東說明前開理由。(「獨立
+董事設置及應遵循事項辦法」第5條第6項)</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="8-5-3-獨立董事之選舉方式">
+<h3 class="subhead">8.5.3 獨立董事之選舉方式</h3>
+<details class="narration-box" data-tts-root id="narration-8-5-3-獨立董事之選舉方式" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.5.3 獨立董事之選舉方式」。首先，1. 獨立董事及非獨立董事之候選人可一併進行選舉投票 (1) 股東會選任董事時,每一股份有與應選出董事人數相同之選舉權,得 集中選舉一人,或分配選舉數人,由所得選票代表選舉權較多者,當 選為董事。(公司法第198條第1項) (2)公司製作之選票應符合累積投票制之精神 依公司法第198 條第1項規定:「股東會選任董事時,每一股份 有與應選出董事人數相同之選舉權,得集中選舉1人,或分配選舉數 人,由所得選票代表選舉權較多者,當選為董事。」本法就董事之選 第8章股東會及委託書使用之解析 舉,係採累積投票制,亦即股東會選舉董事時,每一股份有與應選出 董事人數相同之選舉權,股東得將全部選舉權集中於1人,或分配於 數人,由所得選票代表選舉權較多者,當選為董事。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<ol>
+<li>獨立董事及非獨立董事之候選人可一併進行選舉投票
+(1) 股東會選任董事時,每一股份有與應選出董事人數相同之選舉權,得
+集中選舉一人,或分配選舉數人,由所得選票代表選舉權較多者,當
+選為董事。(公司法第198條第1項)
+(2)公司製作之選票應符合累積投票制之精神
+依公司法第198 條第1項規定:「股東會選任董事時,每一股份
+有與應選出董事人數相同之選舉權,得集中選舉1人,或分配選舉數
+人,由所得選票代表選舉權較多者,當選為董事。」本法就董事之選</li>
+</ol>
+
+<p>第8章股東會及委託書使用之解析</p>
+
+<p>舉,係採累積投票制,亦即股東會選舉董事時,每一股份有與應選出
+董事人數相同之選舉權,股東得將全部選舉權集中於1人,或分配於
+數人,由所得選票代表選舉權較多者,當選為董事。準此,公司製作
+選票時,應符合累積投票制之精神,讓股東得自由分配選舉權,違反
+者,股東可要求公司另行發給得自由分配選舉權之選票,公司應配合
+辦理。(經濟部102年9月30日經商字第10202111760號函)</p>
+
+<ol start="2">
+<li>公開發行公司董事及獨立董事選舉候選人提名制度
+(1)公開發行公司之董事選舉,應依公司法第198條規定辦理,獨立董事
+與非獨立董事應一併進行選舉,分別計算當選名額(「獨立董事設置
+及應遵循事項辦法」第5條第7項)
+(2)依公司法第192條之1第3項規定:「持有已發行股份總數1%以上
+股份之股東,得以書面向公司提出董事候選人名單,提名人數不得
+超過董事應選名額……。」準此,持有已發行股份總數1%以上股份之
+股東,均得提出不超過董事應選名額之董事候選人名單,各名單中之
+候選人有重複者,並無不可。又選舉董事時,應以經審查完竣並公告
+之名單中之候選人為對象進行選舉,尚無依股東提出之名單為單位
+(組)進行包裹選舉之問題,此觀諸公司法第198條第1項:「……每
+一股份有與應選出董事人數相同之選舉權,得集中選舉一『人』,或
+分配選舉數『人』,由所得選票代表選舉權較多者,當選為董事。」
+之規定自明。監察人之選舉亦同。(經濟部95年2月17日經商字第
+09502018490 號函,另107年11月1日施行之公司法第192條之1
+刪除董事會對被提名人予以審查之權利,只需形式認定有無第5項各
+款情形)</li>
+</ol>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">公開發行公司依章程規定設置獨立董事,獨立董事人數不得少於二人,且</span>
+<span class="tag-chip chip-mint">所有上市櫃公司已於 111 年完成設置至少三席獨立董事;所有興櫃公司依</span>
+<span class="tag-chip chip-amber">公開發行公司之獨立董事,應取得下列專業資格條件之一,並具備五年以</span>
+<span class="tag-chip chip-coral">有下列情事之一者,不得充任獨立董事,其已充任者,當然解任:(「獨</span>
+<span class="tag-chip chip-violet">獨立董事因故解任,致人數不足證券交易法第14條之2第1項或章程規</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-6-常見違規案例">
+<div class="sec-kicker">站 6｜常見違規案例</div>
+<div class="sec-head"><span class="sec-num">6</span><h2 class="sec-title">8.6 常見違規案例</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-6-常見違規案例" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.6 常見違規案例」。首先，1. 價購委託書 公司經營權一旦產生紛爭,價購委託書之市場傳聞不斷,鑑於「價購委託書」 嚴重扭曲委託書功能,且易造成日後利益輸送、假公濟私之誘因,「委託書規則」 公司治理理論與實務 1996年12月修正,明文禁止不得以給付金錢或其他利益為條件取得委託書(即 禁止價購委託書),違反者,其代理之表決權不予計算。2. 空白委託 為確認股東委託之真意,「委託書規則」第10條規定,委託書應由委託人 親自填具徵求人或受託代理人姓名,惟實務上,有委託人未親自填具徵求人或受 託代理人姓名之情形。3. 徵求場所外為徵求 「委託書規則」第8條第1項規定,徵求人應於其徵求書面廣告上載明其徵 求場所,且第2項規定,徵求人或受其委託代為處理徵求事務者不得於徵求場所 外徵求委託書,故所謂「於徵求場所外為徵求」係指徵求人或受其委託代為處理 徵求事務者,於其徵求書面廣告上所載明之徵求場所外為徵求之行為。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>常見違規案例｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>價購委託書</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>空白委託</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>徵求場所外為徵求</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>公司交付股東會紀念品予徵求人時,有不公平情形</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><ol>
+<li>價購委託書
+公司經營權一旦產生紛爭,價購委託書之市場傳聞不斷,鑑於「價購委託書」
+嚴重扭曲委託書功能,且易造成日後利益輸送、假公濟私之誘因,「委託書規則」</li>
+</ol>
+
+<p>公司治理理論與實務</p>
+
+<p>1996年12月修正,明文禁止不得以給付金錢或其他利益為條件取得委託書(即
+禁止價購委託書),違反者,其代理之表決權不予計算。</p>
+
+<ol start="2">
+<li>空白委託
+為確認股東委託之真意,「委託書規則」第10條規定,委託書應由委託人
+親自填具徵求人或受託代理人姓名,惟實務上,有委託人未親自填具徵求人或受
+託代理人姓名之情形。</li>
+<li>徵求場所外為徵求
+「委託書規則」第8條第1項規定,徵求人應於其徵求書面廣告上載明其徵
+求場所,且第2項規定,徵求人或受其委託代為處理徵求事務者不得於徵求場所
+外徵求委託書,故所謂「於徵求場所外為徵求」係指徵求人或受其委託代為處理
+徵求事務者,於其徵求書面廣告上所載明之徵求場所外為徵求之行為。</li>
+<li>公司交付股東會紀念品予徵求人時,有不公平情形
+「委託書規則」第11條第4項規定,股東會紀念品交付予徵求人、保證金
+金額及收取方式之訂定,公司應以公平原則辦理,其立法目的係避免公司藉由股
+東會紀念品之發放,造成不同徵求人間委託書徵求作業(或取得委託書)不公之
+情形。惟實務上有發生公司對於配送紀念品予徵求人之日期及數量,對其中一方
+徵求人有不公平或公司未依徵求人指定之地點配送紀念品等爭議情事。</li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">徵求場所外為徵求</span>
+<span class="tag-chip chip-mint">公司交付股東會紀念品予徵求人時,有不公平情形</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-7-股東會及委託書使用實務小百科">
+<div class="sec-kicker">站 7｜股東會及委託書使用實務小百科</div>
+<div class="sec-head"><span class="sec-num">7</span><h2 class="sec-title">8.7 股東會及委託書使用實務小百科</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實務小百科</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-7-股東會及委託書使用實務小百科" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.7 股東會及委託書使用實務小百科」。首先，問題 1. 甲公司為乙公司之從屬公司(乙公司持有甲公司已發行有表決權之股份總 數超過半數),又甲公司及乙公司合計持有丙公司已發行有表決權之股份 總數超過半數,則乙公司召開股東會,甲或丙公司可否擔任乙公司之徵求 人(或委託信託事業、股務代理機構擔任徵求人);甲公司召開股東會, 丙公司可否擔任甲公司之徵求人(或委託信託事業、股務代理機構擔任徵 求人)? 第8章股東會及委託書使用之解析 解答 按公司法第179條第2項規定,下列情形之一者,其股份無表決 權: (1)公司依法持有自己之股份。(2) 被持有已發行有表決權之股份總數或資本總額超過半數之從 屬公司,所持有控制公司之股份。(3) 控制公司及其從屬公司直接或間接持有他公司已發行有表決 權之股份總數或資本總額合計超過半數之他公司,所持有控 制公司及其從屬公司之股份。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>股東會及委託書使用實務小百科｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>訊取得方式</td>
+<td>(1) 「徵求人」資訊:公司依規定應於寄發予股東之「股東會召</td>
+</tr>
+<tr>
+<td>項之規定如下</td>
+<td>(1)委託書是否為該公司印製(2)委託人是否簽名</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>問題 1. 甲公司為乙公司之從屬公司(乙公司持有甲公司已發行有表決權之股份總
+數超過半數),又甲公司及乙公司合計持有丙公司已發行有表決權之股份
+總數超過半數,則乙公司召開股東會,甲或丙公司可否擔任乙公司之徵求
+人(或委託信託事業、股務代理機構擔任徵求人);甲公司召開股東會,
+丙公司可否擔任甲公司之徵求人(或委託信託事業、股務代理機構擔任徵
+求人)?</p>
+
+<p>第8章股東會及委託書使用之解析</p>
+
+<p>解答 按公司法第179條第2項規定,下列情形之一者,其股份無表決
+權:
+(1)公司依法持有自己之股份。
+(2) 被持有已發行有表決權之股份總數或資本總額超過半數之從
+屬公司,所持有控制公司之股份。
+(3) 控制公司及其從屬公司直接或間接持有他公司已發行有表決
+權之股份總數或資本總額合計超過半數之他公司,所持有控
+制公司及其從屬公司之股份。
+另依「委託書規則」第6條之1規定,公司法第179條第2項規
+定無表決權之公司,不得自行或委託信託事業、股務代理機構擔
+任徵求人。據上,乙公司召開股東會,甲公司及丙公司不得自行
+或委託信託事業、股務代理機構擔任徵求人;甲公司召開股東會,
+丙公司不得自行或委託信託事業、股務代理機構擔任徵求人。</p>
+
+<p>問題 2. 領有「攤販許可證」之攤販,可否作為委託書徵求場所?
+解答 依「委託書規則」第8條第2項規定,徵求人或受其委託代為處
+理徵求事務者不得於徵求場所外徵求委託書。前揭「徵求場所」
+係指有戶政機關所編地址之固定場所,不包括攤販在內。</p>
+
+<p>問題 3. 徵求人依「委託書規則」規定應將相關資料送達公司(副知證基會)之期
+限應如何計算,末日如遇星期日或其他休息日時,應如何辦理?
+解答 依「委託書規則」第7條第1項規定,徵求人應於股東常會開會
+38日前(股東臨時會開會23日前),將相關資料送達被徵求公司,
+故如股東常會開會日為5月30日,此時應從5月29日開始並往
+前算足38日,即徵求人應至至遲於4月21日將資料送達被徵求公
+司(即股東會開會及送達當日均不算入)。若期限末日(4月21
+日)如遇星期日或其他休息日時,徵求人仍應於所定期限內將相
+關資料送達被徵求公司;臨時會徵求資料送達期限亦依前揭方式
+計算。</p>
+
+<p>問題 4. 徵求人可否利用公司交寄文件時夾帶徵求人之文宣資料予股東,非屬徵求
+受託代理人或召開股東會之公司可否寄發信函、打電話予股東表達受託出
+席股東會之意思?
+解答 依「委託書規則」第7條第5項規定,「徵求人或受其委託代為
+處理徵求事務者,不得委託公司代為寄發徵求信函或徵求資料予
+股東」,故徵求人不得利用公司寄發文件時,夾帶相關徵求資料
+予股東。另非屬徵求之受託代理人或召開股東會之公司亦不得有
+涉及公開徵求之相關行為,受託代理人或公司員工主動寄發信
+函、打電話予股東之行為,如有提及請股東以非屬徵求之方式委
+託受託代理人或公司員工出席股東會,此行為除可能涉及非屬徵
+求受託代理人出具之聲明書(聲明其受託代理之委託書非為自己
+或他人徵求而取得)有虛偽情事,且已涉及主動徵求委託書,將
+徵求之委託書作為非屬徵求之委託書出席股東會等情事,其代理
+之表決權將不予計算。</p>
+
+<p>問題 5. 甲證券公司為乙發行公司之股務代理機構,乙發行公司召開股東會且有改
+選董監事議案,此時乙發行公司之徵求人可否委託甲證券公司代為處理徵
+求事務?
+解答 依「委託書規則」第6條第3項規定,公開發行公司股東會有選
+舉董事或監察人議案時,公開發行公司之股務代理機構不得接受
+徵求人之委託辦辦理代為處理徵求事務。</p>
+
+<p>問題 6. 徵求人徵求委託書之費用,可否由公司支付?
+解答 公司係召開股東會之主體,對股東會事務自應嚴守中立性原則,
+故不論公司股東會是否有選舉董事或監察人議案,徵求委託書之
+徵求費用均不得由公司支付。</p>
+
+<p>第8章股東會及委託書使用之解析</p>
+
+<p>問題 7. 徵求人於徵求委託書之書面及廣告上,載明擬支持之董事被選舉人5名,
+其徵得委託書於分配選舉權數時,可否全數分配給其中之3名董事被選舉
+人?
+解答 (1) 依「委託書規則」第22 條第1項第9款規定,徵求人之投票
+行為與徵求委託書之書面及廣告上記載內容或與委託人之委託
+內容不相符合者,其代理之表決權不予計算。
+(2) 徵求人於徵求委託書之書面及廣告上,載明擬支持之董事被
+選舉人名單,其徵得之委託書於分配選舉權數時,應分配予
+所擬支持之全部董事被選舉人,故徵求人於徵求委託書之書
+面及廣告上,載明擬支持之5名董事被選舉人,於選舉議案
+時,應將徵得之權數分配給支持之5名董事被選舉人,如有
+違反者,其代理之表決權不予計算。</p>
+
+<p>問題 8. 委託人(即股東)如何知道有那些人在徵求委託書,或公司是否有委任股
+務代理機構擔任股東之受託代理人?
+解答 股東可由公司所寄發之「開會通知書」上得知本次股東會下列資
+訊取得方式:
+(1) 「徵求人」資訊:公司依規定應於寄發予股東之「股東會召
+集通知」上載明,有關徵求人徵求資料之相關資訊取得方
+式。另當次股東會有選舉董事或監察人議案時,公司除提供
+上開資訊外,並應彙總「徵求人名單」與「董事被選舉人之
+經營理念」併同股東會召集通知附送股東,俾使股東知悉徵
+求人及其擬支持董事、監察人被選舉人名單,並瞭解各董事
+被選舉人對公司之經營理念,以利股東權之行使。
+(2) 「公司委任股務代理機構擔任股東之受託代理人」資訊:當
+次股東會無選舉董事或監察人議案時,公司應於寄發予股東
+之「委託書使用須知」上載明,本次股東會是否有委任股務
+代理機構擔任受託代理人之資訊。</p>
+
+<p>問題 9. 公開發行公司股東委託徵求人或受託代理人出席股東會,股東於交付股東
+會委託書時,有何規定?
+解答 股東應於委託書上親自簽名或蓋章,並應親自填具徵求人或受託
+代理人姓名;另信託事業或股務代理機構受委託擔任徵求人,及
+股務代理機構受委任擔任委託書之受託代理人者,如採蓋章方
+式,亦應於當場為之。違反者,依「委託書規則」第22條第1
+項第7款規定,其代理之表決權不予計算。</p>
+
+<p>問題 10. 委託書統計驗證機構驗證委託書時,可否以委託人未於委託書上加蓋原留
+印鑑為由,將該委託書剔除並列為不合格件?
+解答 委託書統計驗證應驗證之內容係依委託書規則第13條之1第2
+項之規定如下:(1)委託書是否為該公司印製(2)委託人是否簽名
+或蓋章 (3) 是否填具徵求人或受託代理人之姓名,且其姓名是否
+正確。據此,股東如已依前揭規定於委託書上簽名或蓋章,驗證
+單位不得以委託人未加蓋原留印鑑為由逕予剔除。</p>
+
+<p>問題 11. 委託信託事業或股務代理機構之股東須持股繼續1年以上,如甲公司與乙
+公司合併,甲公司為存續公司,而乙公司消滅,則乙公司股東持有乙公司
+股份之期間,是否可合併計算為持有甲公司股份之期間?
+解答 公司合併,消滅公司之股東係於合併基準日取得存續公司股東之
+身分,故消滅之乙公司股東其持有甲存續公司股份之期間,不得
+合併計算其持有乙消滅公司股份之期間。</p>
+
+<p>問題 12. 甲公司與乙公司合併,甲公司為存續公司,而乙公司消滅,則乙公司持有
+丙公司股份之期間,於甲公司委託信託事業或股務代理機構擔任徵求人
+時,可否合併計算為甲公司持有丙公司股份之期間?
+解答 可以。公司因合併而消滅,其存續或另設立之公司依委託書規則第
+6條第1項計算「繼續一年以上持有公司已發行股份」之持股期
+間時,得併計消滅公司原持有公開發行公司已發行股份之持股期</p>
+
+<p>第8章股東會及委託書使用之解析</p>
+
+<p>間,故甲公司持有丙公司股份之期間,得併計消滅公司乙公司持
+有丙公司股份之期間。</p>
+
+<p>問題 13. 張三為甲信託事業之董事長,亦為乙公司之股東,乙公司召開股東會時,
+張三得否委託甲擔任徵求人?
+解答 可以。張三與甲信託事業為不同人格之主體,故乙公司召開股東會
+時,張三得委託甲擔任徵求人。但因張三為甲信託事業之董事
+長,張三與甲信託事業訂定委任契約時應注意民法第106條自己
+代理禁止之規定,故張三不得代表甲信託事業與其自己簽訂契
+約。</p>
+
+<p>問題 14. 公司是否於每次股東會時均應發放股東會紀念品?又委託書規則規範股東
+會紀念品發放之公平原則為何?
+解答 (1) 股東會紀念品係公司於股東會時為回饋股東之支持,所提供
+具有紀念性質物品,惟公司是否發放紀念品、其價值高低及
+紀念品發放之時間、地點、方式及剩餘紀念品之處理均係由
+公司自行決定,現行法令並無強制公司股東會必須發放紀念
+品之規定。股東應積極參加或委託他人出席股東會關心公司
+經營狀況,而非以領取紀念品為目的。
+(2) 另依證券交易法第25條之1授權,「委託書規則」係就公開
+發行公司股東會委託書之使用限制、取締等訂定管理規範,
+為維持委託書徵求作業之公平性,「委託書規則」第11條第4
+項規定,股東會紀念品交付予徵求人、保證金金額及收取
+方式之訂定,公司應以公平原則辦理,其立法目的係避免公
+司藉由股東會紀念品之發放,造成不同徵求人間委託書徵求
+作業(或取得委託書)不公之情形。</p>
+
+<p>公司治理理論與實務</p>
+
+<p>問題 15. 股東持有公司股份越多,其所領取紀念品之份數是否越多?
+解答 因發放紀念品並非公司之盈餘分配,其發放對象係以是否具備股
+東身分為依據,自與股東持有股數多寡無關。</p>
+
+<p>問題 16. 公司發放股東會紀念品可否要求股東先於委託書上簽名或蓋章?
+解答 公司股東無親自或委託他人出席股東會之意願,惟其依開會通知
+書所指定地點領取股東會紀念品者,發行公司不得要求股東於開
+會通知書所附之親自出席聯(出席簽到卡)或委託書上簽名或蓋
+章後始得領取,如涉及偽、變造委託書情事者,並應負相關刑事
+責任,且委託書所代理之表決權亦不予計算。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">問題 1. 甲公司為乙公司之從屬公司(乙公司持有甲公司已發行有表決權之股份總 數超過半數),又甲公司及乙公司合計持有丙公司已發行有表決權之…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="8-8-結語">
+<div class="sec-kicker">站 8｜結語</div>
+<div class="sec-head"><span class="sec-num">8</span><h2 class="sec-title">8.8 結語</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-8-結語" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.8 結語」。首先，公司法第170 條規範股份有限公司每年應至少召集一次股東常會,而股東臨 時會則於必要時召集之。我國上市櫃、興櫃公司每年大都集中於5月至6月期間 召開股東常會,股東如欲親自出席,在出席股東會前,可先詳閱股東會議案及相 關參考資料,並在會中依公司所訂股東會議事規則規定及相應議案發言詢問,確 保自身投資權益。股東如不克親自出席,可以出具委託書委託他人出席,股東會 委託書可便利無法親自出席之股東行使股東會表決權,亦為徵求人提供管道,爭 取其他股東認同,對公司經營政策提出意見,使股東會發揮其機能。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>公司法第170 條規範股份有限公司每年應至少召集一次股東常會,而股東臨
+時會則於必要時召集之。我國上市櫃、興櫃公司每年大都集中於5月至6月期間
+召開股東常會,股東如欲親自出席,在出席股東會前,可先詳閱股東會議案及相
+關參考資料,並在會中依公司所訂股東會議事規則規定及相應議案發言詢問,確
+保自身投資權益。股東如不克親自出席,可以出具委託書委託他人出席,股東會
+委託書可便利無法親自出席之股東行使股東會表決權,亦為徵求人提供管道,爭
+取其他股東認同,對公司經營政策提出意見,使股東會發揮其機能。</p>
+
+<p>第8章股東會及委託書使用之解析</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">公司法第170 條規範股份有限公司每年應至少召集一次股東常會,而股東臨 時會則於必要時召集之。</span>
+</div>
+</div>
+</article></div>
+    <div class="tab-pane fade" id="tab-quick" role="tabpanel"><div class="row g-3">
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 1 節</div>
+<h3 class="h6">8.1 前言</h3>
+<ul class='mb-2 small'>
+<li>股東會係公司意思決定之最高機關,股東藉由參加股東會,可瞭解公司營業 概況,並參與公司經營策略、董事及監察人選舉等重要決策,亦可充分表達意見…</li>
+</ul>
+<a class="small" href="#8-1-前言" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 2 節</div>
+<h3 class="h6">8.2 股東會議事規則參考範例</h3>
+<ul class='mb-2 small'>
+<li>股東會除公司法另有規定外,由董事會召集之。(議事規則第3條/公司</li>
+<li>公司召開股東會視訊會議,除公開發行股票公司股務處理準則另有規定</li>
+<li>公司股東會召開方式之變更應經董事會決議,並最遲於股東會開會通知書</li>
+<li>公司應於股東常會開會三十日前或股東臨時會開會十五日前,將股東會開</li>
+</ul>
+<a class="small" href="#8-2-股東會議事規則參考範例" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 3 節</div>
+<h3 class="h6">8.3 出席股東會使用委託書規則</h3>
+<ul class='mb-2 small'>
+<li>徵求開始前之資訊揭露</li>
+<li>徵求委託書之書面及廣告內容揭露</li>
+<li>徵求結束後之資訊揭露</li>
+<li>禁止以價購等方式取得委託書</li>
+</ul>
+<a class="small" href="#8-3-出席股東會使用委託書規則" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 4 節</div>
+<h3 class="h6">8.4 股東會召集、會場實務及會後辦理事項</h3>
+<ul class='mb-2 small'>
+<li>召開董事會承認財務報表、決定股東會議案、日期地點、受理股東提案、提名期間及董事會提名候選人名單</li>
+<li>董事會編造表冊交監察人 (查核股東會 30 日前且 3 月 25 日前)</li>
+<li>受理股東提案及候選人名單起日, 受理期間不得少於 10 日</li>
+<li>停止過戶日 (停止過戶期間 60 日)</li>
+</ul>
+<a class="small" href="#8-4-股東會召集-會場實務及會後辦理事項" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 5 節</div>
+<h3 class="h6">8.5 獨立董事之提名及選舉</h3>
+<ul class='mb-2 small'>
+<li>公開發行公司依章程規定設置獨立董事,獨立董事人數不得少於二人,且</li>
+<li>所有上市櫃公司已於 111 年完成設置至少三席獨立董事;所有興櫃公司依</li>
+<li>公開發行公司之獨立董事,應取得下列專業資格條件之一,並具備五年以</li>
+<li>有下列情事之一者,不得充任獨立董事,其已充任者,當然解任:(「獨</li>
+</ul>
+<a class="small" href="#8-5-獨立董事之提名及選舉" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 6 節</div>
+<h3 class="h6">8.6 常見違規案例</h3>
+<ul class='mb-2 small'>
+<li>徵求場所外為徵求</li>
+<li>公司交付股東會紀念品予徵求人時,有不公平情形</li>
+</ul>
+<a class="small" href="#8-6-常見違規案例" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 7 節</div>
+<h3 class="h6">8.7 股東會及委託書使用實務小百科</h3>
+<ul class='mb-2 small'>
+<li>問題 1. 甲公司為乙公司之從屬公司(乙公司持有甲公司已發行有表決權之股份總 數超過半數),又甲公司及乙公司合計持有丙公司已發行有表決權之…</li>
+</ul>
+<a class="small" href="#8-7-股東會及委託書使用實務小百科" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 8 節</div>
+<h3 class="h6">8.8 結語</h3>
+<ul class='mb-2 small'>
+<li>公司法第170 條規範股份有限公司每年應至少召集一次股東常會,而股東臨 時會則於必要時召集之。</li>
+</ul>
+<a class="small" href="#8-8-結語" data-jump-lecture>看完整講義</a>
+</div></div>
+</div></div>
+    <div class="tab-pane fade" id="tab-quiz" role="tabpanel"><article class="sec-block" id="8-9-練習題">
+<div class="sec-kicker">課後練習</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">8.9 練習題</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">練習檢核</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-8-9-練習題" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「8.9 練習題」。首先，1. 股東常會原則上應於每會計年度終了後,幾個月內召開? (A)三個月 (B) 六個月 (C)九個月 (D)屬公司自治事項,無限制 解答 (B) 2. 股東臨時會召集之頻率有無限制? (A)每季一次 (B)每半年一次 (C)每年一次 (D) 必要時 解答 (D) 3. 股東常會之召集,應於幾日前通知各股東? (A) 十日 (B)十五日 (C)二十日 (D) 三十日 解答 (C) 4. 公開發行股票之公司股東常會之召集,應於幾日前通知各股東? (A)十日 (B)十五日 (C)二十日 (D) 三十日 解答 (D) 公司治理理論與實務 5. 股東會決議之內容,違反法令或章程者,其法律效果為何? (A) 得撤銷 (B) 無效 (C) 效力未定 (D) 以上皆非 解答 (B) 6. 請問下列何種事項,應在召集事由中列舉並說明其主要內容,不得以臨時 動議提出? (A) 選任或解任董事、監察人 (B) 變更章程 (C) 減資 (D) 以上皆是 解答 (D) 7. 金融機構之股東如擬採「無限徵求」,委託信託事業或股務代理機構擔任 徵求人,委任股東資格條件有何限制? (A)繼續一年以上持有 (B) 持有公司已發行股份總數百分之十以上 (C) 符合金融控股公司法、銀行法、保險法所定大股東適格性規定或不適 用前揭法規相關申請程序者 (D) 以上皆是 解答 (D) 8. 股東會之議決事項,應作成議事錄,由主席簽名或蓋章,並於會後幾日內, 將議事錄分發各股東? (A)十日 (B)十五日 (C)二十日 (D)三十日 解答 (C) 第8章股東會及委託書使用之解析 9. 公開發行公司應於股東常會開會幾日前,將股東會議事手冊及前項會議補 充資料,製作電子檔案傳送至公開資訊觀測站? (A)十日 (B)十五日 (C)二十一日 (D)三十日 解答 (C) 10. 公開發行公司公司依章程規定設置獨立董事,獨立董事人數不得少於? 人,且不得少於董事席次?分之一:。以上是這一節的聽讀重點。</div>
+  </div>
+</details>
+<div class="sec-body"><ol>
+<li><p>股東常會原則上應於每會計年度終了後,幾個月內召開?
+(A)三個月
+(B) 六個月
+(C)九個月
+(D)屬公司自治事項,無限制
+解答 (B)</p></li>
+<li><p>股東臨時會召集之頻率有無限制?
+(A)每季一次
+(B)每半年一次
+(C)每年一次
+(D) 必要時
+解答 (D)</p></li>
+<li><p>股東常會之召集,應於幾日前通知各股東?
+(A) 十日
+(B)十五日
+(C)二十日
+(D) 三十日
+解答 (C)</p></li>
+<li><p>公開發行股票之公司股東常會之召集,應於幾日前通知各股東?
+(A)十日
+(B)十五日
+(C)二十日
+(D) 三十日
+解答 (D)</p></li>
+</ol>
+
+<p>公司治理理論與實務</p>
+
+<ol start="5">
+<li><p>股東會決議之內容,違反法令或章程者,其法律效果為何?
+(A) 得撤銷
+(B) 無效
+(C) 效力未定
+(D) 以上皆非
+解答 (B)</p></li>
+<li><p>請問下列何種事項,應在召集事由中列舉並說明其主要內容,不得以臨時
+動議提出?
+(A) 選任或解任董事、監察人
+(B) 變更章程
+(C) 減資
+(D) 以上皆是
+解答 (D)</p></li>
+<li><p>金融機構之股東如擬採「無限徵求」,委託信託事業或股務代理機構擔任
+徵求人,委任股東資格條件有何限制?
+(A)繼續一年以上持有
+(B) 持有公司已發行股份總數百分之十以上
+(C) 符合金融控股公司法、銀行法、保險法所定大股東適格性規定或不適
+用前揭法規相關申請程序者
+(D) 以上皆是
+解答 (D)</p></li>
+<li><p>股東會之議決事項,應作成議事錄,由主席簽名或蓋章,並於會後幾日內,
+將議事錄分發各股東?
+(A)十日
+(B)十五日
+(C)二十日
+(D)三十日
+解答 (C)</p></li>
+</ol>
+
+<p>第8章股東會及委託書使用之解析</p>
+
+<ol start="9">
+<li><p>公開發行公司應於股東常會開會幾日前,將股東會議事手冊及前項會議補
+充資料,製作電子檔案傳送至公開資訊觀測站?
+(A)十日
+(B)十五日
+(C)二十一日
+(D)三十日
+解答 (C)</p></li>
+<li><p>公開發行公司公司依章程規定設置獨立董事,獨立董事人數不得少於?
+人,且不得少於董事席次?分之一:
+(A)二;五
+(B)二;三
+(C)三;三
+(D)三;二
+解答 (A)</p></li>
+<li><p>上市櫃公司董事及監察人選舉應採候選人提名制度,並載明於章程,股東
+應就董事及監察人候選人名單中選任之,自何時開始實施?
+(A)107年1月1日
+(B)108年1月1日
+(C)109年1月1日
+(D)110年1月1日
+解答 (D)</p></li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">股東常會原則上應於每會計年度終了後,幾個月內召開?</span>
+<span class="tag-chip chip-mint">股東臨時會召集之頻率有無限制?</span>
+<span class="tag-chip chip-amber">股東常會之召集,應於幾日前通知各股東?</span>
+<span class="tag-chip chip-coral">公開發行股票之公司股東常會之召集,應於幾日前通知各股東?</span>
+<span class="tag-chip chip-violet">股東會決議之內容,違反法令或章程者,其法律效果為何?</span>
+</div>
+</div>
+</article></div>
+  </div>
+</div>
+
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script>
+window.markmap = {
+  autoLoader: {
+    manual: true,
+    toolbar: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18.11"></script>
+<script>
+(function(){
+  try {
+    if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "loose" });
+  } catch (e) {}
+})();
+</script>
+<script>
+(function(){
+  const body = document.body;
+  const key = 'gov-ebook-side-collapsed';
+  const backdrop = document.getElementById('side-backdrop');
+  const mq = window.matchMedia('(max-width:900px)');
+  const isMobile = () => mq.matches;
+  const edge = document.getElementById('edge-toggle');
+  const burger = document.getElementById('burger-fab');
+  function setCollapsed(v){
+    body.classList.toggle('side-collapsed', !!v);
+    try{ localStorage.setItem(key, v ? '1' : '0'); }catch(e){}
+  }
+  function openMobile(v){
+    body.classList.toggle('side-open-mobile', !!v);
+    if(backdrop) backdrop.hidden = !v;
+    body.style.overflow = v ? 'hidden' : '';
+    if(burger){
+      burger.setAttribute('aria-expanded', v ? 'true' : 'false');
+      burger.title = v ? '關閉目錄' : '打開目錄';
+      burger.setAttribute('aria-label', v ? '關閉目錄' : '打開目錄');
+    }
+  }
+  function syncViewport(){
+    if(isMobile()){
+      setCollapsed(true);
+      openMobile(false);
+    } else {
+      openMobile(false);
+      try{
+        setCollapsed(localStorage.getItem(key)==='1');
+      }catch(e){ setCollapsed(false); }
+    }
+  }
+  syncViewport();
+  if(mq.addEventListener) mq.addEventListener('change', syncViewport);
+  else if(mq.addListener) mq.addListener(syncViewport);
+  if(edge) edge.addEventListener('click', ()=>{ if(isMobile()) openMobile(false); else setCollapsed(true); });
+  if(burger) burger.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(isMobile()){
+      openMobile(!body.classList.contains('side-open-mobile'));
+    } else {
+      setCollapsed(false);
+    }
+  });
+  if(backdrop) backdrop.addEventListener('click', ()=> openMobile(false));
+
+  document.querySelectorAll('[data-nav-jump], [data-jump-lecture], .milestone-link, .path-card').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href')||'';
+      const hashIdx = href.indexOf('#');
+      if(hashIdx < 0) return;
+      const hash = href.slice(hashIdx);
+      const file = href.slice(0, hashIdx);
+      const cur = decodeURIComponent(location.pathname.split('/').pop()||'');
+      if(file && file !== cur) return;
+      const btn = document.getElementById('tab-lecture-btn');
+      if(btn && window.bootstrap){
+        e.preventDefault();
+        bootstrap.Tab.getOrCreateInstance(btn).show();
+        if(isMobile()) openMobile(false);
+        setTimeout(()=>{ const t=document.querySelector(hash); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }, 160);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-reveal-answer]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const row = btn.closest('.ans-row');
+      const box = row && row.querySelector('[data-secret-box]');
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      if(box) box.classList.toggle('is-masked', !show);
+      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+      btn.textContent = show ? '隱藏解答' : '顯示解答';
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function parsePayload(){
+    const el = document.getElementById('note-viz-data');
+    if(!el) return {};
+    try { return JSON.parse(el.textContent || '{}'); } catch(e){ return {}; }
+  }
+  const data = parsePayload();
+  const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+  const compares = Array.isArray(data.compares) ? data.compares : [];
+  const evolution = Array.isArray(data.evolution) ? data.evolution : [];
+  const outline = Array.isArray(data.outline) ? data.outline : [];
+  const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+  const edges = Array.isArray(data.edges) ? data.edges : [];
+  const charts = Array.isArray(data.charts) ? data.charts : [];
+  const mermaids = Array.isArray(data.mermaids) ? data.mermaids : [];
+
+  const state = {
+    ready: false,
+    echarts: [],
+    cy: null,
+    network: null,
+    timeline: null,
+    markmapSvg: null
+  };
+
+  function showEmpty(id, on){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('d-none', !on);
+  }
+  function short(s, n){
+    s = String(s||'');
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+  }
+  function isNarrow(){ return window.matchMedia('(max-width:767px)').matches; }
+  function tableH(desktop){ return isNarrow() ? Math.max(180, Math.min(260, Math.round(window.innerHeight*0.32))) + 'px' : desktop; }
+  function boxSize(el){
+    if(!el) return { w: 320, h: 240 };
+    const w = Math.max(el.clientWidth || el.offsetWidth || 0, 280);
+    const h = Math.max(el.clientHeight || el.offsetHeight || 0, 200);
+    return { w, h };
+  }
+  function chartsTabVisible(){
+    const pane = document.getElementById('tab-charts');
+    if(!pane) return true;
+    return pane.classList.contains('active') || pane.classList.contains('show');
+  }
+
+  function buildOutlineMd(){
+    let md = '# 講義大綱\n';
+    if(outline.length){
+      outline.forEach((o,i)=>{
+        const title = String(o.title||('節 '+(i+1))).replace(/\n/g,' ');
+        md += `\n## ${i+1}. ${title}`;
+        (o.kids||[]).forEach(k=>{
+          md += `\n- ${String(k).replace(/\n/g,' ')}`;
+        });
+      });
+    } else if(nodes.length){
+      nodes.forEach(n=>{ md += `\n## ${n.label||n.id}`; });
+    } else {
+      md += '\n## （尚無大綱）\n- 請見章節講義';
+    }
+    return md;
+  }
+
+  function waitMarkmapReady(){
+    return new Promise((resolve)=>{
+      const al = window.markmap && markmap.autoLoader;
+      if(!al){ resolve(false); return; }
+      if(al.ready && typeof al.ready.then === 'function'){
+        al.ready.then(()=>resolve(true)).catch(()=>resolve(!!al.renderAll));
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        n++;
+        const ok = !!(window.markmap && markmap.autoLoader && (markmap.autoLoader.render || markmap.autoLoader.renderAll));
+        if(ok || n > 50){ clearInterval(t); resolve(ok); }
+      }, 120);
+    });
+  }
+
+  async function renderMarkmap(){
+    const host = document.getElementById('viz-markmap');
+    if(!host) return;
+    const md = buildOutlineMd();
+    host.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'markmap';
+    const tpl = document.createElement('script');
+    tpl.type = 'text/template';
+    tpl.textContent = md;
+    el.appendChild(tpl);
+    host.appendChild(el);
+
+    const ok = await waitMarkmapReady();
+    const al = window.markmap && markmap.autoLoader;
+    if(!ok || !al){
+      host.innerHTML = '<p class="viz-empty">心智圖套件尚未載入完成，請重新整理頁面。</p>';
+      return;
+    }
+    try {
+      if(typeof al.render === 'function') await al.render(el);
+      else if(typeof al.renderAllUnder === 'function') await al.renderAllUnder(host);
+      else if(typeof al.renderAll === 'function') await al.renderAll();
+      // 強制 SVG 填滿容器
+      const svg = host.querySelector('svg');
+      if(svg){
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        state.markmapSvg = svg;
+      }
+      // 觸發 fit：模擬 resize
+      setTimeout(()=> window.dispatchEvent(new Event('resize')), 60);
+    } catch(e){
+      console.warn('markmap render', e);
+      host.innerHTML = '<p class="viz-empty">心智圖渲染失敗：' + String(e && e.message || e) + '</p>';
+    }
+  }
+
+  function fitAll(){
+    state.echarts.forEach(c=>{ try{ c.resize(); }catch(e){} });
+    if(state.cy){ try{ state.cy.resize(); state.cy.fit(undefined, 24); }catch(e){} }
+    if(state.network){ try{ state.network.redraw(); state.network.fit(); }catch(e){} }
+    if(state.timeline){ try{ state.timeline.redraw(); }catch(e){} }
+    if(window.Plotly){
+      document.querySelectorAll('#viz-plotly-timeline .js-plotly-plot, #viz-plotly-timeline').forEach(el=>{
+        try{ Plotly.Plots.resize(el); }catch(e){}
+      });
+    }
+    const host = document.getElementById('viz-markmap');
+    const svg = host && host.querySelector('svg');
+    if(svg){
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+    }
+    // D3 重畫交由 init 內的資料；窄螢幕時僅調整既有 svg 寬度
+    const d3svg = document.querySelector('#viz-d3-evolve svg');
+    if(d3svg){
+      const wrap = document.getElementById('viz-d3-evolve');
+      const { w } = boxSize(wrap);
+      d3svg.setAttribute('width', String(w));
+    }
+  }
+
+  function initViz(){
+    if(state.ready){ fitAll(); return; }
+    state.ready = true;
+
+    /* —— markmap —— */
+    renderMarkmap();
+
+    /* —— timeline —— */
+    if(timeline.length){
+      const rows = timeline.map(r=>({ when:r.when||r[0]||'', what:r.what||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-timeline')){
+        new Tabulator('#viz-tabulator-timeline', {
+          data: rows, layout:'fitDataStretch', height: tableH('220px'),
+          columns:[
+            {title:'時點', field:'when', minWidth:88, widthGrow:1, headerFilter: isNarrow()?false:'input'},
+            {title:'事件／規範重點', field:'what', minWidth:160, widthGrow:3, headerFilter: isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      if(window.Chart){
+        const ctx = document.getElementById('viz-chartjs-timeline');
+        if(ctx){
+          new Chart(ctx, {
+            type:'bar',
+            data:{
+              labels: rows.map(r=>short(r.when, isNarrow()?8:12)),
+              datasets:[{ label:'事件數', data: rows.map(()=>1), backgroundColor:'rgba(94,200,255,.55)' }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{ legend:{ labels:{ color:'#c9d7ea', boxWidth:12 } } },
+              scales:{
+                x:{ ticks:{ color:'#93a4b8', maxRotation:45, minRotation:0, autoSkip:true }, grid:{ color:'#2a3544' } },
+                y:{ ticks:{ color:'#93a4b8', stepSize:1 }, grid:{ color:'#2a3544' }, beginAtZero:true }
+              }
+            }
+          });
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-timeline');
+        if(el){
+          const chart = echarts.init(el, 'dark');
+          chart.setOption({
+            backgroundColor:'transparent',
+            grid:{ left:36, right:16, top:24, bottom: isNarrow()?64:40, containLabel:true },
+            tooltip:{ trigger:'axis' },
+            xAxis:{ type:'category', data: rows.map(r=>short(r.when, isNarrow()?8:14)), axisLabel:{ color:'#9fb0c6', hideOverlap:true } },
+            yAxis:{ type:'value', show:false },
+            series:[{
+              type:'line', smooth:true, symbolSize:10,
+              data: rows.map((_,i)=>i+1),
+              areaStyle:{ color:'rgba(94,200,255,.15)' },
+              lineStyle:{ color:'#5ec8ff' },
+              itemStyle:{ color:'#3ee0a2' }
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.vis && vis.Timeline){
+        const el = document.getElementById('viz-vis-timeline');
+        if(el){
+          const items = new vis.DataSet(rows.map((r,i)=>{
+            const y = String(r.when).match(/(19|20)\d{2}/);
+            const start = y ? (y[0]+'-01-01') : (`2020-0${(i%9)+1}-01`);
+            return { id:i+1, content: short(r.what, isNarrow()?22:40), start };
+          }));
+          state.timeline = new vis.Timeline(el, items, {
+            stack:true, horizontalScroll:true, zoomKey:'ctrlKey',
+            orientation:'top', margin:{ item:8 },
+            height: isNarrow() ? 200 : 240
+          });
+        }
+      }
+      if(window.Plotly){
+        const el = document.getElementById('viz-plotly-timeline');
+        if(el){
+          Plotly.newPlot(el, [{
+            type:'scatter', mode:'lines+markers',
+            x: rows.map(r=>r.when), y: rows.map((_,i)=>i+1),
+            text: rows.map(r=>r.what),
+            marker:{ color:'#5ec8ff', size:10 },
+            line:{ color:'#3ee0a2' }
+          }], {
+            paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+            font:{ color:'#c9d7ea', size: isNarrow()?11:12 },
+            margin:{ t:20,r:12,b: isNarrow()?70:40, l:36 },
+            yaxis:{ title:'序', gridcolor:'#2a3544' },
+            xaxis:{ gridcolor:'#2a3544', tickangle: isNarrow()?-35:0 }
+          }, {responsive:true, displayModeBar:false});
+        }
+      }
+    }
+
+    /* —— compare —— */
+    const firstCompare = compares[0] || null;
+    if(firstCompare){
+      const headers = firstCompare.headers || firstCompare[0] || [];
+      const body = firstCompare.rows || firstCompare[1] || [];
+      const fields = headers.map((h,i)=> 'c'+i);
+      const dataRows = body.map(r=>{
+        const o={}; fields.forEach((f,i)=>{ o[f]= (r&&r[i]!=null)? String(r[i]) : ''; }); return o;
+      });
+      if(window.Tabulator && document.getElementById('viz-tabulator-compare')){
+        new Tabulator('#viz-tabulator-compare', {
+          data: dataRows, layout:'fitDataStretch', height: tableH('240px'),
+          columns: headers.map((h,i)=>({
+            title:String(h), field:fields[i], minWidth:100, widthGrow:1,
+            headerFilter: isNarrow()?false:'input', formatter:'textarea'
+          }))
+        });
+      }
+      if(window.gridjs && document.getElementById('viz-gridjs-compare')){
+        new gridjs.Grid({
+          columns: headers.map(String),
+          data: body.map(r=> (r||[]).map(c=> String(c??''))),
+          search: !isNarrow(), sort: true,
+          pagination: { enabled:true, limit: isNarrow()?5:8 },
+          style: { table:{ 'font-size': isNarrow()?'12px':'13px' } }
+        }).render(document.getElementById('viz-gridjs-compare'));
+      }
+    }
+
+    /* —— evolution —— */
+    if(evolution.length){
+      const rows = evolution.map(r=>({ stage:r.stage||r[0]||'', content:r.content||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-evolve')){
+        new Tabulator('#viz-tabulator-evolve', {
+          data: rows, layout:'fitDataStretch', height: tableH('200px'),
+          columns:[
+            {title:'階段', field:'stage', minWidth:90, widthGrow:1, headerFilter:isNarrow()?false:'input'},
+            {title:'重點內容', field:'content', minWidth:140, widthGrow:3, headerFilter:isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      const mEl = document.getElementById('viz-mermaid-evolve');
+      if(mEl && window.mermaid){
+        const dir = isNarrow() ? 'TD' : 'LR';
+        let code = 'flowchart ' + dir + '\n';
+        rows.forEach((r,i)=>{
+          const id = 'S'+(i+1);
+          const label = short(r.stage, isNarrow()?14:18).replace(/"/g,"'");
+          code += `  ${id}["${label}"]\n`;
+          if(i>0) code += `  S${i} --> ${id}\n`;
+        });
+        mEl.removeAttribute('data-processed');
+        mEl.textContent = code;
+        try { mermaid.run({ nodes: [mEl] }); } catch(e){
+          try { mermaid.init(undefined, mEl); } catch(_e){}
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-evolve');
+        if(el){
+          const { w, h } = boxSize(el);
+          const chart = echarts.init(el, 'dark');
+          const n = rows.length || 1;
+          chart.setOption({
+            backgroundColor:'transparent',
+            tooltip:{ formatter: p => (p.data && (p.data.name + '<br/>' + (p.data.value||''))) || '' },
+            series:[{
+              type:'graph', layout:'none', roam:true,
+              label:{ show:true, color:'#e8eef7', fontSize: isNarrow()?10:12 },
+              edgeSymbol:['none','arrow'],
+              data: rows.map((r,i)=>({
+                name: short(r.stage, isNarrow()?10:12),
+                x: isNarrow() ? (w*0.5) : (40 + i * Math.max(70, (w-80)/Math.max(n-1,1))),
+                y: isNarrow() ? (30 + i * Math.max(42, (h-60)/Math.max(n-1,1))) : (h*0.45),
+                value: r.content
+              })),
+              links: rows.slice(1).map((_,i)=>({ source:i, target:i+1 }))
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.d3){
+        const el = document.getElementById('viz-d3-evolve');
+        if(el){
+          el.innerHTML = '';
+          const { w } = boxSize(el);
+          const height = Math.max(el.clientHeight || 240, 200);
+          const svg = d3.select(el).append('svg').attr('width', w).attr('height', height);
+          const root = { name:'演進', children: rows.map(r=>({ name: short(r.stage, isNarrow()?12:16), children:[{ name: short(r.content, isNarrow()?20:28) }] })) };
+          const hier = d3.hierarchy(root);
+          d3.tree().size([height-36, Math.max(120, w-120)])(hier);
+          const g = svg.append('g').attr('transform','translate(56,18)');
+          g.selectAll('.link').data(hier.links()).enter().append('path')
+            .attr('class','link').attr('fill','none')
+            .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+          const node = g.selectAll('.node').data(hier.descendants()).enter().append('g')
+            .attr('class','node').attr('transform', d=>`translate(${d.y},${d.x})`);
+          node.append('circle').attr('r',4);
+          node.append('text').attr('dy',3).attr('x', d=> d.children? -8:8)
+            .attr('text-anchor', d=> d.children? 'end':'start').text(d=>d.data.name);
+        }
+      }
+    }
+
+    /* —— graphs —— */
+    if(document.getElementById('viz-cytoscape') || document.getElementById('viz-vis-network')){
+      const gNodes = nodes.length ? nodes : outline.map((o,i)=>({ id:'n'+i, label: short(o.title||('節'+(i+1)), 18) }));
+      const gEdges = edges.length ? edges : gNodes.slice(1).map((n,i)=>({ from: gNodes[i].id, to: n.id }));
+      if(window.cytoscape && gNodes.length && document.getElementById('viz-cytoscape')){
+        state.cy = cytoscape({
+          container: document.getElementById('viz-cytoscape'),
+          elements: [
+            ...gNodes.map(n=>({ data:{ id:String(n.id), label:n.label||String(n.id) } })),
+            ...gEdges.map((e,i)=>({ data:{ id:'e'+i, source:String(e.from||e.source), target:String(e.to||e.target) } }))
+          ],
+          style:[
+            { selector:'node', style:{ 'background-color':'#5ec8ff', 'label':'data(label)', 'color':'#e8eef7', 'font-size': isNarrow()?'9px':'10px', 'text-wrap':'wrap', 'text-max-width': isNarrow()?64:80 } },
+            { selector:'edge', style:{ 'width':2, 'line-color':'#3ee0a2', 'target-arrow-color':'#3ee0a2', 'target-arrow-shape':'triangle', 'curve-style':'bezier' } }
+          ],
+          layout:{ name:'cose', animate:false, padding:16 }
+        });
+      }
+      if(window.vis && vis.Network && gNodes.length && document.getElementById('viz-vis-network')){
+        const el = document.getElementById('viz-vis-network');
+        const ns = new vis.DataSet(gNodes.map(n=>({ id:n.id, label:n.label||String(n.id) })));
+        const es = new vis.DataSet(gEdges.map((e,i)=>({ id:i, from:e.from||e.source, to:e.to||e.target })));
+        state.network = new vis.Network(el, { nodes:ns, edges:es }, {
+          nodes:{ shape:'dot', size: isNarrow()?11:14, font:{ color:'#e8eef7', size: isNarrow()?11:13 }, color:{ background:'#5ec8ff', border:'#3ee0a2' } },
+          edges:{ color:'#6ee7f5', arrows:'to' },
+          physics:{ stabilization:true },
+          interaction:{ zoomView:true, dragView:true }
+        });
+      }
+    }
+
+    /* —— extra（HTML 已為每張圖建獨立格） —— */
+    if(charts.length && window.Chart){
+      charts.forEach((c, i)=>{
+        const canvas = document.getElementById('viz-extra-chart-'+i);
+        if(!canvas) return;
+        const cfg = c.config || {};
+        new Chart(canvas, {
+          type: cfg.type || c.type || 'bar',
+          data: cfg.data || { labels:c.labels||[], datasets:c.datasets||[] },
+          options: Object.assign({
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#c9d7ea' } } },
+            scales:{
+              x:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } },
+              y:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } }
+            }
+          }, cfg.options||{})
+        });
+      });
+    }
+    const mHost = document.getElementById('viz-extra-mermaids');
+    if(mHost && mermaids.length){
+      mermaids.forEach((code)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'mb-3 mermaid-host';
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = code;
+        wrap.appendChild(pre);
+        mHost.appendChild(wrap);
+      });
+      if(window.mermaid){
+        try { mermaid.run({ querySelector: '#viz-extra-mermaids .mermaid' }); } catch(e){}
+      }
+    }
+
+    setTimeout(fitAll, 80);
+    setTimeout(fitAll, 320);
+  }
+
+  function requestInit(){
+    // 等一幀確保 tab 已顯示、容器有寬度
+    requestAnimationFrame(()=> requestAnimationFrame(initViz));
+  }
+
+  // 圖表 tab 顯示後才初始化（避免隱藏 tab 寬度為 0）
+  const chartsBtn = document.getElementById('tab-charts-btn');
+  if(chartsBtn){
+    chartsBtn.addEventListener('shown.bs.tab', ()=> requestInit());
+  }
+  document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn=>{
+    btn.addEventListener('shown.bs.tab', (ev)=>{
+      const target = (ev.target && ev.target.getAttribute('data-bs-target')) || '';
+      if(target === '#tab-charts') requestInit();
+      else if(state.ready) setTimeout(fitAll, 50);
+    });
+  });
+
+  // 若圖表本來就是作用中（或沒有 tabs），直接初始化
+  if(chartsTabVisible()){
+    requestInit();
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+  });
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize', ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  if(!('speechSynthesis' in window)){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      const st = root.querySelector('[data-tts-status]');
+      if(st) st.textContent = '此瀏覽器不支援語音播放，仍可閱讀講解稿。';
+      root.querySelectorAll('button[data-tts-play],button[data-tts-pause],button[data-tts-stop]').forEach(b=> b.disabled = true);
+      root.querySelectorAll('[data-tts-voice]').forEach(s=> s.disabled = true);
+    });
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const STORE_KEY = 'note-tts-voice-uri-v2';
+  let currentRoot = null;
+  let currentUtter = null;
+  let voicesReady = false;
+
+  function voiceScore(v){
+    const blob = ((v.name||'') + ' ' + (v.lang||'')).toLowerCase();
+    let s = 0;
+    if(/zh|chinese|中文|國語|台|hong|澳門|yue/.test(blob)) s += 100;
+    // 預設優先 Google 中文語音
+    if(/google/.test(blob)) s += 200;
+    if(/zh-tw|taiwan|國語（台灣）|國語 \(台灣\)|chinese \(taiwan\)/.test(blob)) s += 90;
+    if(/hanhan|hsia.?chen|yunjhe|yun-jie|zhiwei|meijia|tingting/.test(blob)) s += 70;
+    if(/zh-cn|xiaoxiao|xiaoyi|yunxi|yunyang|huihui|普通话|國語（中國）/.test(blob)) s += 50;
+    if(/natural|neural|online|自然|神經|雲端/.test(blob)) s += 35;
+    if(/microsoft|edge/.test(blob)) s += 8;
+    if(/desktop|sapi|espeak|compact/.test(blob)) s -= 15;
+    return s;
+  }
+  function listVoices(){
+    const all = synth.getVoices() || [];
+    const zh = all.filter(v => voiceScore(v) >= 100).sort((a,b)=> voiceScore(b)-voiceScore(a));
+    if(zh.length) return zh;
+    return all.slice().sort((a,b)=> voiceScore(b)-voiceScore(a));
+  }
+  function voiceKey(v){
+    return (v.voiceURI || (v.name + '|' + v.lang) || '').trim();
+  }
+  function savedVoiceKey(){
+    try{ return localStorage.getItem(STORE_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveVoiceKey(key){
+    try{ localStorage.setItem(STORE_KEY, key || ''); }catch(e){}
+  }
+  function findVoiceByKey(key){
+    if(!key) return null;
+    const voices = synth.getVoices() || [];
+    return voices.find(v => voiceKey(v) === key) || null;
+  }
+  function defaultVoice(){
+    const voices = listVoices();
+    if(!voices.length) return null;
+    const saved = findVoiceByKey(savedVoiceKey());
+    if(saved) return saved;
+    const googleTw = voices.find(v => /google/i.test(v.name) && /zh-tw|taiwan|台灣|台湾/i.test(v.name + v.lang));
+    const googleZh = voices.find(v => /google/i.test(v.name) && /zh|chinese|中文|國語|普通话/i.test(v.name + v.lang));
+    const googleAny = voices.find(v => /google/i.test(v.name));
+    return googleTw || googleZh || googleAny || voices[0];
+  }
+  function fillVoiceSelects(){
+    const voices = listVoices();
+    const preferred = defaultVoice();
+    const preferredKey = preferred ? voiceKey(preferred) : '';
+    document.querySelectorAll('[data-tts-voice]').forEach(sel=>{
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if(!voices.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '（尚無可用語音）';
+        sel.appendChild(opt);
+        return;
+      }
+      voices.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = voiceKey(v);
+        let tag = '';
+        if(/google/i.test(v.name)) tag = ' ★Google';
+        else if(/natural|neural|online|自然/i.test(v.name)) tag = ' ★較自然';
+        opt.textContent = (v.name || '語音') + '（' + (v.lang || '?') + '）' + tag;
+        sel.appendChild(opt);
+      });
+      const want = prev || preferredKey || voiceKey(voices[0]);
+      if([...sel.options].some(o => o.value === want)) sel.value = want;
+      else sel.selectedIndex = 0;
+    });
+    voicesReady = true;
+  }
+  function selectedVoice(root){
+    const sel = root && root.querySelector('[data-tts-voice]');
+    const key = sel && sel.value;
+    return findVoiceByKey(key) || defaultVoice();
+  }
+  function setStatus(root, text){
+    const st = root && root.querySelector('[data-tts-status]');
+    if(st) st.textContent = text || '';
+  }
+  function setSpeaking(root, on){
+    const box = root && root.querySelector('[data-tts-text]');
+    if(box) box.classList.toggle('is-speaking', !!on);
+  }
+  function stopAll(){
+    try{ synth.cancel(); }catch(e){}
+    if(currentRoot){
+      setSpeaking(currentRoot, false);
+      setStatus(currentRoot, '使用系統語音朗讀（可自選聲線）');
+    }
+    currentRoot = null;
+    currentUtter = null;
+  }
+  function playRoot(root){
+    const textEl = root.querySelector('[data-tts-text]');
+    const text = (textEl && (textEl.innerText || textEl.textContent) || '').trim();
+    if(!text){ setStatus(root, '尚無講解稿'); return; }
+    if(!voicesReady) fillVoiceSelects();
+    stopAll();
+    const u = new SpeechSynthesisUtterance(text);
+    const voice = selectedVoice(root);
+    if(voice){
+      u.voice = voice;
+      u.lang = voice.lang || 'zh-TW';
+      saveVoiceKey(voiceKey(voice));
+    }else{
+      u.lang = 'zh-TW';
+    }
+    const rateEl = root.querySelector('[data-tts-rate]');
+    u.rate = rateEl ? Number(rateEl.value || 1) : 1;
+    u.pitch = 1;
+    u.onstart = ()=>{
+      currentRoot = root;
+      setSpeaking(root, true);
+      setStatus(root, '播放中… ' + ((voice && voice.name) || ''));
+    };
+    u.onend = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放結束');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    u.onerror = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放中斷（可改選其他語音）');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    currentUtter = u;
+    // Chrome 偶發 cancel 後立刻 speak 會失敗
+    setTimeout(()=> synth.speak(u), 40);
+  }
+
+  function bindRoots(){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      if(root.dataset.ttsBound) return;
+      root.dataset.ttsBound = '1';
+      const play = root.querySelector('[data-tts-play]');
+      const pause = root.querySelector('[data-tts-pause]');
+      const stop = root.querySelector('[data-tts-stop]');
+      const voiceSel = root.querySelector('[data-tts-voice]');
+      if(play) play.addEventListener('click', ()=>{
+        if(synth.paused && currentRoot === root){ synth.resume(); setStatus(root, '繼續播放…'); return; }
+        playRoot(root);
+      });
+      if(pause) pause.addEventListener('click', ()=>{
+        if(synth.speaking && !synth.paused){ synth.pause(); setStatus(root, '已暫停'); }
+      });
+      if(stop) stop.addEventListener('click', ()=> stopAll());
+      if(voiceSel) voiceSel.addEventListener('change', ()=>{
+        saveVoiceKey(voiceSel.value);
+        document.querySelectorAll('[data-tts-voice]').forEach(other=>{
+          if(other !== voiceSel) other.value = voiceSel.value;
+        });
+        setStatus(root, '已選語音，按朗讀試聽');
+      });
+    });
+  }
+
+  fillVoiceSelects();
+  bindRoots();
+  try{
+    synth.getVoices();
+    synth.addEventListener('voiceschanged', ()=>{ fillVoiceSelects(); });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
