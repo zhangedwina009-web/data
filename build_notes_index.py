@@ -25,16 +25,16 @@ def _folder_label(name: str) -> str:
 
 
 def _folder_href(d: Path) -> str | None:
-    """資料夾按鈕連結：優先 index.html，否則第一篇 html。"""
+    """資料夾按鈕連結：優先 index.html，否則第一篇 html（絕對路徑利於 Vercel）。"""
     idx = d / "index.html"
     if idx.is_file():
-        return f"{d.name}/index.html".replace("\\", "/")
+        return f"/notes/{d.name}/index.html".replace("\\", "/")
     htmls = sorted(
         [f for f in d.glob("*.html") if f.name.lower() != "index.html"],
         key=lambda p: p.name.lower(),
     )
     if htmls:
-        return f"{d.name}/{htmls[0].name}".replace("\\", "/")
+        return f"/notes/{d.name}/{htmls[0].name}".replace("\\", "/")
     return None
 
 
