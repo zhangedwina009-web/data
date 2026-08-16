@@ -12,6 +12,8 @@ from note_paths import FOLDER_LABELS
 ROOT = Path(__file__).resolve().parent
 NOTES = ROOT / "notes"
 SKIP_DIRS = {"archive", "__pycache__"}
+# 僅作舊網址導向的空殼資料夾，不顯示在瀏覽首頁
+REDIRECT_ONLY_DIRS = {"公司治理", "簡單開公司"}
 
 
 def _esc(s: str) -> str:
@@ -42,6 +44,8 @@ def collect() -> list[dict]:
         return folders
     for d in sorted(NOTES.iterdir(), key=lambda p: p.name.lower()):
         if not d.is_dir() or d.name in SKIP_DIRS or d.name.startswith("."):
+            continue
+        if d.name in REDIRECT_ONLY_DIRS:
             continue
         href = _folder_href(d)
         if not href:
