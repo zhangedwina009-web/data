@@ -3,6 +3,26 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/%E7%B0%A1%E5%96%AE%E9%96%8B%E5%85%AC%E5%8F%B8",
+      "destination": "/notes/simpany",
+      "permanent": true
+    },
+    {
+      "source": "/%E7%B0%A1%E5%96%AE%E9%96%8B%E5%85%AC%E5%8F%B8/:path*",
+      "destination": "/notes/simpany/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/%E5%85%AC%E5%8F%B8%E6%B2%BB%E7%90%86",
+      "destination": "/notes/governance",
+      "permanent": true
+    },
+    {
+      "source": "/%E5%85%AC%E5%8F%B8%E6%B2%BB%E7%90%86/:path*",
+      "destination": "/notes/governance/:path*",
+      "permanent": true
+    },
+    {
       "source": "/notes/%E5%85%AC%E5%8F%B8%E6%B2%BB%E7%90%86",
       "destination": "/notes/governance",
       "permanent": true
