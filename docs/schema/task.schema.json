@@ -1,0 +1,477 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.ause/schema/task/v1",
+  "title": "AuseAutomationTask",
+  "description": "通用自動化任務固定格式 v1：素材 + 依序執行動作 + 輸出",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "task"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "格式版本，目前固定 1.0"
+    },
+    "meta": {
+      "type": "object",
+      "description": "可選：任務說明、標籤",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "created_at": { "type": "string" }
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["output", "materials", "actions"],
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "output": { "$ref": "#/$defs/output" },
+        "materials": { "$ref": "#/$defs/materials" },
+        "defaults": { "$ref": "#/$defs/defaults" },
+        "actions": {
+          "type": "array",
+          "minItems": 1,
+          "description": "依陣列順序執行",
+          "items": { "$ref": "#/$defs/action" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "存檔名稱（可含或不含副檔名；動作可再覆寫）"
+        },
+        "dir": {
+          "type": "string",
+          "description": "輸出資料夾，相對或絕對路徑",
+          "default": "output"
+        },
+        "overwrite": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "materials": {
+      "type": "object",
+      "description": "資料素材：連結、檔案路徑、純文字、其他鍵值",
+      "additionalProperties": false,
+      "properties": {
+        "urls": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" },
+          "description": "網址列表"
+        },
+        "files": {
+          "type": "array",
+          "description": "本機檔案／資料夾路徑",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path"],
+            "properties": {
+              "path": { "type": "string" },
+              "role": {
+                "type": "string",
+                "description": "用途標記，例如 source / image / template / cookie",
+                "default": "source"
+              }
+            }
+          }
+        },
+        "text": {
+          "type": "string",
+          "description": "已整理好的純文字素材"
+        },
+        "json": {
+          "type": "object",
+          "description": "已整理好的結構化資料（任意 JSON）"
+        },
+        "vars": {
+          "type": "object",
+          "description": "可被 {{var}} 引用的變數",
+          "additionalProperties": {
+            "type": ["string", "number", "boolean", "null"]
+          }
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "description": "整份任務的預設值，各 action 可覆寫",
+      "additionalProperties": false,
+      "properties": {
+        "browser": {
+          "type": "string",
+          "enum": ["chromium", "chrome", "edge", "firefox"],
+          "default": "chromium"
+        },
+        "headless": { "type": "boolean", "default": true },
+        "timeout_ms": { "type": "integer", "default": 60000 },
+        "wait_ms": { "type": "integer", "default": 2500 },
+        "viewport": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "width": { "type": "integer", "default": 1400 },
+            "height": { "type": "integer", "default": 900 }
+          }
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "步驟識別，方便除錯／引用"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "open_url",
+            "screenshot",
+            "scrape",
+            "paginate",
+            "ai_clean",
+            "run_app",
+            "wait",
+            "save"
+          ]
+        },
+        "enabled": { "type": "boolean", "default": true },
+        "params": { "type": "object" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "open_url" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_open_url" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "screenshot" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_screenshot" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "scrape" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_scrape" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "paginate" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_paginate" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "ai_clean" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_ai_clean" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "run_app" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_run_app" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "wait" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_wait" } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "save" } } },
+          "then": { "properties": { "params": { "$ref": "#/$defs/params_save" } } }
+        }
+      ]
+    },
+    "params_open_url": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "單一網址；省略則用 materials.urls 全部依序"
+        },
+        "url_index": {
+          "type": "integer",
+          "description": "使用 materials.urls[n]"
+        },
+        "wait_until": {
+          "type": "string",
+          "enum": ["load", "domcontentloaded", "networkidle"],
+          "default": "domcontentloaded"
+        }
+      }
+    },
+    "params_screenshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["single", "full_page", "scroll", "element", "multi_page"],
+          "description": "single=視窗可視區；full_page=整頁；scroll=滾動拼接；element=指定區塊；multi_page=翻頁多張"
+        },
+        "selector": {
+          "type": "string",
+          "description": "mode=element 時必填；也可限制截圖範圍"
+        },
+        "filename": {
+          "type": "string",
+          "description": "覆寫輸出檔名（建議不含路徑）"
+        },
+        "image_format": {
+          "type": "string",
+          "enum": ["png", "jpeg"],
+          "default": "png"
+        },
+        "quality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "jpeg 品質"
+        },
+        "scroll": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "step_px": { "type": "integer", "default": 800 },
+            "delay_ms": { "type": "integer", "default": 300 },
+            "max_steps": { "type": "integer", "default": 50 }
+          }
+        },
+        "paginate": {
+          "$ref": "#/$defs/paginate_config",
+          "description": "mode=multi_page 時使用"
+        }
+      }
+    },
+    "params_scrape": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target"],
+      "properties": {
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "抓取目標：id / class / css / xpath 擇一為主",
+          "properties": {
+            "by": {
+              "type": "string",
+              "enum": ["css", "id", "class", "xpath"],
+              "default": "css"
+            },
+            "value": {
+              "type": "string",
+              "description": "例如 article-body、#main、.content、//div[@class='x']"
+            },
+            "include_children": {
+              "type": "boolean",
+              "default": true,
+              "description": "是否包含該節點底下所有子內容"
+            },
+            "all_matches": {
+              "type": "boolean",
+              "default": true,
+              "description": "符合的全部節點都抓，false 只抓第一個"
+            }
+          },
+          "required": ["value"]
+        },
+        "extract": {
+          "type": "string",
+          "enum": ["text", "html", "attr", "table"],
+          "default": "text"
+        },
+        "attr": {
+          "type": "string",
+          "description": "extract=attr 時，例如 href / src"
+        },
+        "filename": { "type": "string" },
+        "paginate": { "$ref": "#/$defs/paginate_config" },
+        "clean": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "collapse_blank_lines": { "type": "boolean", "default": true },
+            "trim": { "type": "boolean", "default": true },
+            "remove_selectors": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "抓取前先移除的干擾區塊，如 .ads"
+            }
+          }
+        }
+      }
+    },
+    "paginate_config": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "翻頁方式",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": ["none", "click", "key", "url_pattern", "scroll"],
+          "default": "none"
+        },
+        "max_pages": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "click": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "selector": {
+              "type": "string",
+              "description": "下一頁按鈕 CSS／選擇器"
+            },
+            "text": {
+              "type": "string",
+              "description": "或以按鈕文字匹配，例如 下一頁、Next"
+            }
+          }
+        },
+        "key": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keys": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "例如 [\"ArrowRight\"]、[\"PageDown\"]、[\"Control\", \"ArrowRight\"]"
+            },
+            "repeat": {
+              "type": "integer",
+              "default": 1,
+              "description": "每翻一頁按幾次"
+            }
+          }
+        },
+        "url_pattern": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "template": {
+              "type": "string",
+              "description": "例如 https://site.com/list?page={{page}}"
+            },
+            "start": { "type": "integer", "default": 1 },
+            "end": { "type": "integer" }
+          }
+        },
+        "stop_when": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "selector_missing": {
+              "type": "string",
+              "description": "找不到此選擇器就停止（如下一頁按鈕消失）"
+            },
+            "text_contains": { "type": "string" }
+          }
+        },
+        "delay_ms": { "type": "integer", "default": 1000 }
+      }
+    },
+    "params_paginate": {
+      "allOf": [{ "$ref": "#/$defs/paginate_config" }],
+      "description": "獨立翻頁步驟（先翻再截圖／爬蟲）"
+    },
+    "params_ai_clean": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["last_scrape", "materials.text", "materials.json", "file"],
+          "default": "last_scrape"
+        },
+        "file": {
+          "type": "string",
+          "description": "source=file 時的路徑"
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["openai", "azure", "ollama", "custom", "none"],
+          "default": "none"
+        },
+        "model": { "type": "string" },
+        "instruction": {
+          "type": "string",
+          "description": "要 AI 怎麼整理，例如：去廣告、抽出標題與正文、轉成表格"
+        },
+        "output_schema": {
+          "type": "object",
+          "description": "期望整理成的 JSON 結構（可選）"
+        },
+        "filename": { "type": "string" }
+      }
+    },
+    "params_run_app": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "程式路徑或系統命令，例如 notepad.exe、C:\\\\App\\\\tool.exe"
+        },
+        "args": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "命令列參數；可用 {{output.name}} 等變數"
+        },
+        "cwd": { "type": "string" },
+        "wait": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否等程式結束再繼續下一步"
+        },
+        "timeout_ms": { "type": "integer" }
+      }
+    },
+    "params_wait": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ms": { "type": "integer", "default": 1000 },
+        "selector": {
+          "type": "string",
+          "description": "等到元素出現"
+        },
+        "selector_state": {
+          "type": "string",
+          "enum": ["visible", "attached", "hidden"],
+          "default": "visible"
+        }
+      }
+    },
+    "params_save": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "type": "string",
+          "enum": ["last_scrape", "last_ai", "materials.text", "materials.json"],
+          "default": "last_scrape"
+        },
+        "filename": { "type": "string" },
+        "format": {
+          "type": "string",
+          "enum": ["txt", "json", "md", "csv"],
+          "default": "txt"
+        }
+      }
+    }
+  }
+}

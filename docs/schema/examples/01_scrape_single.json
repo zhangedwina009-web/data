@@ -1,0 +1,53 @@
+{
+  "version": "1.0",
+  "meta": {
+    "title": "單頁爬蟲",
+    "tags": ["scrape"]
+  },
+  "task": {
+    "output": {
+      "name": "文章內容",
+      "dir": "output"
+    },
+    "materials": {
+      "urls": [
+        "https://example.com/article/1"
+      ],
+      "vars": {
+        "site": "example"
+      }
+    },
+    "defaults": {
+      "headless": true,
+      "wait_ms": 2000
+    },
+    "actions": [
+      {
+        "id": "open",
+        "type": "open_url",
+        "params": {
+          "url_index": 0
+        }
+      },
+      {
+        "id": "scrape_body",
+        "type": "scrape",
+        "params": {
+          "target": {
+            "by": "class",
+            "value": "article-content",
+            "include_children": true,
+            "all_matches": false
+          },
+          "extract": "text",
+          "filename": "文章內容",
+          "clean": {
+            "collapse_blank_lines": true,
+            "trim": true,
+            "remove_selectors": [".ads", ".related"]
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "meta": {
+    "title": "多頁：點下一頁按鈕後截圖＋爬蟲",
+    "tags": ["paginate", "click"]
+  },
+  "task": {
+    "output": {
+      "name": "列表第{{page}}頁",
+      "dir": "output"
+    },
+    "materials": {
+      "urls": ["https://example.com/list"]
+    },
+    "actions": [
+      {
+        "id": "open",
+        "type": "open_url",
+        "params": { "url_index": 0 }
+      },
+      {
+        "id": "scrape_and_shot_pages",
+        "type": "scrape",
+        "params": {
+          "target": {
+            "by": "css",
+            "value": "#main .item",
+            "include_children": true,
+            "all_matches": true
+          },
+          "extract": "text",
+          "filename": "列表資料",
+          "paginate": {
+            "method": "click",
+            "max_pages": 5,
+            "delay_ms": 1200,
+            "click": {
+              "selector": "a.next",
+              "text": "下一頁"
+            },
+            "stop_when": {
+              "selector_missing": "a.next"
+            }
+          }
+        }
+      },
+      {
+        "id": "shot_each_page",
+        "type": "screenshot",
+        "params": {
+          "mode": "multi_page",
+          "filename": "列表截圖_p{{page}}",
+          "paginate": {
+            "method": "click",
+            "max_pages": 5,
+            "click": {
+              "selector": "a.next"
+            },
+            "delay_ms": 1000
+          }
+        }
+      }
+    ]
+  }
+}

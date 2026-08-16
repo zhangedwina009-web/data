@@ -1,0 +1,2157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>案例統整：網拍電商——國外進貨與 Meta 廣告扣繳</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/theme/mermaid.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-alpine-dark.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+:root{
+  --side-w:320px; --side-blue:#0d2137;
+}
+.layout{min-height:100vh;}
+.sidebar{
+  position:fixed; inset:0 auto 0 0; width:min(var(--side-w), 88vw); z-index:40;
+  background:linear-gradient(180deg, #0a2744 0%, var(--side-blue) 40%, #0b1a2a 100%);
+  border-right:1px solid rgba(94,200,255,.18);
+  display:flex; flex-direction:column;
+  transform:translateX(0); transition:transform .22s ease;
+  box-shadow:8px 0 28px rgba(0,0,0,.25);
+}
+body.side-collapsed .sidebar{transform:translateX(-105%);}
+.side-scroll{overflow:auto; -webkit-overflow-scrolling:touch; padding:.85rem .75rem 5rem; flex:1;}
+.side-brand-block{padding:.35rem .45rem 0.85rem; border-bottom:1px solid rgba(94,200,255,.15); margin-bottom:.75rem;}
+.side-brand{font-weight:850; font-size:1.05rem; color:#fff; letter-spacing:.04em;}
+.side-sub{font-size:.75rem; color:rgba(158,200,230,.85); margin-top:.15rem;}
+.side-home{
+  display:inline-flex; margin-top:.55rem; font-size:.78rem; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+}
+.side-home:hover{color:#fff;}
+.chap-drop{
+  border:1px solid rgba(94,200,255,.14); border-radius:12px;
+  background:rgba(8,24,40,.72); margin:0 0 .45rem; overflow:hidden;
+}
+.chap-drop.active-chap{border-color:rgba(94,200,255,.45); box-shadow:inset 3px 0 0 var(--cyan);}
+.chap-drop > summary{
+  list-style:none; cursor:pointer; padding:.55rem .65rem;
+  display:flex; align-items:center; gap:.35rem;
+  font-size:.84rem; font-weight:750; color:#e8f4ff;
+}
+.chap-drop > summary::-webkit-details-marker{display:none;}
+.chap-drop > summary::before{content:"▸"; color:rgba(158,200,230,.7); width:1rem; flex:0 0 auto;}
+.chap-drop[open] > summary::before{content:"▾"; color:var(--cyan);}
+.chap-sum-link{color:inherit; text-decoration:none; flex:1; min-width:0; word-break:break-word;}
+.chap-sum-link:hover{color:var(--cyan);}
+.toc-kids{padding:0 .35rem .55rem .35rem; display:flex; flex-direction:column; gap:.08rem;}
+.toc-h3{
+  display:flex; align-items:flex-start; gap:.4rem; text-decoration:none; color:rgba(200,220,235,.88);
+  font-size:.78rem; padding:.32rem .45rem; border-radius:8px; line-height:1.35;
+}
+.toc-h3:hover{background:rgba(94,200,255,.12); color:#fff;}
+.toc-sub{padding-left:1.15rem; font-size:.74rem; color:rgba(170,195,215,.8);}
+.toc-mark{flex:0 0 auto; width:1.1rem; text-align:center; color:var(--cyan); font-size:.85rem;}
+.toc-sub .toc-mark{color:var(--amber); font-size:.78rem;}
+.toc-text{flex:1; min-width:0; overflow-wrap:anywhere;}
+.edge-toggle{
+  position:fixed; left:calc(min(var(--side-w), 88vw) - 16px); top:max(12px, env(safe-area-inset-top));
+  z-index:50; width:32px; height:32px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(13,33,55,.95); color:#fff; cursor:pointer;
+  display:grid; place-items:center; transition:left .22s ease, opacity .2s ease;
+}
+body.side-collapsed .edge-toggle{display:none;}
+.burger-fab{
+  display:none; position:fixed;
+  left:max(12px, env(safe-area-inset-left));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:55; width:42px; height:42px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(94,200,255,.45),rgba(62,224,162,.32));
+  color:#071018; font-size:1.1rem; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+body.side-collapsed .burger-fab{display:grid; place-items:center;}
+.content{margin-left:min(var(--side-w), 88vw); min-width:0; width:auto; transition:margin-left .22s ease;}
+body.side-collapsed .content{margin-left:0;}
+.note-wrap,.wrap{
+  max-width:980px; margin:0 auto;
+  padding:1.25rem 1.15rem 3.2rem; overflow-x:clip;
+}
+body.side-collapsed .note-wrap, body.side-collapsed .wrap{padding-top:4.2rem;}
+.backdrop{display:none; position:fixed; inset:0; z-index:35; background:rgba(0,0,0,.45);}
+body.side-open-mobile .backdrop{display:block;}
+@media (max-width:900px){
+  .sidebar{
+    width:min(86vw, 320px);
+    transform:translateX(-105%);
+    box-shadow:12px 0 40px rgba(0,0,0,.45);
+  }
+  body.side-open-mobile .sidebar{transform:translateX(0);}
+  body.side-collapsed .sidebar{transform:translateX(-105%);}
+  body.side-collapsed.side-open-mobile .sidebar{transform:translateX(0);}
+  .content{margin-left:0 !important; width:100%;}
+  .edge-toggle{display:none !important;}
+  .burger-fab{display:grid !important; place-items:center;}
+  .note-wrap,.wrap{
+    padding:4.4rem max(.85rem, env(safe-area-inset-right))
+            calc(2.5rem + env(safe-area-inset-bottom))
+            max(.85rem, env(safe-area-inset-left));
+  }
+}
+@media (min-width:901px){
+  body.side-open-mobile .backdrop{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.content,.edge-toggle{transition:none;}
+}
+@media print{
+  .sidebar,.burger-fab,.edge-toggle,.backdrop{display:none !important;}
+  .content{margin-left:0 !important;}
+}
+.viz-toolkit-badge{display:inline-flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 1rem;}
+.viz-pill{font-size:.68rem;font-weight:750;padding:.18rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(18,24,33,.85);}
+.viz-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+  align-items:stretch;
+}
+@media (min-width:768px){
+  .viz-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media (min-width:1200px){
+  .viz-grid.viz-grid-dense{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+.viz-cell{
+  margin:0;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(16,22,30,.92);
+  max-width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.viz-cell-wide{grid-column:1 / -1;}
+.viz-panel-h,.viz-cell-h{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:720;
+}
+.viz-lib{font-size:.7rem;font-weight:800;padding:.15rem .45rem;border-radius:999px;background:rgba(94,200,255,.16);color:var(--cyan);}
+.viz-body,.viz-cell-b{padding:.75rem .85rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.viz-box{min-height:clamp(180px,42vw,260px);width:100%;max-width:100%;position:relative;}
+.viz-box-sm{min-height:clamp(160px,38vw,220px);}
+.viz-box-lg{min-height:clamp(220px,48vw,340px);}
+.viz-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0;}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.tabulator,.tabulator-header,.tabulator-row{background:transparent !important;color:var(--text) !important;}
+.tabulator{border:1px solid rgba(255,255,255,.08) !important;border-radius:10px;overflow:hidden;max-width:100%;}
+.gridjs-wrapper{overflow-x:auto !important;max-width:100%;}
+.gridjs-th,.gridjs-td{background:#121821 !important;border-color:rgba(255,255,255,.1) !important;color:#e8eef7 !important;}
+table.dataTable{color:var(--text);width:100% !important;}
+.ag-theme-alpine-dark{--ag-background-color:#121821;--ag-header-background-color:#0d1520;height:clamp(220px,50vw,300px);width:100%;max-width:100%;}
+.markmap-host{position:relative;width:100%;max-width:100%;height:clamp(280px,58vw,420px);border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;overflow:hidden;}
+.markmap-host .markmap{position:relative;width:100%;height:100%;}
+.markmap-host .markmap > svg,
+.markmap > svg{width:100% !important;height:100% !important;min-height:260px;display:block;}
+.cy-host,.vis-host{height:clamp(240px,55vw,340px);width:100%;max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;}
+.vis-timeline{border:0 !important;background:transparent !important;width:100% !important;}
+.vis-item{background:rgba(94,200,255,.25) !important;border-color:rgba(94,200,255,.55) !important;color:#e8eef7 !important;font-size:12px !important;}
+.d3-host{height:clamp(220px,50vw,300px);width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;}
+.d3-host text{fill:#c9d7ea;font-size:11px;}
+.d3-host .link{stroke:rgba(94,200,255,.35);}
+.d3-host .node circle{fill:#5ec8ff;}
+.mermaid-host{padding:.5rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#0a0e14;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.mermaid-host .mermaid,.mermaid-host svg{max-width:100%;}
+@media (max-width:767px){
+  .viz-cell-b{padding:.65rem .7rem .85rem;}
+  .viz-cell-h{padding:.55rem .7rem;font-size:.92rem;}
+  .viz-toolkit-badge{gap:.28rem;}
+  .viz-pill{font-size:.62rem;padding:.14rem .42rem;}
+  .tabulator .tabulator-header-filter input{font-size:12px;}
+}
+@media (max-width:420px){
+  .markmap-host{height:260px;}
+  .cy-host,.vis-host{height:220px;}
+}
+.narration-box{
+  margin:.85rem 0 1.1rem;border:1px solid rgba(110,231,245,.28);border-radius:14px;
+  background:linear-gradient(135deg,rgba(110,231,245,.08),rgba(16,22,30,.95));
+  overflow:hidden;
+}
+.narration-box > summary{
+  list-style:none;cursor:pointer;padding:.7rem .9rem;font-weight:750;
+  display:flex;align-items:center;gap:.45rem;color:#e8eef7;
+}
+.narration-box > summary::-webkit-details-marker{display:none;}
+.narration-box > summary::before{content:"▸";color:var(--sky,#6ee7f5);}
+.narration-box[open] > summary::before{content:"▾";}
+.narration-badge{
+  font-size:.7rem;font-weight:800;padding:.14rem .45rem;border-radius:999px;
+  background:rgba(110,231,245,.18);color:var(--sky,#6ee7f5);
+}
+.narration-body{padding:0 .9rem 1rem;}
+.narration-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 .65rem;
+}
+.narration-toolbar button{
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  background:rgba(18,24,33,.9);color:#e8eef7;padding:.32rem .75rem;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+}
+.narration-toolbar button.main{
+  background:linear-gradient(135deg,rgba(94,200,255,.9),rgba(62,224,162,.75));
+  color:#071018;border:0;
+}
+.narration-toolbar button:hover{filter:brightness(1.08);}
+.narration-toolbar button:disabled{opacity:.45;cursor:not-allowed;}
+.narration-rate{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);}
+.narration-rate input{width:90px;accent-color:#5ec8ff;}
+.narration-voice{
+  display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);
+  flex:1 1 220px;min-width:180px;
+}
+.narration-voice select{
+  flex:1;min-width:0;max-width:100%;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  background:rgba(18,24,33,.95);color:#e8eef7;
+  padding:.28rem .7rem;font-size:.78rem;
+}
+.narration-hint{font-size:.72rem;color:var(--muted,#9fb0c6);margin:.15rem 0 .45rem;line-height:1.45;}
+.narration-status{font-size:.78rem;color:var(--mint,#3ee0a2);min-height:1.1em;}
+.narration-script{
+  white-space:pre-wrap;line-height:1.75;color:#d7e2f0;font-size:.92rem;
+  padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(110,231,245,.25);
+  background:rgba(10,14,20,.72);max-height:280px;overflow:auto;-webkit-overflow-scrolling:touch;
+}
+.narration-script.is-speaking{border-color:rgba(62,224,162,.55);box-shadow:inset 3px 0 0 var(--mint,#3ee0a2);}
+@media (max-width:560px){
+  .narration-toolbar{gap:.35rem;}
+  .narration-voice{flex-basis:100%;}
+  .narration-script{max-height:220px;font-size:.88rem;}
+}
+:root{
+  --bg:#0b0f14; --bg2:#121821; --text:#e8eef7; --muted:#9fb0c6;
+  --cyan:#5ec8ff; --mint:#3ee0a2; --amber:#ffc857; --coral:#ff7b72;
+  --violet:#c3a6ff; --sky:#6ee7f5;
+}
+body{
+  background:
+    radial-gradient(1100px 480px at 8% -8%, rgba(94,200,255,.15), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgba(195,166,255,.12), transparent 50%),
+    radial-gradient(700px 360px at 50% 110%, rgba(62,224,162,.08), transparent 45%),
+    var(--bg);
+  color:var(--text);
+}
+.meta-line{color:var(--muted);font-size:.85rem;}
+.lecture-hero{margin-bottom:1.4rem;}
+.unit-badge{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.04em;padding:.28rem .7rem;border-radius:999px;background:linear-gradient(135deg,rgba(94,200,255,.25),rgba(195,166,255,.25));border:1px solid rgba(255,255,255,.1);margin-bottom:.65rem;}
+.note-title{font-weight:780;letter-spacing:.01em;line-height:1.28;font-size:clamp(1.45rem,3vw,2rem);}
+.title-link{text-decoration:none;background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.source-line a{color:var(--sky);text-decoration:none;border-bottom:1px dashed rgba(110,231,245,.45);}
+.section-kicker{font-size:.75rem;font-weight:800;letter-spacing:.08em;color:var(--cyan);margin-bottom:.25rem;}
+.section-title{font-size:1.15rem;font-weight:720;margin-bottom:.85rem;}
+.panel{background:rgba(18,24,33,.88);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;}
+.panel-violet{border-left:4px solid var(--violet);}
+.panel-mint{border-left:4px solid var(--mint);}
+.chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 1rem;}
+.tag-chip{display:inline-flex;align-items:center;padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:650;border:1px solid transparent;background:rgba(18,24,33,.95);}
+.summary-chips{display:flex;flex-direction:column;gap:.65rem;}
+.summary-chip{border-radius:12px;padding:.75rem .95rem;border:1px solid transparent;background:rgba(18,24,33,.9);}
+.chip-cyan,.tag-chip.chip-cyan{border-color:rgba(94,200,255,.4);box-shadow:inset 3px 0 0 var(--cyan);}
+.chip-mint,.tag-chip.chip-mint{border-color:rgba(62,224,162,.4);box-shadow:inset 3px 0 0 var(--mint);}
+.chip-amber,.tag-chip.chip-amber{border-color:rgba(255,200,87,.4);box-shadow:inset 3px 0 0 var(--amber);}
+.chip-coral,.tag-chip.chip-coral{border-color:rgba(255,123,114,.4);box-shadow:inset 3px 0 0 var(--coral);}
+.chip-violet,.tag-chip.chip-violet{border-color:rgba(195,166,255,.4);box-shadow:inset 3px 0 0 var(--violet);}
+.chip-sky,.tag-chip.chip-sky{border-color:rgba(110,231,245,.4);box-shadow:inset 3px 0 0 var(--sky);}
+.milestone-wrap{margin:1.25rem 0 1.5rem;}
+.milestone-track{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;position:relative;}
+.milestone-item{margin:0;}
+.milestone-link{display:flex;flex-direction:column;gap:.35rem;height:100%;padding:.85rem .9rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.92);border:1px solid rgba(255,255,255,.08);transition:transform .15s ease,border-color .15s ease;}
+.milestone-link:hover{transform:translateY(-2px);border-color:rgba(94,200,255,.45);color:inherit;}
+.ms-dot{width:1.7rem;height:1.7rem;border-radius:999px;display:grid;place-items:center;font-size:.8rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.ms-label{font-weight:720;font-size:.95rem;}
+.ms-desc{font-size:.78rem;color:var(--muted);line-height:1.45;}
+.lecture-nav{gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lecture-nav .nav-link{border-radius:999px;color:var(--muted);background:rgba(18,24,33,.8);border:1px solid rgba(255,255,255,.08);padding:.4rem .9rem;}
+.lecture-nav .nav-link.active{color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));border-color:transparent;font-weight:750;}
+.lecture-tab-content{background:rgba(12,16,22,.45);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.1rem 1rem 1.4rem;}
+.tab-hint{color:var(--muted);font-size:.9rem;margin-top:.5rem;}
+.path-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;}
+.path-card{display:block;padding:1rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.path-card:hover{border-color:rgba(195,166,255,.5);color:inherit;}
+.path-idx{font-size:.75rem;font-weight:800;color:var(--violet);}
+.path-title{font-weight:720;margin:.25rem 0;}
+.path-desc{font-size:.82rem;color:var(--muted);}
+.path-go{margin-top:.55rem;font-size:.82rem;color:var(--cyan);}
+.chapter-block{padding:1rem 0 1.4rem;border-bottom:1px solid rgba(255,255,255,.06);scroll-margin-top:1rem;}
+.chapter-block:last-child{border-bottom:0;}
+.chapter-head{margin-bottom:.55rem;}
+.milestone-badge{display:inline-block;font-size:.72rem;font-weight:800;color:var(--amber);margin-bottom:.35rem;letter-spacing:.04em;}
+.chapter-title{display:flex;align-items:center;gap:.65rem;font-size:1.2rem;font-weight:720;margin:0;}
+.chapter-num{display:inline-grid;place-items:center;min-width:1.85rem;height:1.85rem;padding:0 .35rem;border-radius:999px;font-size:.9rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.subhead{font-size:1rem;font-weight:700;margin:1rem 0 .5rem;color:var(--sky);}
+.lecture-list,.check-list{padding-left:1.15rem;color:#d7e2f0;}
+.lecture-list li,.check-list li{margin:.25rem 0;}
+.body-p{color:#d7e2f0;}
+.kp-box{margin:.75rem 0 1rem;padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(94,200,255,.35);background:rgba(94,200,255,.06);}
+.callout{border-radius:14px;padding:.9rem 1rem;border:1px solid rgba(255,255,255,.08);background:rgba(16,22,30,.92);}
+.callout-label{font-size:.78rem;font-weight:800;letter-spacing:.06em;margin-bottom:.35rem;}
+.callout-body,.callout-list{color:#e8eef7;}
+.callout-list{padding-left:1.1rem;}
+.callout-key{border-color:rgba(94,200,255,.4);background:linear-gradient(135deg,rgba(94,200,255,.16),rgba(16,22,30,.95));}
+.callout-key .callout-label{color:var(--cyan);}
+.callout-judge{border-color:rgba(195,166,255,.4);background:linear-gradient(135deg,rgba(195,166,255,.14),rgba(16,22,30,.95));}
+.callout-judge .callout-label{color:var(--violet);}
+.callout-note,.callout-tip{border-color:rgba(62,224,162,.4);background:linear-gradient(135deg,rgba(62,224,162,.14),rgba(16,22,30,.95));}
+.callout-note .callout-label,.callout-tip .callout-label{color:var(--mint);}
+.callout-warn{border-color:rgba(255,200,87,.45);background:linear-gradient(135deg,rgba(255,200,87,.16),rgba(16,22,30,.95));}
+.callout-warn .callout-label{color:var(--amber);}
+.callout-fact{border-color:rgba(110,231,245,.4);background:linear-gradient(135deg,rgba(110,231,245,.14),rgba(16,22,30,.95));}
+.callout-fact .callout-label{color:var(--sky);}
+.tip-card{background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;}
+.tip-card .card-header{background:transparent;border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;}
+.tip-card .card-title{font-weight:720;}
+.tip-card .card-text,.tip-card li{color:#c9d7ea;}
+.accent-cyan{box-shadow:inset 0 3px 0 var(--cyan);}
+.accent-mint{box-shadow:inset 0 3px 0 var(--mint);}
+.accent-amber{box-shadow:inset 0 3px 0 var(--amber);}
+.accent-coral{box-shadow:inset 0 3px 0 var(--coral);}
+.accent-violet{box-shadow:inset 0 3px 0 var(--violet);}
+.accent-sky{box-shadow:inset 0 3px 0 var(--sky);}
+.quick-kicker{font-size:.72rem;font-weight:800;color:var(--cyan);margin-bottom:.2rem;}
+.table{--bs-table-bg:rgba(16,22,30,.9);--bs-table-color:var(--text);}
+.mermaid{text-align:center;border-radius:14px;border:1px solid rgba(255,255,255,.06);}
+.quiz-intro{color:var(--muted);font-size:.92rem;margin-bottom:.9rem;}
+.quiz-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-bottom:1rem;}
+.quiz-tool-btn{border:1px solid rgba(255,255,255,.12);background:rgba(18,24,33,.9);color:var(--text);border-radius:999px;padding:.28rem .75rem;}
+.quiz-tool-btn:hover{border-color:rgba(94,200,255,.45);color:var(--cyan);}
+.quiz-count{font-size:.8rem;color:var(--muted);margin-left:.25rem;}
+.quiz-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.9rem;}
+.quiz-item{padding:1rem 1.05rem;border-radius:14px;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.quiz-item-head{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-bottom:.45rem;}
+.quiz-no{font-weight:800;font-size:.85rem;color:var(--cyan);}
+.quiz-kind{font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:.18rem .55rem;border-radius:999px;}
+.quiz-kind-know{background:rgba(62,224,162,.16);color:var(--mint);border:1px solid rgba(62,224,162,.35);}
+.quiz-kind-data{background:rgba(255,200,87,.14);color:var(--amber);border:1px solid rgba(255,200,87,.4);}
+.quiz-topic{font-size:.8rem;color:var(--muted);}
+.quiz-q{margin:0 0 .7rem;font-weight:650;line-height:1.55;}
+.quiz-answer-row{display:flex;flex-wrap:wrap;align-items:stretch;gap:.55rem;}
+.quiz-reveal-btn{flex:0 0 auto;border-radius:10px;border:1px solid rgba(195,166,255,.4);background:rgba(195,166,255,.12);color:var(--violet);font-size:.82rem;font-weight:700;padding:.4rem .75rem;}
+.quiz-reveal-btn[aria-pressed="true"]{background:rgba(94,200,255,.14);border-color:rgba(94,200,255,.4);color:var(--cyan);}
+.quiz-secret-box{flex:1 1 200px;min-height:2.4rem;display:flex;align-items:center;padding:.45rem .75rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0a0e14;font-family:ui-monospace,Consolas,monospace;}
+.quiz-secret-text{letter-spacing:.04em;color:var(--mint);}
+.quiz-secret-box.is-masked .quiz-secret-text{
+  -webkit-text-security:disc;
+  text-security:disc;
+  color:var(--muted);
+  user-select:none;
+  filter:blur(.5px);
+}
+.quiz-explain{margin-top:.55rem;font-size:.86rem;color:#c9d7ea;padding:.55rem .7rem;border-radius:10px;background:rgba(94,200,255,.08);border:1px dashed rgba(94,200,255,.3);}
+.quiz-explain-label{display:inline-block;font-size:.72rem;font-weight:800;color:var(--cyan);margin-right:.4rem;}
+.quiz-explain.is-hidden{display:none;}
+a{color:var(--cyan);}
+@media (max-width:576px){
+  .lecture-tab-content{padding:.85rem .7rem 1.1rem;}
+}
+</style>
+</head>
+<body>
+<div class="backdrop" id="side-backdrop" hidden></div>
+<button type="button" class="burger-fab" id="burger-fab" title="打開目錄" aria-label="打開目錄">☰</button>
+<button type="button" class="edge-toggle" id="edge-toggle" title="收起目錄" aria-label="收起目錄">‹</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="左側目錄">
+    <div class="side-scroll"><div class="side-brand-block">
+<div class="side-brand">簡單開公司</div>
+<div class="side-sub">課程目錄</div>
+<a class="side-home" href="../index.html">← 筆記首頁</a>
+</div>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="1-1 給創業者的財稅地圖：從個人到公司.html" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html">給創業者的財稅地圖：從個人到公司</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-1" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">課程定位與怎麼上路</span></a>
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-2" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">階段一：公司成立前的籌備期</span></a>
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-3" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">階段二：成立過程的起步期</span></a>
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-4" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">階段三：營運後的稅務與節稅</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="1-2 創業必知！開公司有哪些成本？.html" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html">創業必知！開公司有哪些成本？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-1" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">成本總覽：一次付 vs 一直付</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-2" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">一次性設立費用</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-3" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">營運類成本：租金、地址、記帳</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-4" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">稅務類：營業稅與營所稅</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-5" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">股利、扣繳、二代健保與行事曆</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html">我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-1" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">何時要登記：起徵點與三階段</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-2" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">起徵點細節與例外</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-3" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">行號與小規模營業人</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-4" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">小規模申請實務限制</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-5" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">公司 vs 行號：何時開公司划算</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-6" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">公司型態：有限公司與股份有限公司</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-2 判斷開公司還是行號的 5 個面向.html" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html">判斷開公司還是行號的 5 個面向</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-1" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">五面向決策框架</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-2" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">面向一：營業地區</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-3" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">面向二：行業風險</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-4" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">面向三：營業額形態</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-5" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">面向四：負責人個人所得</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-6" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">面向五：長期規劃與總結</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html">設立前準備：公司名稱、營業項目、負責人、資本額</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-1" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">三種登記名詞釐清</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-2" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">公司名稱：預查與保留</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-3" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">營業項目：填寫與特許</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-4" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">負責人：資格與提醒</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-5" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">資本額：公司與行號建議</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html">設立前準備：登記地址 - 自有房屋、店面、還是商辦？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-1" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">四種登記地址總覽</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-2" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">已有營業登記的住宅</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-3" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">尚未登記的自有住宅</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-4" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">租約規定與地址隱私</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-5" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">外部辦公室與店面</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-6" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">商務中心與縣市選擇</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html">設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-1" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">勞健退基本概念</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-2" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">負責人勞健保怎麼選</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-3" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">負責人勞保：工會 vs 公司</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-4" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">員工勞健保：5 人以下規定</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-5" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">雇一名員工的真實成本</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html">財稅基礎：公司賺錢和花錢有哪些單據？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-1" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">銷項與進項：先搞懂買賣兩端</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-2" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">開立資格與電子發票選擇</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-3" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">賣東西：依對方有無統編開發票</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-4" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">賣給國外：外銷零稅率與證明</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-5" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">買東西：依對方身分拿對單據</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-6" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">總結：買賣單據速查</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html">營業稅：什麼是營業稅？我要繳多少營業稅？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-1" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">營業稅是什麼：代收的 5% 消費稅</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-2" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">定價計算：未稅、含稅與稅額</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-3" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">銷項、進項與應繳公式</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-4" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">申報時程與 401 表</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-5" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">外銷零稅率、退稅與地址</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-6" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">重點複習：四大記憶點</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html">營業稅扣抵：三原則了解可扣抵的發票與單據</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-1" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">扣抵三原則：統編、稅額、非消費</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-2" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">非消費性質：情境不同結果不同</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-3" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">常見可扣與不可扣清單</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-4" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">特殊單據：海關、車票、餐費、機票</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-5" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">實務：一人公司與拿發票考題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html">營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-1" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">營收≠所得：20% 課在哪裡</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-2" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">兩種算所得：核實 vs 行業利潤率</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-3" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">營所稅額公式與開業未滿年</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-4" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">沒賺錢也要繳稅嗎？</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-5" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">有投資人的公司為何要查帳</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html">營所稅申報：書審 vs 查帳，選哪個最節稅？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-1" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">誰要申報？所得怎麼算出來</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-2" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">五種方式：核實與三種利潤率</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-3" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">案例試算：書審稅額與補稅風險</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-4" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">行業代號怎麼選</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-5" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">如何選查帳或書審</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html">行號的所得：行號不繳營所稅，所得如何計算？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-1" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">行號兩種型態：營業稅不同、營利所得相同</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-2" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">課稅所得怎麼算</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-3" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">實例：營收≠所得，稅額常比想像小</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-4" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">何時改開公司</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-5" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">合夥分散所得與無限清償</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-4 公司盈餘分配，要不要發股利呢？.html" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html">公司盈餘分配，要不要發股利呢？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-1" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">股利是什麼、何時發、怎麼算</span></a>
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-2" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">發或不發：用所得級距判斷</span></a>
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-3" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">股利與二代健保、負責人投保級距</span></a>
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-4" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">員工酬勞與總結提醒</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html">實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-1" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">核心觀念：不要漏開發票</span></a>
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-2" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">進銷項落差大：為什麼容易被盯</span></a>
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-3" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">什麼是調帳？不送帳會怎樣</span></a>
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-4" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">依年營業額看風險與預留補稅</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html">懂稅才能節稅：從稅務邏輯找出節稅方法</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-1" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">營業稅三觀念：代收、扣抵、憑證條件</span></a>
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-2" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">營所稅：憑證齊全才能選對申報方式</span></a>
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-3" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">股利扣抵：8.5% 抵稅的節稅思路</span></a>
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-4" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">行號高所得：改公司或加合夥人</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html">給老闆個人提醒：負責人薪水、二代健保補充保費</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-1" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">負責人要不要領薪水</span></a>
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-2" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">領薪的代價：二代與綜所稅</span></a>
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-3" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">負責人沒有就業保險與勞退</span></a>
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-4" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">兩種二代健保：個人付 vs 公司付</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html">節稅解析 1：開第二家公司能節稅嗎？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-1" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">為什麼有人想開第二家？適用時機</span></a>
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-2" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">三大實務問題：區隔、成本、連帶審查</span></a>
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-3" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">危險玩法：一家書審、一家查帳虧損</span></a>
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-4" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">結論：可節稅，但不簡單</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html">節稅解析 2：買車、買房該不該登記在公司名下？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-1" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">先問清楚：公司買資產真的能節稅嗎？</span></a>
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-2" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">公司買車：車種決定營業稅能不能扣</span></a>
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-3" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">油錢維修與機車：不必綁死「公司車」</span></a>
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-4" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">公司買房：房地合一、發票與貸款限制</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html">案例統整：自由工作者／接案者——開公司划算嗎？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-1" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：自由工作者接案的稅務起點</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-2" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：個人接案的三種所得代號</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-3" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：副業 vs 全職接案的扣除差異</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-4" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">行動決策：100 萬門檻——個人收款還是開公司？</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-5" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：開公司後的書審與營所稅</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html">案例統整：自媒體創作者——個人與公司的國內外所得大不同</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-1" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：自媒體創作者的收入與稅務起點</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-2" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：個人階段——YouTube 廣告仍是國內所得</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-3" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：670 萬海外所得免稅——為何不適用？</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-4" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">判斷三：公司階段——勞務使用地與觀眾比例</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-5" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：申報步驟與資料保留</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html">案例統整：實體店面經營——營業場所預審與租扣二代</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-1" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：實體店面經營的稅務與法規起點</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-2" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：地址一致性與房東登記意願</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-3" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：營業場所預審、建管與罰則</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-4" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">判斷三：敏感性行業與各縣市特殊規定</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-5" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：租扣二代試算與含稅／未稅談判</span></a>
+</div></details>
+<details class="chap-drop active-chap" open>
+<summary><a class="chap-sum-link" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html">案例統整：網拍電商——國外進貨與 Meta 廣告扣繳</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-1" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：網拍電商的金流透明化</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-2" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：銷售貨物的三階段門檻</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-3" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：帳戶交易監控——不只靠平台</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-4" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">判斷三：國外進貨缺進項——進銷差過大</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-5" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：書審省稅 vs 調帳懲罰性稅率</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-6" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">行動方案：Meta 廣告費扣繳申報</span></a>
+</div></details></div>
+  </aside>
+  <div class="content">
+    <main class="note-wrap">
+      <p class="meta-line mb-3">學習講義 · 語音講解／左側目錄／Tabs／Chips／測驗 · 2026-08-17 00:29</p>
+      <header class="lecture-hero">
+<span class="unit-badge">單元 6-4</span>
+<h1 class='note-title mb-2'><a class='title-link' href='https://hahow.in/classroom/66c3038a2cd3b1749a99a884/lessons/67ab17e7fef0bd0015059392/main' target='_blank' rel='noopener noreferrer'>案例統整：網拍電商——國外進貨與 Meta 廣告扣繳</a></h1>
+<p class='source-line mb-3'><a href='https://hahow.in/classroom/66c3038a2cd3b1749a99a884/lessons/67ab17e7fef0bd0015059392/main' target='_blank' rel='noopener noreferrer'>來源連結 ↗</a></p>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">網拍</span>
+<span class="tag-chip chip-mint">電商</span>
+<span class="tag-chip chip-amber">金流查核</span>
+<span class="tag-chip chip-coral">缺進項</span>
+<span class="tag-chip chip-violet">書審</span>
+<span class="tag-chip chip-sky">Meta扣繳</span>
+</div>
+</header>
+<section class="milestone-wrap" aria-label="學習里程碑">
+<div class="section-kicker">學習路徑</div>
+<h2 class="section-title">里程碑</h2>
+<ol class="milestone-track">
+<li class="milestone-item"><a class="milestone-link" href="#ch-1"><span class="ms-dot">1</span><span class="ms-label">認識情境</span><span class="ms-desc">網拍金流透明化與漏稅風險</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-2"><span class="ms-dot">2</span><span class="ms-label">門檻判斷</span><span class="ms-desc">營業稅三階段銷售門檻</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-3"><span class="ms-dot">3</span><span class="ms-label">查核判斷</span><span class="ms-desc">帳戶交易監控機制</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-4"><span class="ms-dot">4</span><span class="ms-label">進項判斷</span><span class="ms-desc">國外進貨缺進項與低報風險</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-5"><span class="ms-dot">5</span><span class="ms-label">申報行動</span><span class="ms-desc">書審 vs 調帳懲罰性稅率</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-6"><span class="ms-dot">6</span><span class="ms-label">扣繳行動</span><span class="ms-desc">Meta 廣告費扣繳申報</span></a></li>
+</ol></section>
+<div class="lecture-tabs">
+<ul class="nav nav-pills lecture-nav" role="tablist"><li class="nav-item" role="presentation"><button class="nav-link active" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button" role="tab">總覽</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-charts-btn" data-bs-toggle="pill" data-bs-target="#tab-charts" type="button" role="tab">圖表</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-path-btn" data-bs-toggle="pill" data-bs-target="#tab-path" type="button" role="tab">學習路徑</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-lecture-btn" data-bs-toggle="pill" data-bs-target="#tab-lecture" type="button" role="tab">章節講義</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick" type="button" role="tab">速查卡片</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-quiz-btn" data-bs-toggle="pill" data-bs-target="#tab-quiz" type="button" role="tab">課後測驗</button></li></ul>
+<div class="tab-content lecture-tab-content">
+<div class="tab-pane fade show active" id="tab-overview" role="tabpanel">
+<section class="mb-4 panel panel-mint"><h2 class="section-title">學習目標</h2><ul class="mb-0">
+<li>能描述網拍業者面對金流透明化與國稅局資料勾稽的情境</li>
+<li>能依月銷售額判斷免徵、小規模與強制開發票三階段</li>
+<li>能說明帳戶交易監控機制與未登記的漏稅風險</li>
+<li>能說明國外進貨缺進項時書審與調帳懲罰性稅率的取捨</li>
+<li>能完成 Meta 廣告費扣繳時點與稅率概念，並知道可改走代理商</li>
+</ul></section>
+<section class="mb-4"><h2 class="section-title">重點摘要</h2>
+<div class="summary-chips">
+<div class="summary-chip chip-cyan">金流／網拍平台與國稅局合作，達營業稅標準未設立就可能被輔導補稅。</div>
+<div class="summary-chip chip-mint">貨物銷售：月銷 8 萬以下可免徵；超起徵點未達 20 萬應登記，可爭取小規模；逾 20 萬必須開發票。</div>
+<div class="summary-chip chip-amber">同一帳戶全年任四個月存入超過 200 筆，也可能觸發金融資料調閱。</div>
+<div class="summary-chip chip-coral">國外進貨缺單據時書審較省，但被調帳可能依同業利潤標準用懲罰性稅率。</div>
+<div class="summary-chip chip-violet">Meta 廣告由店家當扣繳義務人：2024 為 6%、2025 起 3%，須在信用卡扣帳日 10 天內申報繳稅。</div>
+</div>
+</section>
+<section class="mb-4 panel panel-violet"><h2 class="section-title">講義結構說明</h2><ul class="mb-0">
+<li>案例主軸：情境→判斷→行動——先對齊營業稅三階段門檻與金流透明化，再處理國外進貨缺進項與書審風險，最後完成 Meta 廣告扣繳</li>
+<li>視覺：mermaid／table／compare／cards 對照金流查核、書審風險與 Meta 稅率</li>
+<li>講義設計：強調「合法合規才是長遠之道」，並保留同業利潤標準與書審稅額差距</li>
+</ul></section>
+<p class="tab-hint">下一步：到「圖表」看互動視覺化，或到「章節講義」逐站精讀。</p>
+</div>
+<div class="tab-pane fade" id="tab-charts" role="tabpanel">
+<div class="structs-wrap viz-root" id="viz-root">
+  <p class="tab-hint mb-2">以下僅顯示本章有資料的圖表；每張圖獨立一格，可分別操作。</p>
+  <div class="viz-toolkit-badge"><span class="viz-pill">markmap</span><span class="viz-pill">Tabulator</span><span class="viz-pill">Grid.js</span><span class="viz-pill">Mermaid</span><span class="viz-pill">ECharts</span><span class="viz-pill">D3</span><span class="viz-pill">Cytoscape</span><span class="viz-pill">vis-network</span></div>
+  <script type="application/json" id="note-viz-data">{"title": "案例統整：網拍電商——國外進貨與 Meta 廣告扣繳", "timeline": [], "compares": [{"headers": ["階段", "月銷售額（貨物）", "登記／發票", "稅務重點"], "rows": [["一", "8 萬以下（勞務 4 萬以下）", "可不設立", "免徵營業稅"], ["二", "超起徵點～未達 20 萬", "應稅籍登記；可爭取小規模", "小規模查定課徵、稅率 1%、免開發票"], ["三", "超過 20 萬", "必須開立發票", "未開立＝營業稅漏稅，罰則重"]]}, {"headers": ["有完整進項", "缺進項／低報進口"], "rows": [["查帳營利接近實際", "查帳營利顯得偏高"], ["進銷差合理", "進銷差過大、易被抽查"], ["支出有憑證佐證", "無法證明支出→帳務不完整"], ["—", "低報進口省關稅但加劇風險"]]}, {"headers": ["缺進項時走書審", "被調帳又無帳冊"], "rows": [["營所稅通常較划算", "可能改依同業利潤標準淨利率課稅"], ["適合國外進貨難以取證者", "等於面臨懲罰性稅率風險"], ["仍應評估稅額差距並留現金", "低報進口會加大進銷差、提高抽查機率"]]}], "evolution": [{"stage": "為何要扣繳", "content": "Meta 未在臺設公司，廣告費由臺灣店家當扣繳義務人。"}, {"stage": "稅率時點", "content": "2024 為 6%、2025 起 3%；扣帳日 10 天內申報繳稅。"}, {"stage": "認列前提", "content": "完成扣繳申報後，廣告費才能列公司費用。"}, {"stage": "替代作法", "content": "改走廣告代理商，拿國內發票、由對方處理申報。"}], "outline": [{"title": "案例情境：網拍電商的金流透明化", "kids": ["金流數據可被國稅局勾稽", "達標未設立＝漏稅風險", "合法報稅才是長遠之道"]}, {"title": "判斷一：銷售貨物的三階段門檻", "kids": ["三階段：免徵→登記／小規模→開發票", "小規模：1% 查定課徵", "超 20 萬未開發票：補 5 罰 5"]}, {"title": "判斷二：帳戶交易監控——不只靠平台", "kids": ["平台＋帳戶雙重查核管道", "200 筆／月×4 是重要門檻", "達標未登記風險極高"]}, {"title": "判斷三：國外進貨缺進項——進銷差過大", "kids": ["缺進項是網拍最常見問題", "低報進口加劇進銷差", "查帳時帳面營利可能遠高於實際"]}, {"title": "行動方案：書審省稅 vs 調帳懲罰性稅率", "kids": ["缺進項→書審較省", "調帳→可能懲罰性稅率", "保留兩種純益率稅額差距"]}, {"title": "行動方案：Meta 廣告費扣繳申報", "kids": ["店家＝Meta 扣繳義務人", "扣帳日 10 天內申報繳稅", "完成扣繳才能認列費用"]}], "nodes": [{"id": "n0", "label": "案例情境：網拍電商的金流透明化"}, {"id": "n1", "label": "判斷一：銷售貨物的三階段門檻"}, {"id": "n2", "label": "判斷二：帳戶交易監控——不只靠平台"}, {"id": "n3", "label": "判斷三：國外進貨缺進項——進銷差過大"}, {"id": "n4", "label": "行動方案：書審省稅 vs 調帳懲罰性稅率"}, {"id": "n5", "label": "行動方案：Meta 廣告費扣繳申報"}], "edges": [{"from": "n0", "to": "n1"}, {"from": "n1", "to": "n2"}, {"from": "n2", "to": "n3"}, {"from": "n3", "to": "n4"}, {"from": "n4", "to": "n5"}], "charts": [], "mermaids": ["flowchart TD\n  A[網拍／金流交易] --> B[平台與國稅局資料勾稽]\n  C[帳戶任四個月各逾 200 筆存入] --> D[依法規調閱金融資料]\n  B --> E{達營業稅標準卻未設立?}\n  D --> E\n  E -->|是| F[補稅＋輔導設立公司行號]\n  E -->|否| G[持續合法申報]"]}</script>
+  <div class="viz-grid viz-grid-dense">
+    <article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">markmap</span>章節心智圖</div><div class="viz-cell-b"><div class="markmap-host" id="viz-markmap" aria-label="章節心智圖"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>對照表</div><div class="viz-cell-b"><div id="viz-tabulator-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Grid.js</span>對照表（可搜尋）</div><div class="viz-cell-b"><div id="viz-gridjs-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>演進表</div><div class="viz-cell-b"><div id="viz-tabulator-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>演進流程</div><div class="viz-cell-b"><div class="mermaid-host"><pre class="mermaid" id="viz-mermaid-evolve"></pre></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>演進關係</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">D3</span>演進樹狀圖</div><div class="viz-cell-b"><div class="d3-host viz-box" id="viz-d3-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Cytoscape</span>章節關係網</div><div class="viz-cell-b"><div class="cy-host" id="viz-cytoscape"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-network</span>概念網路</div><div class="viz-cell-b"><div class="vis-host" id="viz-vis-network"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>講義流程圖</div><div class="viz-cell-b"><div id="viz-extra-mermaids"></div></div></article>
+  </div>
+</div>
+</div>
+<div class="tab-pane fade" id="tab-path" role="tabpanel">
+<div class="path-cards">
+<a class="path-card" href="#ch-1" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 1</div><div class="path-title">認識情境</div><div class="path-desc">網拍金流透明化與漏稅風險</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-2" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 2</div><div class="path-title">門檻判斷</div><div class="path-desc">營業稅三階段銷售門檻</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-3" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 3</div><div class="path-title">查核判斷</div><div class="path-desc">帳戶交易監控機制</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-4" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 4</div><div class="path-title">進項判斷</div><div class="path-desc">國外進貨缺進項與低報風險</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-5" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 5</div><div class="path-title">申報行動</div><div class="path-desc">書審 vs 調帳懲罰性稅率</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-6" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 6</div><div class="path-title">扣繳行動</div><div class="path-desc">Meta 廣告費扣繳申報</div><div class="path-go">前往講義 →</div></a>
+</div>
+</div>
+<div class="tab-pane fade" id="tab-lecture" role="tabpanel">
+<article class="chapter-block" id="ch-1">
+<div class="chapter-head">
+<span class="milestone-badge">站 1｜認識情境</span>
+<h2 class='chapter-title'><span class='chapter-num'>1</span>案例情境：網拍電商的金流透明化</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">網拍</span>
+<span class="tag-chip chip-mint">金流</span>
+<span class="tag-chip chip-amber">漏稅</span>
+<span class="tag-chip chip-coral">國稅局</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-1" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「案例情境：網拍電商的金流透明化」。首先，關於這個案例在談誰。近年來隨著線上支付的普及，只要你在網路上銷售產品、有使用線上金流平台讓消費者付費，政府會和金流網拍平台合作，取得各店家的銷售數據。如果發現店家已達營業稅徵收標準但還沒有成立公司行號，就屬於有漏稅的情況，會依法要求補稅、發公文輔導成立公司行號。而且大部分的金流服務公司都和國稅局有配合提供資料審查。金流平台與國稅局資料合作。達標未設立＝漏稅→補稅＋輔導設立。部分管道漏開同樣會被查到。接著，關於情境→判斷→行動 路徑。多數網拍業者很容易遇到這個狀況——可能不是全部漏開，而是部分銷售管道沒有注意到漏開。國稅局都可以查得到金流紀錄。剛創業規模不大時可能未達課稅等級，但隨著營業額成長，合法合規的報稅才是經營的長遠之道。情境：網拍＋線上金流收款。判斷：月銷售額落在哪個階段？有無缺進項？有無投 Meta 廣告？行動：依門檻登記→選申報方式→完成扣繳。請特別記住這幾個重點。第1點，金流數據可被國稅局勾稽。第2點，達標未設立＝漏稅風險。第3點，合法報稅才是長遠之道。另外，關於實務提醒。規模變大時儘早做稅籍登記，不要賭「查不到」。聽完可以自問：我知道金流平台會與國稅局合作；我了解達標未設立的漏稅後果；我會隨營業額成長及時登記。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">這個案例在談誰</h3>
+<p class="lh-lg body-p">近年來隨著線上支付的普及，只要你在網路上銷售產品、有使用線上金流平台讓消費者付費，政府會和金流網拍平台合作，取得各店家的銷售數據。</p>
+<p class="lh-lg body-p">如果發現店家已達營業稅徵收標準但還沒有成立公司行號，就屬於有漏稅的情況，會依法要求補稅、發公文輔導成立公司行號。而且大部分的金流服務公司都和國稅局有配合提供資料審查。</p>
+<ul class="lecture-list">
+<li>金流平台與國稅局資料合作</li>
+<li>達標未設立＝漏稅→補稅＋輔導設立</li>
+<li>部分管道漏開同樣會被查到</li>
+</ul>
+<h3 class="subhead">情境→判斷→行動 路徑</h3>
+<p class="lh-lg body-p">多數網拍業者很容易遇到這個狀況——可能不是全部漏開，而是部分銷售管道沒有注意到漏開。國稅局都可以查得到金流紀錄。</p>
+<p class="lh-lg body-p">剛創業規模不大時可能未達課稅等級，但隨著營業額成長，合法合規的報稅才是經營的長遠之道。</p>
+<ul class="lecture-list">
+<li>情境：網拍＋線上金流收款</li>
+<li>判斷：月銷售額落在哪個階段？有無缺進項？有無投 Meta 廣告？</li>
+<li>行動：依門檻登記→選申報方式→完成扣繳</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">政府與金流、網拍平台合作取得銷售數據；達營業稅標準未設立屬漏稅，會補稅並輔導設立。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">剛創業未達門檻 vs 成長後達標未登記，後者風險極高。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">不是全部漏開才會出事，部分銷售管道沒注意到同樣危險。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">金流數據可被國稅局勾稽</span>
+<span class="tag-chip chip-mint">達標未設立＝漏稅風險</span>
+<span class="tag-chip chip-amber">合法報稅才是長遠之道</span>
+</div>
+</div>
+<pre class="mermaid p-3 rounded bg-black mb-3">flowchart TD
+  A[網拍／金流交易] --&gt; B[平台與國稅局資料勾稽]
+  C[帳戶任四個月各逾 200 筆存入] --&gt; D[依法規調閱金融資料]
+  B --&gt; E{達營業稅標準卻未設立?}
+  D --&gt; E
+  E --&gt;|是| F[補稅＋輔導設立公司行號]
+  E --&gt;|否| G[持續合法申報]</pre>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我知道金流平台會與國稅局合作</li>
+<li>我了解達標未設立的漏稅後果</li>
+<li>我會隨營業額成長及時登記</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>規模變大時儘早做稅籍登記，不要賭「查不到」。</li>
+</ul></div>
+<div class="callout callout-warn mb-3"><div class="callout-label">警告</div><div class="callout-body">營業稅漏稅實務常補 5 罰 5，且可能追溯多年，罰則很重。</div></div>
+</article>
+<article class="chapter-block" id="ch-2">
+<div class="chapter-head">
+<span class="milestone-badge">站 2｜門檻判斷</span>
+<h2 class='chapter-title'><span class='chapter-num'>2</span>判斷一：銷售貨物的三階段門檻</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">營業稅</span>
+<span class="tag-chip chip-mint">起徵點</span>
+<span class="tag-chip chip-amber">小規模</span>
+<span class="tag-chip chip-coral">發票</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-2" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「判斷一：銷售貨物的三階段門檻」。首先，關於第一階段：免徵。如同單元 2-1 提到，銷售貨物依銷售額分三階段。第一階段：每月銷售貨物 8 萬以下（勞務 4 萬以下），規模較小可以免徵營業稅，不設立公司行號也沒關係。貨物：月銷 8 萬以下免徵。勞務：月 4 萬以下免徵。可不設立公司行號。接著，關於第二階段：應登記，可爭取小規模。第二階段：每個月銷售額超過起徵點但未達 20 萬，就應該要設立公司行號做稅籍登記。未達 20 萬有機會申請小規模營業人，而小規模營業人屬於查定課徵、免開統一發票，營業稅率 1%，每季收到營業稅單繳納完畢就可以。在起徵點到 20 萬之間若沒設立就被查到，會依過去銷售額補稅。超起徵點～未達 20 萬：應稅籍登記。小規模：查定課徵、稅率 1%、免開發票。未設立被查到：依過去銷售額補稅。另外，關於第三階段：必須開立發票。第三階段：每月銷售額超過 20 萬，依照規定就必須要開立發票。沒有開立發票就有營業稅漏稅的問題，營業稅漏稅會被補 5 罰 5，罰則很重。國稅局有權限可以追溯及過去 5 年，但實務上往回補多久的稅還是依照稅務員的判斷。月銷超過 20 萬：必須開立發票。未開立＝營業稅漏稅，補 5 罰 5。可追溯及過去 5 年（實務視判斷）。請特別記住這幾個重點。第1點，三階段：免徵→登記／小規模→開發票。第2點，小規模：1% 查定課徵。第3點，超 20 萬未開發票：補 5 罰 5。再來，關於實務提醒。小規模適用以實際核准為準；接近 20 萬時就要準備發票制度。聽完可以自問：我能說出三階段門檻數字；我知道小規模的特點（1%、免開發票）；我了解超 20 萬必須開發票。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">第一階段：免徵</h3>
+<p class="lh-lg body-p">如同單元 2-1 提到，銷售貨物依銷售額分三階段。第一階段：每月銷售貨物 8 萬以下（勞務 4 萬以下），規模較小可以免徵營業稅，不設立公司行號也沒關係。</p>
+<ul class="lecture-list">
+<li>貨物：月銷 8 萬以下免徵</li>
+<li>勞務：月 4 萬以下免徵</li>
+<li>可不設立公司行號</li>
+</ul>
+<h3 class="subhead">第二階段：應登記，可爭取小規模</h3>
+<p class="lh-lg body-p">第二階段：每個月銷售額超過起徵點但未達 20 萬，就應該要設立公司行號做稅籍登記。未達 20 萬有機會申請小規模營業人，而小規模營業人屬於查定課徵、免開統一發票，營業稅率 1%，每季收到營業稅單繳納完畢就可以。</p>
+<p class="lh-lg body-p">在起徵點到 20 萬之間若沒設立就被查到，會依過去銷售額補稅。</p>
+<ul class="lecture-list">
+<li>超起徵點～未達 20 萬：應稅籍登記</li>
+<li>小規模：查定課徵、稅率 1%、免開發票</li>
+<li>未設立被查到：依過去銷售額補稅</li>
+</ul>
+<h3 class="subhead">第三階段：必須開立發票</h3>
+<p class="lh-lg body-p">第三階段：每月銷售額超過 20 萬，依照規定就必須要開立發票。沒有開立發票就有營業稅漏稅的問題，營業稅漏稅會被補 5 罰 5，罰則很重。國稅局有權限可以追溯及過去 5 年，但實務上往回補多久的稅還是依照稅務員的判斷。</p>
+<ul class="lecture-list">
+<li>月銷超過 20 萬：必須開立發票</li>
+<li>未開立＝營業稅漏稅，補 5 罰 5</li>
+<li>可追溯及過去 5 年（實務視判斷）</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">貨物銷售三階段——8 萬以下免徵；超起徵點～20 萬應登記可小規模；超過 20 萬必須開發票。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">門檻是「應不應該登記／開發票」的決策點，不是營業額漂亮數字。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">接近 20 萬時就要準備發票制度；小規模適用以實際核准為準。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">三階段：免徵→登記／小規模→開發票</span>
+<span class="tag-chip chip-mint">小規模：1% 查定課徵</span>
+<span class="tag-chip chip-amber">超 20 萬未開發票：補 5 罰 5</span>
+</div>
+</div>
+<div class="table-responsive mb-3"><table class="table table-dark table-striped table-bordered"><thead><tr><th>階段</th><th>月銷售額（貨物）</th><th>登記／發票</th><th>稅務重點</th></tr></thead><tbody><tr><td>一</td><td>8 萬以下（勞務 4 萬以下）</td><td>可不設立</td><td>免徵營業稅</td></tr><tr><td>二</td><td>超起徵點～未達 20 萬</td><td>應稅籍登記；可爭取小規模</td><td>小規模查定課徵、稅率 1%、免開發票</td></tr><tr><td>三</td><td>超過 20 萬</td><td>必須開立發票</td><td>未開立＝營業稅漏稅，罰則重</td></tr></tbody></table></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我能說出三階段門檻數字</li>
+<li>我知道小規模的特點（1%、免開發票）</li>
+<li>我了解超 20 萬必須開發票</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>小規模適用以實際核准為準；接近 20 萬時就要準備發票制度。</li>
+</ul></div>
+</article>
+<article class="chapter-block" id="ch-3">
+<div class="chapter-head">
+<span class="milestone-badge">站 3｜查核判斷</span>
+<h2 class='chapter-title'><span class='chapter-num'>3</span>判斷二：帳戶交易監控——不只靠平台</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">金融帳戶</span>
+<span class="tag-chip chip-mint">200筆</span>
+<span class="tag-chip chip-amber">資料調閱</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-3" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「判斷二：帳戶交易監控——不只靠平台」。首先，關於平台以外還有帳戶監控。除了線上金流平台交易紀錄可以被政府調閱之外，政府也可以調查一些私下的網拍交易。如果同一個金融帳戶（全年內）任四個月存入超過 200 筆，也會要求銀行提供資料。所以如果月營業額達稅籍登記標準但尚未做稅籍登記而持續收款的，也很容易被查到。任四個月各逾 200 筆存入→銀行須提供資料。私下網拍交易也可能被勾稽。達標未登記持續收款→高風險。接著，關於依法規授權，非任意調閱。政府並不是可以任意地調閱大家的資料，而是由法規授權，依照法規要求金融機構提供相關資料。了解這個機制，有助於網拍業者評估「未登記持續收款」的風險。調閱有法規授權依據。不是國稅局「想看就看」。但達標未登記的風險仍然很高。請特別記住這幾個重點。第1點，平台＋帳戶雙重查核管道。第2點，200 筆／月×4 是重要門檻。第3點，達標未登記風險極高。另外，關於實務提醒。不要以為不走平台就安全，高頻存入同樣會觸發。聽完可以自問：我知道帳戶交易也可能被監控；我了解 200 筆／月×4 的門檻；我會在達標時及時登記。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">平台以外還有帳戶監控</h3>
+<p class="lh-lg body-p">除了線上金流平台交易紀錄可以被政府調閱之外，政府也可以調查一些私下的網拍交易。如果同一個金融帳戶（全年內）任四個月存入超過 200 筆，也會要求銀行提供資料。</p>
+<p class="lh-lg body-p">所以如果月營業額達稅籍登記標準但尚未做稅籍登記而持續收款的，也很容易被查到。</p>
+<ul class="lecture-list">
+<li>任四個月各逾 200 筆存入→銀行須提供資料</li>
+<li>私下網拍交易也可能被勾稽</li>
+<li>達標未登記持續收款→高風險</li>
+</ul>
+<h3 class="subhead">依法規授權，非任意調閱</h3>
+<p class="lh-lg body-p">政府並不是可以任意地調閱大家的資料，而是由法規授權，依照法規要求金融機構提供相關資料。了解這個機制，有助於網拍業者評估「未登記持續收款」的風險。</p>
+<ul class="lecture-list">
+<li>調閱有法規授權依據</li>
+<li>不是國稅局「想看就看」</li>
+<li>但達標未登記的風險仍然很高</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">除平台金流外，帳戶任四個月各逾 200 筆存入也可能觸發資料調閱；達標未登記持續收款很容易被查到。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">只靠「不走平台」無法規避查核；私下交易＋高頻存入同樣有風險。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">調閱有法規授權，網拍業者應假設達標後很難隱藏。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">平台＋帳戶雙重查核管道</span>
+<span class="tag-chip chip-mint">200 筆／月×4 是重要門檻</span>
+<span class="tag-chip chip-amber">達標未登記風險極高</span>
+</div>
+</div>
+<div class="callout callout-fact mb-3"><div class="callout-label">✦ 平台金流</div><div class="callout-body">金流／網拍平台與國稅局合作，銷售數據可被勾稽。</div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我知道帳戶交易也可能被監控</li>
+<li>我了解 200 筆／月×4 的門檻</li>
+<li>我會在達標時及時登記</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>不要以為不走平台就安全，高頻存入同樣會觸發。</li>
+</ul></div>
+</article>
+<article class="chapter-block" id="ch-4">
+<div class="chapter-head">
+<span class="milestone-badge">站 4｜進項判斷</span>
+<h2 class='chapter-title'><span class='chapter-num'>4</span>判斷三：國外進貨缺進項——進銷差過大</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">國外進貨</span>
+<span class="tag-chip chip-mint">缺進項</span>
+<span class="tag-chip chip-amber">低報進口</span>
+<span class="tag-chip chip-coral">進銷差</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-4" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「判斷三：國外進貨缺進項——進銷差過大」。首先，關於網拍最常見：缺乏進項。網拍業者在稅務上最常遇到的問題就是缺乏進項。貨源是從國外（自行帶貨、沒有申報）可能就缺乏國內可以列為費用的憑證，有可能也會遇到低報進口，造成進項短缺的情形。如果你因為貨物從國外進口（沒申報或低報）缺乏進項單據，這時候可能就會造成進銷項的差距很大。國外自行帶貨未申報→缺國內憑證。低報進口→進項更少。進銷差過大→查帳時營利所得顯得很高。接著，關於查帳 vs 實際利潤的落差。營所稅使用查帳申報的話，你算起來營利所得會很多，但其實沒有那麼多，只是因為你沒有單據可以足夠證明你的支出。低報進口就是這個東西價值比較高，但進貨的時候為了降低關稅而低報價值，這都會導致進項變少、進銷差更大，比較容易被抽查。查帳申報：缺單據→帳面營利偏高。低報進口：省關稅→進項更少→更易被抽查。問題根源：帳務不完整，不是真的賺那麼多。請特別記住這幾個重點。第1點，缺進項是網拍最常見問題。第2點，低報進口加劇進銷差。第3點，查帳時帳面營利可能遠高於實際。另外，關於實務提醒。低報進口為降關稅，往往換來進項短缺與抽查風險。聽完可以自問：我了解國外進貨缺進項的原因；我知道低報進口會加劇進銷差；我評估自己的進項單據是否完整。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">網拍最常見：缺乏進項</h3>
+<p class="lh-lg body-p">網拍業者在稅務上最常遇到的問題就是缺乏進項。貨源是從國外（自行帶貨、沒有申報）可能就缺乏國內可以列為費用的憑證，有可能也會遇到低報進口，造成進項短缺的情形。</p>
+<p class="lh-lg body-p">如果你因為貨物從國外進口（沒申報或低報）缺乏進項單據，這時候可能就會造成進銷項的差距很大。</p>
+<ul class="lecture-list">
+<li>國外自行帶貨未申報→缺國內憑證</li>
+<li>低報進口→進項更少</li>
+<li>進銷差過大→查帳時營利所得顯得很高</li>
+</ul>
+<h3 class="subhead">查帳 vs 實際利潤的落差</h3>
+<p class="lh-lg body-p">營所稅使用查帳申報的話，你算起來營利所得會很多，但其實沒有那麼多，只是因為你沒有單據可以足夠證明你的支出。低報進口就是這個東西價值比較高，但進貨的時候為了降低關稅而低報價值，這都會導致進項變少、進銷差更大，比較容易被抽查。</p>
+<ul class="lecture-list">
+<li>查帳申報：缺單據→帳面營利偏高</li>
+<li>低報進口：省關稅→進項更少→更易被抽查</li>
+<li>問題根源：帳務不完整，不是真的賺那麼多</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">國外進貨未申報或低報→缺進項單據→進銷差過大；查帳申報時帳面營利會顯得偏高。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">缺單據≠真的高獲利，而是無法證明支出。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">低報進口省關稅，往往換來進項短缺與抽查風險。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">缺進項是網拍最常見問題</span>
+<span class="tag-chip chip-mint">低報進口加劇進銷差</span>
+<span class="tag-chip chip-amber">查帳時帳面營利可能遠高於實際</span>
+</div>
+</div>
+<div class="row g-3 mb-3"><div class="col-md-6"><div class="card h-100 tip-card accent-cyan"><div class="card-header">有完整進項</div><div class="card-body"><ul class="mb-0"><li>查帳營利接近實際</li><li>進銷差合理</li><li>支出有憑證佐證</li><li>—</li></ul></div></div></div><div class="col-md-6"><div class="card h-100 tip-card accent-mint"><div class="card-header">缺進項／低報進口</div><div class="card-body"><ul class="mb-0"><li>查帳營利顯得偏高</li><li>進銷差過大、易被抽查</li><li>無法證明支出→帳務不完整</li><li>低報進口省關稅但加劇風險</li></ul></div></div></div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我了解國外進貨缺進項的原因</li>
+<li>我知道低報進口會加劇進銷差</li>
+<li>我評估自己的進項單據是否完整</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>低報進口為降關稅，往往換來進項短缺與抽查風險。</li>
+</ul></div>
+</article>
+<article class="chapter-block" id="ch-5">
+<div class="chapter-head">
+<span class="milestone-badge">站 5｜申報行動</span>
+<h2 class='chapter-title'><span class='chapter-num'>5</span>行動方案：書審省稅 vs 調帳懲罰性稅率</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">書審</span>
+<span class="tag-chip chip-mint">調帳</span>
+<span class="tag-chip chip-amber">同業利潤標準</span>
+<span class="tag-chip chip-coral">懲罰性稅率</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-5" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「行動方案：書審省稅 vs 調帳懲罰性稅率」。首先，關於缺進項時：建議書審申報。如果網拍遇到缺進項單據的情況，會建議使用書審申報，營所稅會比較划算。網拍老闆如果都是國外進貨、沒辦法拿出進項單據，使用書審申報營所稅會比較節稅。缺進項→書審通常較划算。依純益率計算，適合難取證的國外進貨。書審不是「永遠最安全」。接著，關於潛在風險：被調帳的懲罰性稅率。但要記得因為缺乏單據，等於你的帳務不完整，被國稅局要求調帳時且沒有辦法提供帳冊，也就會依同業利潤標準淨利率——也就是在單元 4-2 提到的懲罰性稅率來課稅。因此請記得保留「同業利潤標準淨利率」與「擴大書審純益率」的稅額差距，避免到時候補稅的時候繳不出來。被調帳＋無帳冊→同業利潤標準淨利率課稅。這是懲罰性稅率，稅額可能大幅跳升。行動：保留兩種純益率的稅額差距、預留現金。請特別記住這幾個重點。第1點，缺進項→書審較省。第2點，調帳→可能懲罰性稅率。第3點，保留兩種純益率稅額差距。另外，關於實務提醒。書審不是「永遠最安全」，而是缺單據下的權衡。聽完可以自問：我知道缺進項時書審較划算；我了解調帳的懲罰性稅率風險；我會保留同業標準與書審純益率的稅額差距。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">缺進項時：建議書審申報</h3>
+<p class="lh-lg body-p">如果網拍遇到缺進項單據的情況，會建議使用書審申報，營所稅會比較划算。網拍老闆如果都是國外進貨、沒辦法拿出進項單據，使用書審申報營所稅會比較節稅。</p>
+<ul class="lecture-list">
+<li>缺進項→書審通常較划算</li>
+<li>依純益率計算，適合難取證的國外進貨</li>
+<li>書審不是「永遠最安全」</li>
+</ul>
+<h3 class="subhead">潛在風險：被調帳的懲罰性稅率</h3>
+<p class="lh-lg body-p">但要記得因為缺乏單據，等於你的帳務不完整，被國稅局要求調帳時且沒有辦法提供帳冊，也就會依同業利潤標準淨利率——也就是在單元 4-2 提到的懲罰性稅率來課稅。</p>
+<p class="lh-lg body-p">因此請記得保留「同業利潤標準淨利率」與「擴大書審純益率」的稅額差距，避免到時候補稅的時候繳不出來。</p>
+<ul class="lecture-list">
+<li>被調帳＋無帳冊→同業利潤標準淨利率課稅</li>
+<li>這是懲罰性稅率，稅額可能大幅跳升</li>
+<li>行動：保留兩種純益率的稅額差距、預留現金</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">缺進項建議書審申報，營所稅通常較划算；但被調帳又無帳冊，可能改依同業利潤標準淨利率（懲罰性稅率）課稅。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">書審是缺單據下的權衡，不是零風險；要保留同業利潤標準與擴大書審純益率的稅額差距。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">避免補稅時繳不出來，平時就要評估並預留。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">缺進項→書審較省</span>
+<span class="tag-chip chip-mint">調帳→可能懲罰性稅率</span>
+<span class="tag-chip chip-amber">保留兩種純益率稅額差距</span>
+</div>
+</div>
+<div class="row g-3 mb-3"><div class="col-md-6"><div class="card h-100 tip-card accent-cyan"><div class="card-header">缺進項時走書審</div><div class="card-body"><ul class="mb-0"><li>營所稅通常較划算</li><li>適合國外進貨難以取證者</li><li>仍應評估稅額差距並留現金</li></ul></div></div></div><div class="col-md-6"><div class="card h-100 tip-card accent-mint"><div class="card-header">被調帳又無帳冊</div><div class="card-body"><ul class="mb-0"><li>可能改依同業利潤標準淨利率課稅</li><li>等於面臨懲罰性稅率風險</li><li>低報進口會加大進銷差、提高抽查機率</li></ul></div></div></div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我知道缺進項時書審較划算</li>
+<li>我了解調帳的懲罰性稅率風險</li>
+<li>我會保留同業標準與書審純益率的稅額差距</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>書審不是「永遠最安全」，而是缺單據下的權衡。</li>
+<li>同業利潤標準淨利率細節可參考單元 4-2。</li>
+</ul></div>
+<div class="callout callout-warn mb-3"><div class="callout-label">警告</div><div class="callout-body">被調帳時若無帳冊，懲罰性稅率可能讓補稅金額遠超預期。</div></div>
+</article>
+<article class="chapter-block" id="ch-6">
+<div class="chapter-head">
+<span class="milestone-badge">站 6｜扣繳行動</span>
+<h2 class='chapter-title'><span class='chapter-num'>6</span>行動方案：Meta 廣告費扣繳申報</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">Meta</span>
+<span class="tag-chip chip-mint">Facebook</span>
+<span class="tag-chip chip-amber">扣繳</span>
+<span class="tag-chip chip-coral">廣告費</span>
+<span class="tag-chip chip-violet">代理商</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-6" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「行動方案：Meta 廣告費扣繳申報」。首先，關於為何店家成了扣繳義務人。網拍業者大多都會投放廣告來輔助銷售，最多人使用的廣告投放平台就是 Meta（臉書）。因為 Meta 沒有在臺灣設立公司，所以使用臉書廣告服務的店家就成了 Meta 的扣繳義務人，需要幫 Meta 在臺灣申報繳稅。國外服務原本的扣繳率是 20%，但比較多人使用的服務經過申請，可以計算淨利率跟利潤貢獻度後有所調整。Meta 廣告目前（2024）需繳納 6% 扣繳稅額，2025 開始為 3%。Meta 未在台設公司→店家當扣繳義務人。一般國外服務扣繳率可達 20%。接著，關於申報時點、認列與替代方案。須在信用卡扣帳日的 10 天內完成申報與繳稅。收到 Meta 刷卡的 Invoice 後，以已給付金額回推申報總額，算出應扣繳金額。完成申報後這筆廣告費才能認列成公司費用；。若覺得麻煩，可外包廣告代理商，直接拿廣告公司的服務發票，廣告費申報由代理商處理。以政府角度，對國外服務課較高稅也是希望優先考慮國內同類服務。扣帳日 10 天內：申報＋繳稅。請特別記住這幾個重點。第1點，店家＝Meta 扣繳義務人。第2點，扣帳日 10 天內申報繳稅。第3點，完成扣繳才能認列費用。另外，關於實務提醒。以 Invoice 與扣帳日為節點建立提醒，避免逾 10 天。聽完可以自問：我知道 Meta 廣告扣繳的稅率與時限；我會以 Invoice 回推扣繳金額；我了解可走代理商簡化流程。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">為何店家成了扣繳義務人</h3>
+<p class="lh-lg body-p">網拍業者大多都會投放廣告來輔助銷售，最多人使用的廣告投放平台就是 Meta（臉書）。因為 Meta 沒有在臺灣設立公司，所以使用臉書廣告服務的店家就成了 Meta 的扣繳義務人，需要幫 Meta 在臺灣申報繳稅。</p>
+<p class="lh-lg body-p">國外服務原本的扣繳率是 20%，但比較多人使用的服務經過申請，可以計算淨利率跟利潤貢獻度後有所調整。Meta 廣告目前（2024）需繳納 6% 扣繳稅額，2025 開始為 3%。</p>
+<ul class="lecture-list">
+<li>Meta 未在台設公司→店家當扣繳義務人</li>
+<li>一般國外服務扣繳率可達 20%</li>
+<li>Meta 廣告：2024 為 6%、2025 起 3%</li>
+</ul>
+<h3 class="subhead">申報時點、認列與替代方案</h3>
+<p class="lh-lg body-p">須在信用卡扣帳日的 10 天內完成申報與繳稅。收到 Meta 刷卡的 Invoice 後，以已給付金額回推申報總額，算出應扣繳金額。完成申報後這筆廣告費才能認列成公司費用；沒申報在帳上就跟公司無關。</p>
+<p class="lh-lg body-p">若覺得麻煩，可外包廣告代理商，直接拿廣告公司的服務發票，廣告費申報由代理商處理。以政府角度，對國外服務課較高稅也是希望優先考慮國內同類服務。</p>
+<ul class="lecture-list">
+<li>扣帳日 10 天內：申報＋繳稅</li>
+<li>完成扣繳→廣告費才可認列</li>
+<li>替代：走代理商拿國內發票</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">Meta 未在台設公司，店家須幫其扣繳申報；2024 為 6%、2025 起 3%，扣帳日 10 天內完成。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">自行扣繳 vs 走代理商拿發票，後者較省事但可能有代理商加價。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">沒完成扣繳申報，廣告費可能無法認列為公司費用。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">店家＝Meta 扣繳義務人</span>
+<span class="tag-chip chip-mint">扣帳日 10 天內申報繳稅</span>
+<span class="tag-chip chip-amber">完成扣繳才能認列費用</span>
+</div>
+</div>
+<div class="row g-3 mb-3"><div class="col-md-4"><div class="card h-100 tip-card accent-cyan"><div class="card-body"><h3 class="h6 card-title">為何要扣繳</h3><p class="card-text small mb-0">Meta 未在臺設公司，廣告費由臺灣店家當扣繳義務人。</p></div></div></div><div class="col-md-4"><div class="card h-100 tip-card accent-mint"><div class="card-body"><h3 class="h6 card-title">稅率時點</h3><p class="card-text small mb-0">2024 為 6%、2025 起 3%；扣帳日 10 天內申報繳稅。</p></div></div></div><div class="col-md-4"><div class="card h-100 tip-card accent-amber"><div class="card-body"><h3 class="h6 card-title">認列前提</h3><p class="card-text small mb-0">完成扣繳申報後，廣告費才能列公司費用。</p></div></div></div><div class="col-md-4"><div class="card h-100 tip-card accent-coral"><div class="card-body"><h3 class="h6 card-title">替代作法</h3><p class="card-text small mb-0">改走廣告代理商，拿國內發票、由對方處理申報。</p></div></div></div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我知道 Meta 廣告扣繳的稅率與時限</li>
+<li>我會以 Invoice 回推扣繳金額</li>
+<li>我了解可走代理商簡化流程</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>以 Invoice 與扣帳日為節點建立提醒，避免逾 10 天。</li>
+<li>扣繳稅率可能調整，實務以當年度核定／公告為準。</li>
+</ul></div>
+<div class="callout callout-warn mb-3"><div class="callout-label">警告</div><div class="callout-body">沒幫 Meta 完成扣繳申報，廣告費可能無法認列為公司費用。</div></div>
+</article>
+</div>
+<div class="tab-pane fade" id="tab-quick" role="tabpanel">
+<div class="row g-3">
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 1 章</div>
+<h3 class="h6">案例情境：網拍電商的金流透明化</h3>
+<ul class='mb-0 small'>
+<li>金流數據可被國稅局勾稽</li>
+<li>達標未設立＝漏稅風險</li>
+<li>合法報稅才是長遠之道</li>
+</ul>
+<a class="small" href="#ch-1" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 2 章</div>
+<h3 class="h6">判斷一：銷售貨物的三階段門檻</h3>
+<ul class='mb-0 small'>
+<li>三階段：免徵→登記／小規模→開發票</li>
+<li>小規模：1% 查定課徵</li>
+<li>超 20 萬未開發票：補 5 罰 5</li>
+</ul>
+<a class="small" href="#ch-2" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 3 章</div>
+<h3 class="h6">判斷二：帳戶交易監控——不只靠平台</h3>
+<ul class='mb-0 small'>
+<li>平台＋帳戶雙重查核管道</li>
+<li>200 筆／月×4 是重要門檻</li>
+<li>達標未登記風險極高</li>
+</ul>
+<a class="small" href="#ch-3" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 4 章</div>
+<h3 class="h6">判斷三：國外進貨缺進項——進銷差過大</h3>
+<ul class='mb-0 small'>
+<li>缺進項是網拍最常見問題</li>
+<li>低報進口加劇進銷差</li>
+<li>查帳時帳面營利可能遠高於實際</li>
+</ul>
+<a class="small" href="#ch-4" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 5 章</div>
+<h3 class="h6">行動方案：書審省稅 vs 調帳懲罰性稅率</h3>
+<ul class='mb-0 small'>
+<li>缺進項→書審較省</li>
+<li>調帳→可能懲罰性稅率</li>
+<li>保留兩種純益率稅額差距</li>
+</ul>
+<a class="small" href="#ch-5" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 6 章</div>
+<h3 class="h6">行動方案：Meta 廣告費扣繳申報</h3>
+<ul class='mb-0 small'>
+<li>店家＝Meta 扣繳義務人</li>
+<li>扣帳日 10 天內申報繳稅</li>
+<li>完成扣繳才能認列費用</li>
+</ul>
+<a class="small" href="#ch-6" data-jump-lecture>看完整講義</a>
+</div></div></div>
+</div></div>
+<div class="tab-pane fade" id="tab-quiz" role="tabpanel">
+<section class="quiz-wrap" aria-label="課後測驗">
+<div class="section-kicker">自我檢核</div>
+<h2 class="section-title">課後測驗</h2>
+<p class="quiz-intro">完成講義後自我檢核。答案預設以密碼樣式（圓點）隱藏，點「顯示答案」才揭曉。題型含：知識點、關鍵數據與辨別點。</p>
+<div class="quiz-toolbar">
+<button type="button" class="btn btn-sm quiz-tool-btn" id="quiz-reveal-all">全部顯示答案</button><button type="button" class="btn btn-sm quiz-tool-btn" id="quiz-hide-all">全部隱藏答案</button>
+<span class="quiz-count">共 16 題・知識點 8・關鍵數據 8</span>
+</div>
+<ol class="quiz-list">
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q1</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">案例情境：網拍電商的金流透明化</span>
+</div>
+<p class="quiz-q">關於「案例情境：網拍電商的金流透明化」，本課的關鍵知識點是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>金流數據可被國稅局勾稽</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 1 章「案例情境：網拍電商的金流透明化」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q2</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">重點：貨物銷售三階段——</span>
+</div>
+<p class="quiz-q">關鍵數據辨別：與「重點：貨物銷售三階段——」相關的數字／區間是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>8萬</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 2 章「判斷一：銷售貨物的三階段門檻」的關鍵數據。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q3</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">案例情境：網拍電商的金流透明化</span>
+</div>
+<p class="quiz-q">關於「案例情境：網拍電商的金流透明化」，本課的關鍵知識點是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>達標未設立＝漏稅風險</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 1 章「案例情境：網拍電商的金流透明化」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q4</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">超起徵點～</span>
+</div>
+<p class="quiz-q">關鍵數據辨別：與「超起徵點～」相關的數字／區間是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>20萬</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 2 章「判斷一：銷售貨物的三階段門檻」的關鍵數據。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q5</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">案例情境：網拍電商的金流透明化</span>
+</div>
+<p class="quiz-q">關於「案例情境：網拍電商的金流透明化」，本課的關鍵知識點是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>合法報稅才是長遠之道</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 1 章「案例情境：網拍電商的金流透明化」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q6</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">以下（勞務</span>
+</div>
+<p class="quiz-q">關鍵數據辨別：與「以下（勞務」相關的數字／區間是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>4萬</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 2 章「判斷一：銷售貨物的三階段門檻」的關鍵數據。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q7</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">判斷一：銷售貨物的三階段門檻</span>
+</div>
+<p class="quiz-q">請寫出「三階段：免徵」相關的完整對照／流程。</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>三階段：免徵→登記／小規模→開發票</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 2 章「判斷一：銷售貨物的三階段門檻」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q8</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">營業稅率</span>
+</div>
+<p class="quiz-q">關鍵數據辨別：與「營業稅率」相關的數字／區間是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>1%</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 2 章「判斷一：銷售貨物的三階段門檻」的關鍵數據。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q9</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">判斷一：銷售貨物的三階段門檻</span>
+</div>
+<p class="quiz-q">「小規模」的正確關鍵表述是什麼？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>小規模：1% 查定課徵</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 2 章「判斷一：銷售貨物的三階段門檻」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q10</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">平台金流</span>
+</div>
+<p class="quiz-q">關鍵辨別點：「平台金流」應如何理解？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>金流／網拍平台與國稅局合作，銷售數據可被勾稽。</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 3 章「判斷二：帳戶交易監控——不只靠平台」視覺重點／辨別點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q11</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">判斷一：銷售貨物的三階段門檻</span>
+</div>
+<p class="quiz-q">「超 20 萬未開發票」的正確關鍵表述是什麼？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>超 20 萬未開發票：補 5 罰 5</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 2 章「判斷一：銷售貨物的三階段門檻」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q12</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">帳戶監控</span>
+</div>
+<p class="quiz-q">關鍵辨別點：「帳戶監控」應如何理解？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>同一帳戶全年任四個月存入超過 200 筆，銀行須提供資料。</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 3 章「判斷二：帳戶交易監控——不只靠平台」視覺重點／辨別點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q13</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">判斷一：銷售貨物的三階段・檢核</span>
+</div>
+<p class="quiz-q">學習檢核：完成本章後你應能做到哪一項？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>我能說出三階段門檻數字</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 2 章學習檢核。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q14</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">法規授權</span>
+</div>
+<p class="quiz-q">關鍵辨別點：「法規授權」應如何理解？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>調閱非任意為之，但達標未登記仍極易被查到。</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 3 章「判斷二：帳戶交易監控——不只靠平台」視覺重點／辨別點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q15</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">判斷二：帳戶交易監控——不只靠平台</span>
+</div>
+<p class="quiz-q">關於「判斷二：帳戶交易監控——不只靠平台」，本課的關鍵知識點是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>平台＋帳戶雙重查核管道</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>出自第 3 章「判斷二：帳戶交易監控——不只靠平台」關鍵知識點。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q16</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">對照辨別</span>
+</div>
+<p class="quiz-q">對照辨別：當情況是「查帳營利接近實際」時，對應重點是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>查帳營利顯得偏高</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>第 4 章「判斷三：國外進貨缺進項——進銷差過大」compare 對照。</div>
+</li>
+</ol>
+</section></div>
+</div></div>
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script>
+window.markmap = {
+  autoLoader: {
+    manual: true,
+    toolbar: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18.11"></script>
+<script>
+try {
+  if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "loose" });
+} catch (e) {}
+(function(){
+  function setReveal(box, btn, explain, show){
+    if(!box || !btn) return;
+    box.classList.toggle('is-masked', !show);
+    btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+    btn.textContent = show ? '隱藏答案' : '顯示答案';
+    if(explain) explain.classList.toggle('is-hidden', !show);
+  }
+  document.querySelectorAll('[data-reveal-answer]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const item = btn.closest('[data-quiz-item]');
+      const box = item && item.querySelector('[data-secret-box]');
+      const explain = item && item.querySelector('[data-quiz-explain]');
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      setReveal(box, btn, explain, show);
+    });
+  });
+  const allShow = document.getElementById('quiz-reveal-all');
+  const allHide = document.getElementById('quiz-hide-all');
+  if(allShow) allShow.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-quiz-item]').forEach(item=>{
+      setReveal(item.querySelector('[data-secret-box]'), item.querySelector('[data-reveal-answer]'), item.querySelector('[data-quiz-explain]'), true);
+    });
+  });
+  if(allHide) allHide.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-quiz-item]').forEach(item=>{
+      setReveal(item.querySelector('[data-secret-box]'), item.querySelector('[data-reveal-answer]'), item.querySelector('[data-quiz-explain]'), false);
+    });
+  });
+  if(!window.Chart) return;
+  const colors=["#5eb0ff","#3ecf8e","#e6b35a","#f07178","#b48ef0","#5ad0e6"];
+  document.querySelectorAll(".chart-box").forEach(box=>{
+    const canvas=box.querySelector("canvas");
+    const cfgEl=box.querySelector(".chart-config");
+    if(!canvas||!cfgEl) return;
+    let cfg; try{ cfg=JSON.parse(cfgEl.textContent); }catch(e){ return; }
+    const type=cfg.type||"bar";
+    const datasets=(cfg.datasets||[]).map((ds,i)=>({
+      ...ds,
+      backgroundColor: ds.backgroundColor || colors[i%colors.length]+"cc",
+      borderColor: ds.borderColor || colors[i%colors.length],
+      borderWidth: 1.5
+    }));
+    new Chart(canvas,{
+      type,
+      data:{ labels: cfg.labels||[], datasets },
+      options:{
+        responsive:true,
+        plugins:{ legend:{ labels:{ color:"#c9d7ea" } } },
+        scales:(type==="pie"||type==="doughnut")?{} : {
+          x:{ ticks:{ color:"#93a4b8" }, grid:{ color:"#2a3544" } },
+          y:{ ticks:{ color:"#93a4b8" }, grid:{ color:"#2a3544" } }
+        }
+      }
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  const body = document.body;
+  const key = 'tax-note-side-collapsed';
+  const backdrop = document.getElementById('side-backdrop');
+  const mq = window.matchMedia('(max-width:900px)');
+  const isMobile = () => mq.matches;
+  const edge = document.getElementById('edge-toggle');
+  const burger = document.getElementById('burger-fab');
+  function setCollapsed(v){
+    body.classList.toggle('side-collapsed', !!v);
+    try{ localStorage.setItem(key, v ? '1' : '0'); }catch(e){}
+  }
+  function openMobile(v){
+    body.classList.toggle('side-open-mobile', !!v);
+    if(backdrop) backdrop.hidden = !v;
+    body.style.overflow = v ? 'hidden' : '';
+    if(burger){
+      burger.setAttribute('aria-expanded', v ? 'true' : 'false');
+      burger.title = v ? '關閉目錄' : '打開目錄';
+      burger.setAttribute('aria-label', v ? '關閉目錄' : '打開目錄');
+    }
+  }
+  function syncViewport(){
+    if(isMobile()){
+      setCollapsed(true);
+      openMobile(false);
+    } else {
+      openMobile(false);
+      try{ setCollapsed(localStorage.getItem(key)==='1'); }
+      catch(e){ setCollapsed(false); }
+    }
+  }
+  syncViewport();
+  if(mq.addEventListener) mq.addEventListener('change', syncViewport);
+  else if(mq.addListener) mq.addListener(syncViewport);
+  if(edge) edge.addEventListener('click', ()=>{ if(isMobile()) openMobile(false); else setCollapsed(true); });
+  if(burger) burger.addEventListener('click', (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    if(isMobile()) openMobile(!body.classList.contains('side-open-mobile'));
+    else setCollapsed(false);
+  });
+  if(backdrop) backdrop.addEventListener('click', ()=> openMobile(false));
+
+  document.querySelectorAll('[data-nav-jump], [data-jump-lecture], .milestone-link, .path-card').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href')||'';
+      const hashIdx = href.indexOf('#');
+      if(hashIdx < 0) return;
+      const hash = href.slice(hashIdx);
+      const file = href.slice(0, hashIdx);
+      const cur = decodeURIComponent(location.pathname.split('/').pop()||'');
+      if(file && file !== cur && !hash.startsWith('#ch-') && !hash.startsWith('#sec-')) return;
+      if(file && file !== cur) return;
+      const btn = document.getElementById('tab-lecture-btn');
+      if(btn && window.bootstrap){
+        e.preventDefault();
+        bootstrap.Tab.getOrCreateInstance(btn).show();
+        if(isMobile()) openMobile(false);
+        setTimeout(()=>{ const t=document.querySelector(hash); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }, 160);
+      } else if(isMobile()) {
+        openMobile(false);
+      }
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function parsePayload(){
+    const el = document.getElementById('note-viz-data');
+    if(!el) return {};
+    try { return JSON.parse(el.textContent || '{}'); } catch(e){ return {}; }
+  }
+  const data = parsePayload();
+  const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+  const compares = Array.isArray(data.compares) ? data.compares : [];
+  const evolution = Array.isArray(data.evolution) ? data.evolution : [];
+  const outline = Array.isArray(data.outline) ? data.outline : [];
+  const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+  const edges = Array.isArray(data.edges) ? data.edges : [];
+  const charts = Array.isArray(data.charts) ? data.charts : [];
+  const mermaids = Array.isArray(data.mermaids) ? data.mermaids : [];
+
+  const state = {
+    ready: false,
+    echarts: [],
+    cy: null,
+    network: null,
+    timeline: null,
+    markmapSvg: null
+  };
+
+  function showEmpty(id, on){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('d-none', !on);
+  }
+  function short(s, n){
+    s = String(s||'');
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+  }
+  function isNarrow(){ return window.matchMedia('(max-width:767px)').matches; }
+  function tableH(desktop){ return isNarrow() ? Math.max(180, Math.min(260, Math.round(window.innerHeight*0.32))) + 'px' : desktop; }
+  function boxSize(el){
+    if(!el) return { w: 320, h: 240 };
+    const w = Math.max(el.clientWidth || el.offsetWidth || 0, 280);
+    const h = Math.max(el.clientHeight || el.offsetHeight || 0, 200);
+    return { w, h };
+  }
+  function chartsTabVisible(){
+    const pane = document.getElementById('tab-charts');
+    if(!pane) return true;
+    return pane.classList.contains('active') || pane.classList.contains('show');
+  }
+
+  function buildOutlineMd(){
+    let md = '# 講義大綱\n';
+    if(outline.length){
+      outline.forEach((o,i)=>{
+        const title = String(o.title||('節 '+(i+1))).replace(/\n/g,' ');
+        md += `\n## ${i+1}. ${title}`;
+        (o.kids||[]).forEach(k=>{
+          md += `\n- ${String(k).replace(/\n/g,' ')}`;
+        });
+      });
+    } else if(nodes.length){
+      nodes.forEach(n=>{ md += `\n## ${n.label||n.id}`; });
+    } else {
+      md += '\n## （尚無大綱）\n- 請見章節講義';
+    }
+    return md;
+  }
+
+  function waitMarkmapReady(){
+    return new Promise((resolve)=>{
+      const al = window.markmap && markmap.autoLoader;
+      if(!al){ resolve(false); return; }
+      if(al.ready && typeof al.ready.then === 'function'){
+        al.ready.then(()=>resolve(true)).catch(()=>resolve(!!al.renderAll));
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        n++;
+        const ok = !!(window.markmap && markmap.autoLoader && (markmap.autoLoader.render || markmap.autoLoader.renderAll));
+        if(ok || n > 50){ clearInterval(t); resolve(ok); }
+      }, 120);
+    });
+  }
+
+  async function renderMarkmap(){
+    const host = document.getElementById('viz-markmap');
+    if(!host) return;
+    const md = buildOutlineMd();
+    host.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'markmap';
+    const tpl = document.createElement('script');
+    tpl.type = 'text/template';
+    tpl.textContent = md;
+    el.appendChild(tpl);
+    host.appendChild(el);
+
+    const ok = await waitMarkmapReady();
+    const al = window.markmap && markmap.autoLoader;
+    if(!ok || !al){
+      host.innerHTML = '<p class="viz-empty">心智圖套件尚未載入完成，請重新整理頁面。</p>';
+      return;
+    }
+    try {
+      if(typeof al.render === 'function') await al.render(el);
+      else if(typeof al.renderAllUnder === 'function') await al.renderAllUnder(host);
+      else if(typeof al.renderAll === 'function') await al.renderAll();
+      // 強制 SVG 填滿容器
+      const svg = host.querySelector('svg');
+      if(svg){
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        state.markmapSvg = svg;
+      }
+      // 觸發 fit：模擬 resize
+      setTimeout(()=> window.dispatchEvent(new Event('resize')), 60);
+    } catch(e){
+      console.warn('markmap render', e);
+      host.innerHTML = '<p class="viz-empty">心智圖渲染失敗：' + String(e && e.message || e) + '</p>';
+    }
+  }
+
+  function fitAll(){
+    state.echarts.forEach(c=>{ try{ c.resize(); }catch(e){} });
+    if(state.cy){ try{ state.cy.resize(); state.cy.fit(undefined, 24); }catch(e){} }
+    if(state.network){ try{ state.network.redraw(); state.network.fit(); }catch(e){} }
+    if(state.timeline){ try{ state.timeline.redraw(); }catch(e){} }
+    if(window.Plotly){
+      document.querySelectorAll('#viz-plotly-timeline .js-plotly-plot, #viz-plotly-timeline').forEach(el=>{
+        try{ Plotly.Plots.resize(el); }catch(e){}
+      });
+    }
+    const host = document.getElementById('viz-markmap');
+    const svg = host && host.querySelector('svg');
+    if(svg){
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+    }
+    // D3 重畫交由 init 內的資料；窄螢幕時僅調整既有 svg 寬度
+    const d3svg = document.querySelector('#viz-d3-evolve svg');
+    if(d3svg){
+      const wrap = document.getElementById('viz-d3-evolve');
+      const { w } = boxSize(wrap);
+      d3svg.setAttribute('width', String(w));
+    }
+  }
+
+  function initViz(){
+    if(state.ready){ fitAll(); return; }
+    state.ready = true;
+
+    /* —— markmap —— */
+    renderMarkmap();
+
+    /* —— timeline —— */
+    if(timeline.length){
+      const rows = timeline.map(r=>({ when:r.when||r[0]||'', what:r.what||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-timeline')){
+        new Tabulator('#viz-tabulator-timeline', {
+          data: rows, layout:'fitDataStretch', height: tableH('220px'),
+          columns:[
+            {title:'時點', field:'when', minWidth:88, widthGrow:1, headerFilter: isNarrow()?false:'input'},
+            {title:'事件／規範重點', field:'what', minWidth:160, widthGrow:3, headerFilter: isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      if(window.Chart){
+        const ctx = document.getElementById('viz-chartjs-timeline');
+        if(ctx){
+          new Chart(ctx, {
+            type:'bar',
+            data:{
+              labels: rows.map(r=>short(r.when, isNarrow()?8:12)),
+              datasets:[{ label:'事件數', data: rows.map(()=>1), backgroundColor:'rgba(94,200,255,.55)' }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{ legend:{ labels:{ color:'#c9d7ea', boxWidth:12 } } },
+              scales:{
+                x:{ ticks:{ color:'#93a4b8', maxRotation:45, minRotation:0, autoSkip:true }, grid:{ color:'#2a3544' } },
+                y:{ ticks:{ color:'#93a4b8', stepSize:1 }, grid:{ color:'#2a3544' }, beginAtZero:true }
+              }
+            }
+          });
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-timeline');
+        if(el){
+          const chart = echarts.init(el, 'dark');
+          chart.setOption({
+            backgroundColor:'transparent',
+            grid:{ left:36, right:16, top:24, bottom: isNarrow()?64:40, containLabel:true },
+            tooltip:{ trigger:'axis' },
+            xAxis:{ type:'category', data: rows.map(r=>short(r.when, isNarrow()?8:14)), axisLabel:{ color:'#9fb0c6', hideOverlap:true } },
+            yAxis:{ type:'value', show:false },
+            series:[{
+              type:'line', smooth:true, symbolSize:10,
+              data: rows.map((_,i)=>i+1),
+              areaStyle:{ color:'rgba(94,200,255,.15)' },
+              lineStyle:{ color:'#5ec8ff' },
+              itemStyle:{ color:'#3ee0a2' }
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.vis && vis.Timeline){
+        const el = document.getElementById('viz-vis-timeline');
+        if(el){
+          const items = new vis.DataSet(rows.map((r,i)=>{
+            const y = String(r.when).match(/(19|20)\d{2}/);
+            const start = y ? (y[0]+'-01-01') : (`2020-0${(i%9)+1}-01`);
+            return { id:i+1, content: short(r.what, isNarrow()?22:40), start };
+          }));
+          state.timeline = new vis.Timeline(el, items, {
+            stack:true, horizontalScroll:true, zoomKey:'ctrlKey',
+            orientation:'top', margin:{ item:8 },
+            height: isNarrow() ? 200 : 240
+          });
+        }
+      }
+      if(window.Plotly){
+        const el = document.getElementById('viz-plotly-timeline');
+        if(el){
+          Plotly.newPlot(el, [{
+            type:'scatter', mode:'lines+markers',
+            x: rows.map(r=>r.when), y: rows.map((_,i)=>i+1),
+            text: rows.map(r=>r.what),
+            marker:{ color:'#5ec8ff', size:10 },
+            line:{ color:'#3ee0a2' }
+          }], {
+            paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+            font:{ color:'#c9d7ea', size: isNarrow()?11:12 },
+            margin:{ t:20,r:12,b: isNarrow()?70:40, l:36 },
+            yaxis:{ title:'序', gridcolor:'#2a3544' },
+            xaxis:{ gridcolor:'#2a3544', tickangle: isNarrow()?-35:0 }
+          }, {responsive:true, displayModeBar:false});
+        }
+      }
+    }
+
+    /* —— compare —— */
+    const firstCompare = compares[0] || null;
+    if(firstCompare){
+      const headers = firstCompare.headers || firstCompare[0] || [];
+      const body = firstCompare.rows || firstCompare[1] || [];
+      const fields = headers.map((h,i)=> 'c'+i);
+      const dataRows = body.map(r=>{
+        const o={}; fields.forEach((f,i)=>{ o[f]= (r&&r[i]!=null)? String(r[i]) : ''; }); return o;
+      });
+      if(window.Tabulator && document.getElementById('viz-tabulator-compare')){
+        new Tabulator('#viz-tabulator-compare', {
+          data: dataRows, layout:'fitDataStretch', height: tableH('240px'),
+          columns: headers.map((h,i)=>({
+            title:String(h), field:fields[i], minWidth:100, widthGrow:1,
+            headerFilter: isNarrow()?false:'input', formatter:'textarea'
+          }))
+        });
+      }
+      if(window.gridjs && document.getElementById('viz-gridjs-compare')){
+        new gridjs.Grid({
+          columns: headers.map(String),
+          data: body.map(r=> (r||[]).map(c=> String(c??''))),
+          search: !isNarrow(), sort: true,
+          pagination: { enabled:true, limit: isNarrow()?5:8 },
+          style: { table:{ 'font-size': isNarrow()?'12px':'13px' } }
+        }).render(document.getElementById('viz-gridjs-compare'));
+      }
+    }
+
+    /* —— evolution —— */
+    if(evolution.length){
+      const rows = evolution.map(r=>({ stage:r.stage||r[0]||'', content:r.content||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-evolve')){
+        new Tabulator('#viz-tabulator-evolve', {
+          data: rows, layout:'fitDataStretch', height: tableH('200px'),
+          columns:[
+            {title:'階段', field:'stage', minWidth:90, widthGrow:1, headerFilter:isNarrow()?false:'input'},
+            {title:'重點內容', field:'content', minWidth:140, widthGrow:3, headerFilter:isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      const mEl = document.getElementById('viz-mermaid-evolve');
+      if(mEl && window.mermaid){
+        const dir = isNarrow() ? 'TD' : 'LR';
+        let code = 'flowchart ' + dir + '\n';
+        rows.forEach((r,i)=>{
+          const id = 'S'+(i+1);
+          const label = short(r.stage, isNarrow()?14:18).replace(/"/g,"'");
+          code += `  ${id}["${label}"]\n`;
+          if(i>0) code += `  S${i} --> ${id}\n`;
+        });
+        mEl.removeAttribute('data-processed');
+        mEl.textContent = code;
+        try { mermaid.run({ nodes: [mEl] }); } catch(e){
+          try { mermaid.init(undefined, mEl); } catch(_e){}
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-evolve');
+        if(el){
+          const { w, h } = boxSize(el);
+          const chart = echarts.init(el, 'dark');
+          const n = rows.length || 1;
+          chart.setOption({
+            backgroundColor:'transparent',
+            tooltip:{ formatter: p => (p.data && (p.data.name + '<br/>' + (p.data.value||''))) || '' },
+            series:[{
+              type:'graph', layout:'none', roam:true,
+              label:{ show:true, color:'#e8eef7', fontSize: isNarrow()?10:12 },
+              edgeSymbol:['none','arrow'],
+              data: rows.map((r,i)=>({
+                name: short(r.stage, isNarrow()?10:12),
+                x: isNarrow() ? (w*0.5) : (40 + i * Math.max(70, (w-80)/Math.max(n-1,1))),
+                y: isNarrow() ? (30 + i * Math.max(42, (h-60)/Math.max(n-1,1))) : (h*0.45),
+                value: r.content
+              })),
+              links: rows.slice(1).map((_,i)=>({ source:i, target:i+1 }))
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.d3){
+        const el = document.getElementById('viz-d3-evolve');
+        if(el){
+          el.innerHTML = '';
+          const { w } = boxSize(el);
+          const height = Math.max(el.clientHeight || 240, 200);
+          const svg = d3.select(el).append('svg').attr('width', w).attr('height', height);
+          const root = { name:'演進', children: rows.map(r=>({ name: short(r.stage, isNarrow()?12:16), children:[{ name: short(r.content, isNarrow()?20:28) }] })) };
+          const hier = d3.hierarchy(root);
+          d3.tree().size([height-36, Math.max(120, w-120)])(hier);
+          const g = svg.append('g').attr('transform','translate(56,18)');
+          g.selectAll('.link').data(hier.links()).enter().append('path')
+            .attr('class','link').attr('fill','none')
+            .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+          const node = g.selectAll('.node').data(hier.descendants()).enter().append('g')
+            .attr('class','node').attr('transform', d=>`translate(${d.y},${d.x})`);
+          node.append('circle').attr('r',4);
+          node.append('text').attr('dy',3).attr('x', d=> d.children? -8:8)
+            .attr('text-anchor', d=> d.children? 'end':'start').text(d=>d.data.name);
+        }
+      }
+    }
+
+    /* —— graphs —— */
+    if(document.getElementById('viz-cytoscape') || document.getElementById('viz-vis-network')){
+      const gNodes = nodes.length ? nodes : outline.map((o,i)=>({ id:'n'+i, label: short(o.title||('節'+(i+1)), 18) }));
+      const gEdges = edges.length ? edges : gNodes.slice(1).map((n,i)=>({ from: gNodes[i].id, to: n.id }));
+      if(window.cytoscape && gNodes.length && document.getElementById('viz-cytoscape')){
+        state.cy = cytoscape({
+          container: document.getElementById('viz-cytoscape'),
+          elements: [
+            ...gNodes.map(n=>({ data:{ id:String(n.id), label:n.label||String(n.id) } })),
+            ...gEdges.map((e,i)=>({ data:{ id:'e'+i, source:String(e.from||e.source), target:String(e.to||e.target) } }))
+          ],
+          style:[
+            { selector:'node', style:{ 'background-color':'#5ec8ff', 'label':'data(label)', 'color':'#e8eef7', 'font-size': isNarrow()?'9px':'10px', 'text-wrap':'wrap', 'text-max-width': isNarrow()?64:80 } },
+            { selector:'edge', style:{ 'width':2, 'line-color':'#3ee0a2', 'target-arrow-color':'#3ee0a2', 'target-arrow-shape':'triangle', 'curve-style':'bezier' } }
+          ],
+          layout:{ name:'cose', animate:false, padding:16 }
+        });
+      }
+      if(window.vis && vis.Network && gNodes.length && document.getElementById('viz-vis-network')){
+        const el = document.getElementById('viz-vis-network');
+        const ns = new vis.DataSet(gNodes.map(n=>({ id:n.id, label:n.label||String(n.id) })));
+        const es = new vis.DataSet(gEdges.map((e,i)=>({ id:i, from:e.from||e.source, to:e.to||e.target })));
+        state.network = new vis.Network(el, { nodes:ns, edges:es }, {
+          nodes:{ shape:'dot', size: isNarrow()?11:14, font:{ color:'#e8eef7', size: isNarrow()?11:13 }, color:{ background:'#5ec8ff', border:'#3ee0a2' } },
+          edges:{ color:'#6ee7f5', arrows:'to' },
+          physics:{ stabilization:true },
+          interaction:{ zoomView:true, dragView:true }
+        });
+      }
+    }
+
+    /* —— extra（HTML 已為每張圖建獨立格） —— */
+    if(charts.length && window.Chart){
+      charts.forEach((c, i)=>{
+        const canvas = document.getElementById('viz-extra-chart-'+i);
+        if(!canvas) return;
+        const cfg = c.config || {};
+        new Chart(canvas, {
+          type: cfg.type || c.type || 'bar',
+          data: cfg.data || { labels:c.labels||[], datasets:c.datasets||[] },
+          options: Object.assign({
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#c9d7ea' } } },
+            scales:{
+              x:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } },
+              y:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } }
+            }
+          }, cfg.options||{})
+        });
+      });
+    }
+    const mHost = document.getElementById('viz-extra-mermaids');
+    if(mHost && mermaids.length){
+      mermaids.forEach((code)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'mb-3 mermaid-host';
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = code;
+        wrap.appendChild(pre);
+        mHost.appendChild(wrap);
+      });
+      if(window.mermaid){
+        try { mermaid.run({ querySelector: '#viz-extra-mermaids .mermaid' }); } catch(e){}
+      }
+    }
+
+    setTimeout(fitAll, 80);
+    setTimeout(fitAll, 320);
+  }
+
+  function requestInit(){
+    // 等一幀確保 tab 已顯示、容器有寬度
+    requestAnimationFrame(()=> requestAnimationFrame(initViz));
+  }
+
+  // 圖表 tab 顯示後才初始化（避免隱藏 tab 寬度為 0）
+  const chartsBtn = document.getElementById('tab-charts-btn');
+  if(chartsBtn){
+    chartsBtn.addEventListener('shown.bs.tab', ()=> requestInit());
+  }
+  document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn=>{
+    btn.addEventListener('shown.bs.tab', (ev)=>{
+      const target = (ev.target && ev.target.getAttribute('data-bs-target')) || '';
+      if(target === '#tab-charts') requestInit();
+      else if(state.ready) setTimeout(fitAll, 50);
+    });
+  });
+
+  // 若圖表本來就是作用中（或沒有 tabs），直接初始化
+  if(chartsTabVisible()){
+    requestInit();
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+  });
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize', ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  if(!('speechSynthesis' in window)){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      const st = root.querySelector('[data-tts-status]');
+      if(st) st.textContent = '此瀏覽器不支援語音播放，仍可閱讀講解稿。';
+      root.querySelectorAll('button[data-tts-play],button[data-tts-pause],button[data-tts-stop]').forEach(b=> b.disabled = true);
+      root.querySelectorAll('[data-tts-voice]').forEach(s=> s.disabled = true);
+    });
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const STORE_KEY = 'note-tts-voice-uri-v2';
+  let currentRoot = null;
+  let currentUtter = null;
+  let voicesReady = false;
+
+  function voiceScore(v){
+    const blob = ((v.name||'') + ' ' + (v.lang||'')).toLowerCase();
+    let s = 0;
+    if(/zh|chinese|中文|國語|台|hong|澳門|yue/.test(blob)) s += 100;
+    // 預設優先 Google 中文語音
+    if(/google/.test(blob)) s += 200;
+    if(/zh-tw|taiwan|國語（台灣）|國語 \(台灣\)|chinese \(taiwan\)/.test(blob)) s += 90;
+    if(/hanhan|hsia.?chen|yunjhe|yun-jie|zhiwei|meijia|tingting/.test(blob)) s += 70;
+    if(/zh-cn|xiaoxiao|xiaoyi|yunxi|yunyang|huihui|普通话|國語（中國）/.test(blob)) s += 50;
+    if(/natural|neural|online|自然|神經|雲端/.test(blob)) s += 35;
+    if(/microsoft|edge/.test(blob)) s += 8;
+    if(/desktop|sapi|espeak|compact/.test(blob)) s -= 15;
+    return s;
+  }
+  function listVoices(){
+    const all = synth.getVoices() || [];
+    const zh = all.filter(v => voiceScore(v) >= 100).sort((a,b)=> voiceScore(b)-voiceScore(a));
+    if(zh.length) return zh;
+    return all.slice().sort((a,b)=> voiceScore(b)-voiceScore(a));
+  }
+  function voiceKey(v){
+    return (v.voiceURI || (v.name + '|' + v.lang) || '').trim();
+  }
+  function savedVoiceKey(){
+    try{ return localStorage.getItem(STORE_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveVoiceKey(key){
+    try{ localStorage.setItem(STORE_KEY, key || ''); }catch(e){}
+  }
+  function findVoiceByKey(key){
+    if(!key) return null;
+    const voices = synth.getVoices() || [];
+    return voices.find(v => voiceKey(v) === key) || null;
+  }
+  function defaultVoice(){
+    const voices = listVoices();
+    if(!voices.length) return null;
+    const saved = findVoiceByKey(savedVoiceKey());
+    if(saved) return saved;
+    const googleTw = voices.find(v => /google/i.test(v.name) && /zh-tw|taiwan|台灣|台湾/i.test(v.name + v.lang));
+    const googleZh = voices.find(v => /google/i.test(v.name) && /zh|chinese|中文|國語|普通话/i.test(v.name + v.lang));
+    const googleAny = voices.find(v => /google/i.test(v.name));
+    return googleTw || googleZh || googleAny || voices[0];
+  }
+  function fillVoiceSelects(){
+    const voices = listVoices();
+    const preferred = defaultVoice();
+    const preferredKey = preferred ? voiceKey(preferred) : '';
+    document.querySelectorAll('[data-tts-voice]').forEach(sel=>{
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if(!voices.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '（尚無可用語音）';
+        sel.appendChild(opt);
+        return;
+      }
+      voices.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = voiceKey(v);
+        let tag = '';
+        if(/google/i.test(v.name)) tag = ' ★Google';
+        else if(/natural|neural|online|自然/i.test(v.name)) tag = ' ★較自然';
+        opt.textContent = (v.name || '語音') + '（' + (v.lang || '?') + '）' + tag;
+        sel.appendChild(opt);
+      });
+      const want = prev || preferredKey || voiceKey(voices[0]);
+      if([...sel.options].some(o => o.value === want)) sel.value = want;
+      else sel.selectedIndex = 0;
+    });
+    voicesReady = true;
+  }
+  function selectedVoice(root){
+    const sel = root && root.querySelector('[data-tts-voice]');
+    const key = sel && sel.value;
+    return findVoiceByKey(key) || defaultVoice();
+  }
+  function setStatus(root, text){
+    const st = root && root.querySelector('[data-tts-status]');
+    if(st) st.textContent = text || '';
+  }
+  function setSpeaking(root, on){
+    const box = root && root.querySelector('[data-tts-text]');
+    if(box) box.classList.toggle('is-speaking', !!on);
+  }
+  function stopAll(){
+    try{ synth.cancel(); }catch(e){}
+    if(currentRoot){
+      setSpeaking(currentRoot, false);
+      setStatus(currentRoot, '使用系統語音朗讀（可自選聲線）');
+    }
+    currentRoot = null;
+    currentUtter = null;
+  }
+  function playRoot(root){
+    const textEl = root.querySelector('[data-tts-text]');
+    const text = (textEl && (textEl.innerText || textEl.textContent) || '').trim();
+    if(!text){ setStatus(root, '尚無講解稿'); return; }
+    if(!voicesReady) fillVoiceSelects();
+    stopAll();
+    const u = new SpeechSynthesisUtterance(text);
+    const voice = selectedVoice(root);
+    if(voice){
+      u.voice = voice;
+      u.lang = voice.lang || 'zh-TW';
+      saveVoiceKey(voiceKey(voice));
+    }else{
+      u.lang = 'zh-TW';
+    }
+    const rateEl = root.querySelector('[data-tts-rate]');
+    u.rate = rateEl ? Number(rateEl.value || 1) : 1;
+    u.pitch = 1;
+    u.onstart = ()=>{
+      currentRoot = root;
+      setSpeaking(root, true);
+      setStatus(root, '播放中… ' + ((voice && voice.name) || ''));
+    };
+    u.onend = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放結束');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    u.onerror = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放中斷（可改選其他語音）');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    currentUtter = u;
+    // Chrome 偶發 cancel 後立刻 speak 會失敗
+    setTimeout(()=> synth.speak(u), 40);
+  }
+
+  function bindRoots(){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      if(root.dataset.ttsBound) return;
+      root.dataset.ttsBound = '1';
+      const play = root.querySelector('[data-tts-play]');
+      const pause = root.querySelector('[data-tts-pause]');
+      const stop = root.querySelector('[data-tts-stop]');
+      const voiceSel = root.querySelector('[data-tts-voice]');
+      if(play) play.addEventListener('click', ()=>{
+        if(synth.paused && currentRoot === root){ synth.resume(); setStatus(root, '繼續播放…'); return; }
+        playRoot(root);
+      });
+      if(pause) pause.addEventListener('click', ()=>{
+        if(synth.speaking && !synth.paused){ synth.pause(); setStatus(root, '已暫停'); }
+      });
+      if(stop) stop.addEventListener('click', ()=> stopAll());
+      if(voiceSel) voiceSel.addEventListener('change', ()=>{
+        saveVoiceKey(voiceSel.value);
+        document.querySelectorAll('[data-tts-voice]').forEach(other=>{
+          if(other !== voiceSel) other.value = voiceSel.value;
+        });
+        setStatus(root, '已選語音，按朗讀試聽');
+      });
+    });
+  }
+
+  fillVoiceSelects();
+  bindRoots();
+  try{
+    synth.getVoices();
+    synth.addEventListener('voiceschanged', ()=>{ fillVoiceSelects(); });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

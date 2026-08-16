@@ -1,0 +1,18 @@
+# 本機／後端／素材：不上 Vercel
+*.py
+*.pyc
+__pycache__/
+_structured/
+output/
+logs/
+tools/
+examples/
+cases/
+*.ahk
+*.log
+.git/
+.cursor/
+agent-transcripts/
+
+# 部署說明留在 docs，但 schema 範例可略過以減體積（可依需求拿掉這行）
+# docs/schema/

@@ -1,0 +1,3116 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>第7章 內線交易之解析</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/theme/mermaid.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-alpine-dark.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+.viz-toolkit-badge{display:inline-flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 1rem;}
+.viz-pill{font-size:.68rem;font-weight:750;padding:.18rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(18,24,33,.85);}
+.viz-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+  align-items:stretch;
+}
+@media (min-width:768px){
+  .viz-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media (min-width:1200px){
+  .viz-grid.viz-grid-dense{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+.viz-cell{
+  margin:0;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(16,22,30,.92);
+  max-width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.viz-cell-wide{grid-column:1 / -1;}
+.viz-panel-h,.viz-cell-h{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:720;
+}
+.viz-lib{font-size:.7rem;font-weight:800;padding:.15rem .45rem;border-radius:999px;background:rgba(94,200,255,.16);color:var(--cyan);}
+.viz-body,.viz-cell-b{padding:.75rem .85rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.viz-box{min-height:clamp(180px,42vw,260px);width:100%;max-width:100%;position:relative;}
+.viz-box-sm{min-height:clamp(160px,38vw,220px);}
+.viz-box-lg{min-height:clamp(220px,48vw,340px);}
+.viz-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0;}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.tabulator,.tabulator-header,.tabulator-row{background:transparent !important;color:var(--text) !important;}
+.tabulator{border:1px solid rgba(255,255,255,.08) !important;border-radius:10px;overflow:hidden;max-width:100%;}
+.gridjs-wrapper{overflow-x:auto !important;max-width:100%;}
+.gridjs-th,.gridjs-td{background:#121821 !important;border-color:rgba(255,255,255,.1) !important;color:#e8eef7 !important;}
+table.dataTable{color:var(--text);width:100% !important;}
+.ag-theme-alpine-dark{--ag-background-color:#121821;--ag-header-background-color:#0d1520;height:clamp(220px,50vw,300px);width:100%;max-width:100%;}
+.markmap-host{position:relative;width:100%;max-width:100%;height:clamp(280px,58vw,420px);border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;overflow:hidden;}
+.markmap-host .markmap{position:relative;width:100%;height:100%;}
+.markmap-host .markmap > svg,
+.markmap > svg{width:100% !important;height:100% !important;min-height:260px;display:block;}
+.cy-host,.vis-host{height:clamp(240px,55vw,340px);width:100%;max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;}
+.vis-timeline{border:0 !important;background:transparent !important;width:100% !important;}
+.vis-item{background:rgba(94,200,255,.25) !important;border-color:rgba(94,200,255,.55) !important;color:#e8eef7 !important;font-size:12px !important;}
+.d3-host{height:clamp(220px,50vw,300px);width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;}
+.d3-host text{fill:#c9d7ea;font-size:11px;}
+.d3-host .link{stroke:rgba(94,200,255,.35);}
+.d3-host .node circle{fill:#5ec8ff;}
+.mermaid-host{padding:.5rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#0a0e14;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.mermaid-host .mermaid,.mermaid-host svg{max-width:100%;}
+@media (max-width:767px){
+  .viz-cell-b{padding:.65rem .7rem .85rem;}
+  .viz-cell-h{padding:.55rem .7rem;font-size:.92rem;}
+  .viz-toolkit-badge{gap:.28rem;}
+  .viz-pill{font-size:.62rem;padding:.14rem .42rem;}
+  .tabulator .tabulator-header-filter input{font-size:12px;}
+}
+@media (max-width:420px){
+  .markmap-host{height:260px;}
+  .cy-host,.vis-host{height:220px;}
+}
+.narration-box{
+  margin:.85rem 0 1.1rem;border:1px solid rgba(110,231,245,.28);border-radius:14px;
+  background:linear-gradient(135deg,rgba(110,231,245,.08),rgba(16,22,30,.95));
+  overflow:hidden;
+}
+.narration-box > summary{
+  list-style:none;cursor:pointer;padding:.7rem .9rem;font-weight:750;
+  display:flex;align-items:center;gap:.45rem;color:#e8eef7;
+}
+.narration-box > summary::-webkit-details-marker{display:none;}
+.narration-box > summary::before{content:"▸";color:var(--sky,#6ee7f5);}
+.narration-box[open] > summary::before{content:"▾";}
+.narration-badge{
+  font-size:.7rem;font-weight:800;padding:.14rem .45rem;border-radius:999px;
+  background:rgba(110,231,245,.18);color:var(--sky,#6ee7f5);
+}
+.narration-body{padding:0 .9rem 1rem;}
+.narration-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 .65rem;
+}
+.narration-toolbar button{
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  background:rgba(18,24,33,.9);color:#e8eef7;padding:.32rem .75rem;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+}
+.narration-toolbar button.main{
+  background:linear-gradient(135deg,rgba(94,200,255,.9),rgba(62,224,162,.75));
+  color:#071018;border:0;
+}
+.narration-toolbar button:hover{filter:brightness(1.08);}
+.narration-toolbar button:disabled{opacity:.45;cursor:not-allowed;}
+.narration-rate{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);}
+.narration-rate input{width:90px;accent-color:#5ec8ff;}
+.narration-voice{
+  display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);
+  flex:1 1 220px;min-width:180px;
+}
+.narration-voice select{
+  flex:1;min-width:0;max-width:100%;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  background:rgba(18,24,33,.95);color:#e8eef7;
+  padding:.28rem .7rem;font-size:.78rem;
+}
+.narration-hint{font-size:.72rem;color:var(--muted,#9fb0c6);margin:.15rem 0 .45rem;line-height:1.45;}
+.narration-status{font-size:.78rem;color:var(--mint,#3ee0a2);min-height:1.1em;}
+.narration-script{
+  white-space:pre-wrap;line-height:1.75;color:#d7e2f0;font-size:.92rem;
+  padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(110,231,245,.25);
+  background:rgba(10,14,20,.72);max-height:280px;overflow:auto;-webkit-overflow-scrolling:touch;
+}
+.narration-script.is-speaking{border-color:rgba(62,224,162,.55);box-shadow:inset 3px 0 0 var(--mint,#3ee0a2);}
+@media (max-width:560px){
+  .narration-toolbar{gap:.35rem;}
+  .narration-voice{flex-basis:100%;}
+  .narration-script{max-height:220px;font-size:.88rem;}
+}
+:root{
+  --bg:#0b0f14; --text:#e8eef7; --muted:#9fb0c6;
+  --cyan:#5ec8ff; --mint:#3ee0a2; --amber:#ffc857; --coral:#ff7b72;
+  --violet:#c3a6ff; --sky:#6ee7f5; --side-w:320px; --side-blue:#0d2137;
+}
+*{box-sizing:border-box;}
+html,body{height:100%;margin:0;}
+body{
+  background:
+    radial-gradient(1100px 480px at 8% -8%, rgba(94,200,255,.12), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgba(195,166,255,.10), transparent 50%),
+    var(--bg);
+  color:var(--text);
+}
+
+.layout{min-height:100vh;}
+.sidebar{
+  position:fixed; inset:0 auto 0 0; width:min(var(--side-w), 88vw); z-index:40;
+  background:linear-gradient(180deg, #0a2744 0%, var(--side-blue) 40%, #0b1a2a 100%);
+  border-right:1px solid rgba(94,200,255,.18);
+  display:flex; flex-direction:column;
+  transform:translateX(0); transition:transform .22s ease;
+  box-shadow:8px 0 28px rgba(0,0,0,.25);
+}
+body.side-collapsed .sidebar{transform:translateX(-105%);}
+.side-scroll{overflow:auto; -webkit-overflow-scrolling:touch; padding:.85rem .75rem 5rem; flex:1;}
+.side-brand-block{padding:.35rem .45rem 0.85rem; border-bottom:1px solid rgba(94,200,255,.15); margin-bottom:.75rem;}
+.side-brand{font-weight:850; font-size:1.05rem; color:#fff; letter-spacing:.04em;}
+.side-sub{font-size:.75rem; color:rgba(158,200,230,.85); margin-top:.15rem;}
+.side-home{
+  display:inline-flex; margin-top:.55rem; font-size:.78rem; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+}
+.side-home:hover{color:#fff;}
+.chap-drop{
+  border:1px solid rgba(94,200,255,.14); border-radius:12px;
+  background:rgba(8,24,40,.72); margin:0 0 .45rem; overflow:hidden;
+}
+.chap-drop.active-chap{border-color:rgba(94,200,255,.45); box-shadow:inset 3px 0 0 var(--cyan);}
+.chap-drop > summary{
+  list-style:none; cursor:pointer; padding:.55rem .65rem;
+  display:flex; align-items:center; gap:.35rem;
+  font-size:.84rem; font-weight:750; color:#e8f4ff;
+}
+.chap-drop > summary::-webkit-details-marker{display:none;}
+.chap-drop > summary::before{content:"▸"; color:rgba(158,200,230,.7); width:1rem; flex:0 0 auto;}
+.chap-drop[open] > summary::before{content:"▾"; color:var(--cyan);}
+.chap-sum-link{color:inherit; text-decoration:none; flex:1; min-width:0; word-break:break-word;}
+.chap-sum-link:hover{color:var(--cyan);}
+.toc-kids{padding:0 .35rem .55rem .35rem; display:flex; flex-direction:column; gap:.08rem;}
+.toc-h3{
+  display:flex; align-items:flex-start; gap:.4rem; text-decoration:none; color:rgba(200,220,235,.88);
+  font-size:.78rem; padding:.32rem .45rem; border-radius:8px; line-height:1.35;
+}
+.toc-h3:hover{background:rgba(94,200,255,.12); color:#fff;}
+.toc-sub{padding-left:1.15rem; font-size:.74rem; color:rgba(170,195,215,.8);}
+.toc-mark{flex:0 0 auto; width:1.1rem; text-align:center; color:var(--cyan); font-size:.85rem;}
+.toc-sub .toc-mark{color:var(--amber); font-size:.78rem;}
+.toc-text{flex:1; min-width:0; overflow-wrap:anywhere;}
+.edge-toggle{
+  position:fixed; left:calc(min(var(--side-w), 88vw) - 16px); top:max(12px, env(safe-area-inset-top));
+  z-index:50; width:32px; height:32px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(13,33,55,.95); color:#fff; cursor:pointer;
+  display:grid; place-items:center; transition:left .22s ease, opacity .2s ease;
+}
+body.side-collapsed .edge-toggle{display:none;}
+.burger-fab{
+  display:none; position:fixed;
+  left:max(12px, env(safe-area-inset-left));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:55; width:42px; height:42px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(94,200,255,.45),rgba(62,224,162,.32));
+  color:#071018; font-size:1.1rem; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+body.side-collapsed .burger-fab{display:grid; place-items:center;}
+.content{margin-left:min(var(--side-w), 88vw); min-width:0; width:auto; transition:margin-left .22s ease;}
+body.side-collapsed .content{margin-left:0;}
+.wrap{max-width:980px; margin:0 auto; padding:1.25rem 1.15rem 3.2rem; overflow-x:clip;}
+body.side-collapsed .wrap{padding-top:4.2rem;}
+.meta-line{color:var(--muted); font-size:.82rem; margin-bottom:.9rem;}
+.backdrop{display:none; position:fixed; inset:0; z-index:35; background:rgba(0,0,0,.45);}
+body.side-open-mobile .backdrop{display:block;}
+
+@media (max-width:1100px){
+  :root{ --side-w:280px; }
+  .milestone-track{grid-template-columns:repeat(auto-fit,minmax(132px,1fr));}
+}
+@media (max-width:900px){
+  .sidebar{
+    width:min(86vw, 320px);
+    transform:translateX(-105%);
+    box-shadow:12px 0 40px rgba(0,0,0,.45);
+  }
+  body.side-open-mobile .sidebar{transform:translateX(0);}
+  body.side-collapsed .sidebar{transform:translateX(-105%);}
+  /* 開啟時必須蓋過 collapsed，否則漢堡按了側欄仍關著 */
+  body.side-collapsed.side-open-mobile .sidebar{transform:translateX(0);}
+  .content{margin-left:0 !important; width:100%;}
+  .edge-toggle{display:none !important;}
+  .burger-fab{display:grid !important; place-items:center;}
+  body.side-open-mobile .burger-fab{opacity:1;}
+  .wrap{
+    padding:4.4rem max(.85rem, env(safe-area-inset-right))
+            calc(2.5rem + env(safe-area-inset-bottom))
+            max(.85rem, env(safe-area-inset-left));
+  }
+  .note-title{font-size:clamp(1.2rem, 5.5vw, 1.65rem);}
+  .lecture-nav{
+    display:flex; flex-wrap:nowrap; gap:.35rem;
+    overflow-x:auto; -webkit-overflow-scrolling:touch;
+    padding-bottom:.35rem; margin-bottom:.75rem;
+    scrollbar-width:thin;
+  }
+  .lecture-nav .nav-item{flex:0 0 auto;}
+  .lecture-nav .nav-link{padding:.38rem .75rem; font-size:.82rem; white-space:nowrap;}
+  .lecture-tab-content{padding:.85rem .7rem 1.1rem; border-radius:12px;}
+  .milestone-track{grid-template-columns:1fr 1fr; gap:.55rem;}
+  .path-cards{grid-template-columns:1fr;}
+  .sec-head{align-items:flex-start;}
+  .sec-title{font-size:1.05rem; line-height:1.35;}
+  .sec-num{flex:0 0 auto;}
+  .struct-table td:first-child{white-space:normal; min-width:4.5rem;}
+  .struct-table table{font-size:.8rem;}
+  .struct-cap{flex-wrap:wrap; font-size:.86rem;}
+  .row.g-3 > [class*="col-"]{flex:0 0 100%; max-width:100%;}
+  .ans-row{flex-direction:column;}
+  .ans-box{width:100%;}
+}
+@media (max-width:560px){
+  .milestone-track{grid-template-columns:1fr;}
+  .chip-row{gap:.35rem;}
+  .tag-chip{font-size:.72rem; padding:.22rem .55rem;}
+  .summary-chip{padding:.65rem .75rem; font-size:.9rem;}
+  .unit-badge{font-size:.7rem;}
+  .ms-desc,.path-desc{font-size:.74rem;}
+  .table-responsive{margin:0 -.15rem; border-radius:0 0 12px 12px;}
+  .struct-table .table th,.struct-table .table td{padding:.4rem .45rem;}
+}
+@media (min-width:901px){
+  body.side-open-mobile .backdrop{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.content,.edge-toggle{transition:none;}
+}
+@media print{
+  .sidebar,.burger-fab,.edge-toggle,.backdrop,.lecture-nav{display:none !important;}
+  .content{margin-left:0 !important;}
+  .wrap{padding:0; max-width:100%;}
+  .tab-pane{display:block !important; opacity:1 !important;}
+}
+
+.lecture-hero{margin-bottom:1rem;}
+.unit-badge{display:inline-block;font-size:.75rem;font-weight:800;padding:.28rem .7rem;border-radius:999px;background:linear-gradient(135deg,rgba(94,200,255,.25),rgba(195,166,255,.25));border:1px solid rgba(255,255,255,.1);margin-bottom:.55rem;}
+.note-title{font-weight:780;line-height:1.28;font-size:clamp(1.4rem,3vw,1.95rem);margin:0 0 .7rem;}
+.chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 1rem;}
+.tag-chip{display:inline-flex;align-items:center;padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:650;border:1px solid transparent;background:rgba(18,24,33,.95);}
+.chip-cyan{border-color:rgba(94,200,255,.4);box-shadow:inset 3px 0 0 var(--cyan);}
+.chip-mint{border-color:rgba(62,224,162,.4);box-shadow:inset 3px 0 0 var(--mint);}
+.chip-amber{border-color:rgba(255,200,87,.4);box-shadow:inset 3px 0 0 var(--amber);}
+.chip-coral{border-color:rgba(255,123,114,.4);box-shadow:inset 3px 0 0 var(--coral);}
+.chip-violet{border-color:rgba(195,166,255,.4);box-shadow:inset 3px 0 0 var(--violet);}
+.chip-sky{border-color:rgba(110,231,245,.4);box-shadow:inset 3px 0 0 var(--sky);}
+.summary-chips{display:flex;flex-direction:column;gap:.55rem;}
+.summary-chip{border-radius:12px;padding:.75rem .95rem;border:1px solid transparent;background:rgba(18,24,33,.9);line-height:1.55;}
+.panel{background:rgba(18,24,33,.88);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;}
+.panel-mint{border-left:4px solid var(--mint);}
+.section-kicker{font-size:.75rem;font-weight:800;letter-spacing:.08em;color:var(--cyan);margin-bottom:.25rem;}
+.section-title{font-size:1.1rem;font-weight:720;margin-bottom:.7rem;}
+.tab-hint{color:var(--muted);font-size:.9rem;}
+.milestone-wrap{margin:0 0 1.2rem;}
+.milestone-track{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;}
+.milestone-link{display:flex;flex-direction:column;gap:.3rem;height:100%;padding:.8rem .85rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.92);border:1px solid rgba(255,255,255,.08);}
+.milestone-link:hover{border-color:rgba(94,200,255,.45);color:inherit;}
+.ms-dot{width:1.6rem;height:1.6rem;border-radius:999px;display:grid;place-items:center;font-size:.78rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.ms-label{font-weight:720;font-size:.92rem;}
+.ms-desc{font-size:.76rem;color:var(--muted);line-height:1.4;}
+.path-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.8rem;}
+.path-card{display:block;padding:1rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.path-card:hover{border-color:rgba(195,166,255,.5);color:inherit;}
+.path-idx{font-size:.75rem;font-weight:800;color:var(--violet);}
+.path-title{font-weight:720;margin:.25rem 0;}
+.path-desc{font-size:.82rem;color:var(--muted);}
+.path-go{margin-top:.5rem;font-size:.82rem;color:var(--cyan);}
+.lecture-nav{gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lecture-nav .nav-link{border-radius:999px;color:var(--muted);background:rgba(18,24,33,.8);border:1px solid rgba(255,255,255,.08);padding:.4rem .9rem;}
+.lecture-nav .nav-link.active{color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));border-color:transparent;font-weight:750;}
+.lecture-tab-content{background:rgba(12,16,22,.45);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.1rem 1rem 1.4rem;}
+.sec-block{padding:1rem 0 1.35rem;border-bottom:1px solid rgba(255,255,255,.06);scroll-margin-top:1.2rem;}
+.sec-block:last-child{border-bottom:0;}
+.sec-kicker{font-size:.72rem;font-weight:800;color:var(--amber);letter-spacing:.04em;margin-bottom:.3rem;}
+.sec-head{display:flex;align-items:center;gap:.65rem;margin-bottom:.45rem;}
+.sec-num{display:inline-grid;place-items:center;min-width:1.85rem;height:1.85rem;border-radius:999px;font-size:.9rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));flex:0 0 auto;}
+.sec-title{margin:0;font-size:1.15rem;font-weight:720;}
+.subhead{font-size:1rem;font-weight:700;margin:1rem 0 .45rem;color:var(--sky);scroll-margin-top:1.2rem;}
+.sec-body p,.sec-body li,.sub-sec p,.sub-sec li{line-height:1.75;color:#d7e2f0;overflow-wrap:anywhere;}
+.sec-body table,.sub-sec table{width:100%;margin:1rem 0;border-collapse:collapse;font-size:.88rem;}
+.sec-body th,.sec-body td,.sub-sec th,.sub-sec td{border:1px solid rgba(255,255,255,.12);padding:.45rem .55rem;}
+.sec-body th,.sub-sec th{background:rgba(94,200,255,.12);}
+.sec-body blockquote,.sub-sec blockquote{border-left:3px solid var(--violet);margin:1rem 0;padding:.4rem .9rem;color:var(--muted);background:rgba(195,166,255,.06);}
+.kp-box{margin:.75rem 0 .2rem;padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(94,200,255,.35);background:rgba(94,200,255,.06);}
+.callout{border-radius:14px;padding:.85rem 1rem;border:1px solid rgba(255,255,255,.08);background:rgba(16,22,30,.92);margin:.7rem 0;}
+.callout-label{font-size:.75rem;font-weight:800;letter-spacing:.06em;margin-bottom:.3rem;color:var(--cyan);}
+.callout-warn{border-color:rgba(255,200,87,.45);background:linear-gradient(135deg,rgba(255,200,87,.14),rgba(16,22,30,.95));}
+.callout-warn .callout-label{color:var(--amber);}
+.quick-card{padding:1rem;border-radius:14px;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);height:100%;}
+.quick-kicker{font-size:.72rem;font-weight:800;color:var(--cyan);}
+.ans-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:stretch;margin:.35rem 0 .7rem;}
+.ans-btn{border-radius:10px;border:1px solid rgba(195,166,255,.4);background:rgba(195,166,255,.12);color:var(--violet);font-size:.82rem;font-weight:700;padding:.35rem .7rem;}
+.ans-box{flex:1 1 180px;min-height:2.2rem;display:flex;align-items:center;padding:.4rem .7rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0a0e14;font-family:ui-monospace,Consolas,monospace;}
+.ans-text{color:var(--mint);overflow-wrap:anywhere;}
+.ans-box.is-masked .ans-text{-webkit-text-security:disc;text-security:disc;color:var(--muted);user-select:none;}
+.struct-table{margin:1rem 0 1.25rem;border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:rgba(16,22,30,.92);}
+.struct-cap{display:flex;align-items:center;gap:.55rem;padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;font-size:.92rem;}
+.struct-badge{font-size:.72rem;font-weight:800;padding:.18rem .5rem;border-radius:999px;letter-spacing:.04em;}
+.table-timeline .struct-badge{background:rgba(94,200,255,.18);color:var(--cyan);}
+.table-compare .struct-badge{background:rgba(195,166,255,.18);color:var(--violet);}
+.table-evolve .struct-badge{background:rgba(62,224,162,.16);color:var(--mint);}
+.struct-table .table-responsive{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+.struct-table table{margin:0;--bs-table-bg:transparent;--bs-table-color:var(--text);font-size:.88rem;min-width:100%;}
+.struct-table thead th{background:rgba(94,200,255,.1);color:#e8eef7;}
+.table-compare thead th{background:rgba(195,166,255,.12);}
+.table-evolve thead th{background:rgba(62,224,162,.1);}
+.struct-table td:first-child{font-weight:700;color:var(--amber);vertical-align:top;}
+.table-compare td:first-child{color:var(--violet);}
+.table-evolve td:first-child{color:var(--mint);}
+.structs-wrap .struct-table{margin-bottom:1.35rem;}
+</style>
+</head>
+<body>
+<div class="backdrop" id="side-backdrop" hidden></div>
+<button type="button" class="burger-fab" id="burger-fab" title="打開目錄" aria-label="打開目錄">☰</button>
+<button type="button" class="edge-toggle" id="edge-toggle" title="收起目錄" aria-label="收起目錄">‹</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="左側目錄">
+    <div class="side-scroll"><div class="side-brand-block"><div class="side-brand">公司治理</div><div class="side-sub">詳盡學習講義</div><a class="side-home" href="../index.html">← 筆記首頁</a></div>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第1章 台灣公司治理之導論.html">第1章 台灣公司治理之導論</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-1-前言" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">◆</span><span class="toc-text">1.1 | 前言</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-2-國際公司治理之發展與趨勢" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">◇</span><span class="toc-text">1.2 | 國際公司治理之發展與趨勢</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-3-台灣公司治理之發展" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">›</span><span class="toc-text">1.3 | 台灣公司治理之發展</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-4-台灣公司治理之挑戰與前瞻" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">▹</span><span class="toc-text">1.4 | 台灣公司治理之挑戰與前瞻</span></a>
+<a class="toc-h3 toc-sub" href="第1章 台灣公司治理之導論.html#1-4-1-近期金融事件之挑戰與省思" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">●</span><span class="toc-text">1.4.1 近期金融事件之挑戰與省思</span></a>
+<a class="toc-h3 toc-sub" href="第1章 台灣公司治理之導論.html#1-4-2-2018年公司治理藍圖" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">○</span><span class="toc-text">1.4.2 2018年公司治理藍圖</span></a>
+<a class="toc-h3 toc-sub" href="第1章 台灣公司治理之導論.html#1-4-3-推動建置商業法院" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">■</span><span class="toc-text">1.4.3 推動建置商業法院</span></a>
+<a class="toc-h3 toc-sub" href="第1章 台灣公司治理之導論.html#1-4-4-董事績效評估制度" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">□</span><span class="toc-text">1.4.4 董事績效評估制度</span></a>
+<a class="toc-h3 toc-sub" href="第1章 台灣公司治理之導論.html#1-4-5-引導家族企業結合良好公司治理" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">✦</span><span class="toc-text">1.4.5 引導家族企業結合良好公司治理</span></a>
+<a class="toc-h3 toc-sub" href="第1章 台灣公司治理之導論.html#1-4-6-董事成員多元化" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">✧</span><span class="toc-text">1.4.6 董事成員多元化</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-5-公司治理未來發展" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">●</span><span class="toc-text">1.5 | 公司治理未來發展</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-6-公司治理-3-0-永續發展藍圖" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">○</span><span class="toc-text">1.6 | 公司治理 3.0-永續發展藍圖</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-7-上市櫃公司永續發展行動方案-2023年" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">■</span><span class="toc-text">1.7 | 上市櫃公司永續發展行動方案 (2023年)</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-8-結語" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">□</span><span class="toc-text">1.8 | 結語</span></a>
+<a class="toc-h3 toc-sec" href="第1章 台灣公司治理之導論.html#1-9-練習題" data-nav-jump="第1章 台灣公司治理之導論.html"><span class="toc-mark">✦</span><span class="toc-text">1.9 | 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第 2 章 公司董事會議事辦法之解析.html">第 2 章 公司董事會議事辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第 2 章 公司董事會議事辦法之解析.html#2-1-前言" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">◆</span><span class="toc-text">2.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第 2 章 公司董事會議事辦法之解析.html#2-2-公開發行公司董事會議事辦法" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">◇</span><span class="toc-text">2.2 公開發行公司董事會議事辦法</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-1-董事會議事規範" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">›</span><span class="toc-text">2.2.1 董事會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-2-設立議事事務專責機構" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">▹</span><span class="toc-text">2.2.2 設立議事事務專責機構</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-3-董事會議事召集" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">●</span><span class="toc-text">2.2.3 董事會議事召集</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-4-董事會開會時間地點" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">○</span><span class="toc-text">2.2.4 董事會開會時間地點</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-5-董事會議事內容" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">■</span><span class="toc-text">2.2.5 董事會議事內容</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-6-董事會會議進行及程序等相關規定" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">□</span><span class="toc-text">2.2.6 董事會會議進行及程序等相關規定</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-7-董事利益迴避" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">✦</span><span class="toc-text">2.2.7 董事利益迴避</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-8-董事會議事錄" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">✧</span><span class="toc-text">2.2.8 董事會議事錄</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-9-公告申報" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">◆</span><span class="toc-text">2.2.9 公告申報</span></a>
+<a class="toc-h3 toc-sub" href="第 2 章 公司董事會議事辦法之解析.html#2-2-10-其他事項" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">◇</span><span class="toc-text">2.2.10 其他事項</span></a>
+<a class="toc-h3 toc-sec" href="第 2 章 公司董事會議事辦法之解析.html#2-3-董事會議事實務小百科" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">›</span><span class="toc-text">2.3 董事會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第 2 章 公司董事會議事辦法之解析.html#2-4-結語" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">▹</span><span class="toc-text">2.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="第 2 章 公司董事會議事辦法之解析.html#2-5-練習題" data-nav-jump="第 2 章 公司董事會議事辦法之解析.html"><span class="toc-mark">●</span><span class="toc-text">2.5 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第3章 審計委員會行使職權辦法之解析.html">第3章 審計委員會行使職權辦法之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第3章 審計委員會行使職權辦法之解析.html#3-2-國際間審計委員會制度概況" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">◆</span><span class="toc-text">3.2 國際間審計委員會制度概況</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#美國" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">◇</span><span class="toc-text">美國</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#德國" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">›</span><span class="toc-text">德國</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#日本" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">▹</span><span class="toc-text">日本</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#韓國" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">●</span><span class="toc-text">韓國</span></a>
+<a class="toc-h3 toc-sec" href="第3章 審計委員會行使職權辦法之解析.html#3-3-我國審計委員會制度及發展沿革" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">◇</span><span class="toc-text">3.3 我國審計委員會制度及發展沿革</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#3-3-1-審計委員會緣起" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">›</span><span class="toc-text">3.3.1 審計委員會緣起</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#3-3-2-審計委員會發展沿革" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">▹</span><span class="toc-text">3.3.2 審計委員會發展沿革</span></a>
+<a class="toc-h3 toc-sec" href="第3章 審計委員會行使職權辦法之解析.html#3-4-我國審計委員會制度相關規範" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">›</span><span class="toc-text">3.4 我國審計委員會制度相關規範</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#3-4-1-審計委員會之設置及組成" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">▹</span><span class="toc-text">3.4.1 審計委員會之設置及組成</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#3-4-2-審計委員會之職責" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">●</span><span class="toc-text">3.4.2 審計委員會之職責</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#3-4-3-審計委員會會議" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">○</span><span class="toc-text">3.4.3 審計委員會會議</span></a>
+<a class="toc-h3 toc-sub" href="第3章 審計委員會行使職權辦法之解析.html#3-4-4-審計委員會會議其他事項及實務運作" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">■</span><span class="toc-text">3.4.4 審計委員會會議其他事項及實務運作</span></a>
+<a class="toc-h3 toc-sec" href="第3章 審計委員會行使職權辦法之解析.html#3-5-審計委員會議事實務小百科" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">▹</span><span class="toc-text">3.5 審計委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第3章 審計委員會行使職權辦法之解析.html#3-6-結語" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">●</span><span class="toc-text">3.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="第3章 審計委員會行使職權辦法之解析.html#3-7-練習題" data-nav-jump="第3章 審計委員會行使職權辦法之解析.html"><span class="toc-mark">○</span><span class="toc-text">3.7 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第4章 薪資報酬委員會行使職權之解析.html">第4章 薪資報酬委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第4章 薪資報酬委員會行使職權之解析.html#4-1-前言" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">◆</span><span class="toc-text">4.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第4章 薪資報酬委員會行使職權之解析.html#4-2-國際發展現況" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">◇</span><span class="toc-text">4.2 國際發展現況</span></a>
+<a class="toc-h3 toc-sec" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">›</span><span class="toc-text">4.3 股票上市或於證券商營業處所買賣公司薪資報酬委員會設置及行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-1-適用範圍" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">▹</span><span class="toc-text">4.3.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-2-組織規程訂定" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">●</span><span class="toc-text">4.3.2 組織規程訂定</span></a>
+<a class="toc-h3 toc-sub" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-3-委員會成員組成" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">○</span><span class="toc-text">4.3.3 委員會成員組成</span></a>
+<a class="toc-h3 toc-sub" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-4-委員會職權行使" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">■</span><span class="toc-text">4.3.4 委員會職權行使</span></a>
+<a class="toc-h3 toc-sub" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-5-委員會議事規範" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">□</span><span class="toc-text">4.3.5 委員會議事規範</span></a>
+<a class="toc-h3 toc-sub" href="第4章 薪資報酬委員會行使職權之解析.html#4-3-6-薪資報酬委員會與董事會決議" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">✦</span><span class="toc-text">4.3.6 薪資報酬委員會與董事會決議</span></a>
+<a class="toc-h3 toc-sec" href="第4章 薪資報酬委員會行使職權之解析.html#4-4-薪資報酬委員會議事實務小百科" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">▹</span><span class="toc-text">4.4 薪資報酬委員會議事實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第4章 薪資報酬委員會行使職權之解析.html#4-5-結語" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">●</span><span class="toc-text">4.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="第4章 薪資報酬委員會行使職權之解析.html#4-6-練習題" data-nav-jump="第4章 薪資報酬委員會行使職權之解析.html"><span class="toc-mark">○</span><span class="toc-text">4.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第5章 併購特別委員會行使職權之解析.html">第5章 併購特別委員會行使職權之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第5章 併購特別委員會行使職權之解析.html#5-1-前言" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">◆</span><span class="toc-text">5.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第5章 併購特別委員會行使職權之解析.html#5-2-國際併購手法" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">◇</span><span class="toc-text">5.2 國際併購手法</span></a>
+<a class="toc-h3 toc-sec" href="第5章 併購特別委員會行使職權之解析.html#5-3-企業併購法及併購特別委員會行使職權辦法" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">›</span><span class="toc-text">5.3 企業併購法及併購特別委員會行使職權辦法</span></a>
+<a class="toc-h3 toc-sub" href="第5章 併購特別委員會行使職權之解析.html#5-3-1-企業併購法" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">▹</span><span class="toc-text">5.3.1 企業併購法</span></a>
+<a class="toc-h3 toc-sub" href="第5章 併購特別委員會行使職權之解析.html#5-3-2-併購特別委員會" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">●</span><span class="toc-text">5.3.2 併購特別委員會</span></a>
+<a class="toc-h3 toc-sec" href="第5章 併購特別委員會行使職權之解析.html#5-4-併購特別委員會實務小百科" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">▹</span><span class="toc-text">5.4 併購特別委員會實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第5章 併購特別委員會行使職權之解析.html#5-5-結語" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">●</span><span class="toc-text">5.5 結語</span></a>
+<a class="toc-h3 toc-sec" href="第5章 併購特別委員會行使職權之解析.html#5-6-練習題" data-nav-jump="第5章 併購特別委員會行使職權之解析.html"><span class="toc-mark">○</span><span class="toc-text">5.6 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第6章 資訊揭露制度與法制之解析.html">第6章 資訊揭露制度與法制之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-1-前言" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">◆</span><span class="toc-text">6.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-2-公開發行公司資訊揭露原則" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">◇</span><span class="toc-text">6.2 公開發行公司資訊揭露原則</span></a>
+<a class="toc-h3 toc-sub" href="第6章 資訊揭露制度與法制之解析.html#6-2-1-定期揭露事項" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">›</span><span class="toc-text">6.2.1 定期揭露事項</span></a>
+<a class="toc-h3 toc-sub" href="第6章 資訊揭露制度與法制之解析.html#6-2-2-不定期揭露之重大事項" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">▹</span><span class="toc-text">6.2.2 不定期揭露之重大事項</span></a>
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-3-法制規範與責任" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">›</span><span class="toc-text">6.3 法制規範與責任</span></a>
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-4-公開發行公司應建立之機制" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">▹</span><span class="toc-text">6.4 公開發行公司應建立之機制</span></a>
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-5-資訊揭露實務小百科" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">●</span><span class="toc-text">6.5 資訊揭露實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-6-結語" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">○</span><span class="toc-text">6.6 結語</span></a>
+<a class="toc-h3 toc-sec" href="第6章 資訊揭露制度與法制之解析.html#6-7-練習題" data-nav-jump="第6章 資訊揭露制度與法制之解析.html"><span class="toc-mark">■</span><span class="toc-text">6.7 練習題</span></a>
+</div></details>
+<details class="chap-drop active-chap" open>
+<summary><a class="chap-sum-link" href="第7章 內線交易之解析.html">第7章 內線交易之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-1-前言" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">◆</span><span class="toc-text">7.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-2-構成要件-5個-w" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">◇</span><span class="toc-text">7.2 構成要件-5個 W</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-2-1-why-為什麼要禁止內線交易" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">›</span><span class="toc-text">7.2.1 WHY:為什麼要禁止內線交易</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-2-2-who-內線交易的受規範對象" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.2 WHO:內線交易的受規範對象</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-2-3-how-怎樣會構成內線交易" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">●</span><span class="toc-text">7.2.3 HOW:怎樣會構成內線交易</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-2-4-what-規範的買賣標的及重大消息" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">○</span><span class="toc-text">7.2.4 WHAT:規範的買賣標的及重大消息</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-3-刑事責任與民事責任" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">›</span><span class="toc-text">7.3 刑事責任與民事責任</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#內線交易法律責任" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">▹</span><span class="toc-text">內線交易法律責任</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-4-法院判決實務" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">▹</span><span class="toc-text">7.4 法院判決實務</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-4-1-案例事實" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">●</span><span class="toc-text">7.4.1 案例事實</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-4-2-法院見解" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">○</span><span class="toc-text">7.4.2 法院見解</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-5-如何避免誤觸內線交易" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">●</span><span class="toc-text">7.5 如何避免誤觸內線交易</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-6-內線交易實務小百科" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">○</span><span class="toc-text">7.6 內線交易實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-7-結語" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">■</span><span class="toc-text">7.7 結語</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#7-8-練習題" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">□</span><span class="toc-text">7.8 練習題</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#1-內線交易規範的買賣標的為何" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">✦</span><span class="toc-text">1. 內線交易規範的買賣標的為何</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">✧</span><span class="toc-text">2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">◆</span><span class="toc-text">3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#4-什麼是-公司有重大影響其支付本息能力之消息" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">◇</span><span class="toc-text">4. 什麼是「公司有重大影響其支付本息能力之消息」</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#5-重大消息之-公開方式" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">›</span><span class="toc-text">5. 重大消息之「公開方式」</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-2-5-when-內線交易的禁止交易期間" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">▹</span><span class="toc-text">7.2.5 WHEN:內線交易的禁止交易期間</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#刑事責任" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">▹</span><span class="toc-text">刑事責任</span></a>
+<a class="toc-h3 toc-sec" href="第7章 內線交易之解析.html#民事責任" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">●</span><span class="toc-text">民事責任</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-3-1-刑事責任" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">○</span><span class="toc-text">7.3.1 刑事責任</span></a>
+<a class="toc-h3 toc-sub" href="第7章 內線交易之解析.html#7-3-2-民事責任" data-nav-jump="第7章 內線交易之解析.html"><span class="toc-mark">■</span><span class="toc-text">7.3.2 民事責任</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第 8 章 股東會及委託書使用之解析.html">第 8 章 股東會及委託書使用之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-1-前言" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">◆</span><span class="toc-text">8.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-2-股東會議事規則參考範例" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">◇</span><span class="toc-text">8.2 股東會議事規則參考範例</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-1-股東會召集及開會通知" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">›</span><span class="toc-text">8.2.1 股東會召集及開會通知</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-2-召開股東會地點-時間及開會時間之原則" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">▹</span><span class="toc-text">8.2.2 召開股東會地點、時間及開會時間之原則</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-3-股東會議事手冊-資料公告及簽名簿等文件之備置" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">●</span><span class="toc-text">8.2.3 股東會議事手冊、資料公告及簽名簿等文件之備置</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-4-股東會主席及列席人員" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">○</span><span class="toc-text">8.2.4 股東會主席及列席人員</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-5-股東會開會過程錄音或錄影之存證" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">■</span><span class="toc-text">8.2.5 股東會開會過程錄音或錄影之存證</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-6-議案討論及股東發言" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">□</span><span class="toc-text">8.2.6 議案討論及股東發言</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-7-表決股數之計算-電子投票-股東會視訊會議" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">✦</span><span class="toc-text">8.2.7 表決股數之計算、電子投票、股東會視訊會議</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-8-議事錄及公告" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">✧</span><span class="toc-text">8.2.8 議事錄及公告</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-2-9-休息及續行集會" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">◆</span><span class="toc-text">8.2.9 休息及續行集會</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-3-出席股東會使用委託書規則" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">›</span><span class="toc-text">8.3 出席股東會使用委託書規則</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-3-1-委託書之徵求與非屬徵求" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">▹</span><span class="toc-text">8.3.1 委託書之徵求與非屬徵求</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-3-2-徵求人之資格條件及代理股數" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">●</span><span class="toc-text">8.3.2 徵求人之資格條件及代理股數</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-3-3-委託書徵求資訊之揭露" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">○</span><span class="toc-text">8.3.3 委託書徵求資訊之揭露</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-3-4-委託書使用及取得方式之限制" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">■</span><span class="toc-text">8.3.4 委託書使用及取得方式之限制</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-3-5-違反委託書規則之效果" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">□</span><span class="toc-text">8.3.5 違反委託書規則之效果</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-3-6-委託書規則最新修正重點" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">✦</span><span class="toc-text">8.3.6 委託書規則最新修正重點</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-4-股東會召集-會場實務及會後辦理事項" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">▹</span><span class="toc-text">8.4 股東會召集、會場實務及會後辦理事項</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-4-1-股東會召集" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">●</span><span class="toc-text">8.4.1 股東會召集</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-4-2-股東會會場實務" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">○</span><span class="toc-text">8.4.2 股東會會場實務</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-4-3-股東會會後辦理事項" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">■</span><span class="toc-text">8.4.3 股東會會後辦理事項</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-5-獨立董事之提名及選舉" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">●</span><span class="toc-text">8.5 獨立董事之提名及選舉</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-5-1-強制設立" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">○</span><span class="toc-text">8.5.1 強制設立</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-5-2-獨立董事之提名方式" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">■</span><span class="toc-text">8.5.2 獨立董事之提名方式</span></a>
+<a class="toc-h3 toc-sub" href="第 8 章 股東會及委託書使用之解析.html#8-5-3-獨立董事之選舉方式" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">□</span><span class="toc-text">8.5.3 獨立董事之選舉方式</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-6-常見違規案例" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">○</span><span class="toc-text">8.6 常見違規案例</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-7-股東會及委託書使用實務小百科" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">■</span><span class="toc-text">8.7 股東會及委託書使用實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-8-結語" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">□</span><span class="toc-text">8.8 結語</span></a>
+<a class="toc-h3 toc-sec" href="第 8 章 股東會及委託書使用之解析.html#8-9-練習題" data-nav-jump="第 8 章 股東會及委託書使用之解析.html"><span class="toc-mark">✦</span><span class="toc-text">8.9 練習題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第 9 章 上市上櫃公司治理實務守則之解析.html">第 9 章 上市上櫃公司治理實務守則之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-1-前言" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◆</span><span class="toc-text">9.1 前言</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-上市上櫃公司治理實務守則" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◇</span><span class="toc-text">9.2 上市上櫃公司治理實務守則</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-1-公司治理之原則" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">›</span><span class="toc-text">9.2.1 公司治理之原則</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-2-建立內部控制制度" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">▹</span><span class="toc-text">9.2.2 建立內部控制制度</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-3-公司治理主管" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">●</span><span class="toc-text">9.2.3 公司治理主管</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-4-保障股東權益" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">○</span><span class="toc-text">9.2.4 保障股東權益</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-3-上市上櫃公司治理實務守則實務小百科" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">›</span><span class="toc-text">9.3 上市上櫃公司治理實務守則實務小百科</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#1-由證券交易所及櫃檯買賣中心共同制定之-上市上櫃公司治理實務守則-法律效果為何-上市-櫃-公司可採何種規範形式以建置其公司治理機制" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">▹</span><span class="toc-text">1. 由證券交易所及櫃檯買賣中心共同制定之「上市上櫃公司治理實務守則」法律效果為何？上市(櫃)公司可採何種規範形式以建置其公司治理機制？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#2-公司治理主管需要董事會委任嗎-其薪資是否需提到薪資報酬委員會討論-得否由其他職位兼任-兼任者之原職位如已經董事會任命-其兼任公司治理主管是否需再經董事會決議" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">●</span><span class="toc-text">2. 公司治理主管需要董事會委任嗎？其薪資是否需提到薪資報酬委員會討論？得否由其他職位兼任？兼任者之原職位如已經董事會任命，其兼任公司治理主管是否需再經董事會決議？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#3-集團公司指派同一人擔任公司治理主管可不可以" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">○</span><span class="toc-text">3. 集團公司指派同一人擔任公司治理主管可不可以?</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#4-公司治理主管之進修範圍-時數為何" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">■</span><span class="toc-text">4. 公司治理主管之進修範圍、時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#5-上市上櫃公司治理實務守則-第-13-條之-1-及第-13-條之-2-所定上市上櫃公司建立與股東之互動機制-應如何落實" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">□</span><span class="toc-text">5. 「上市上櫃公司治理實務守則」第 13 條之 1 及第 13 條之 2 所定上市上櫃公司建立與股東之互動機制，應如何落實？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#6-上市-櫃-公司選任董事時-應考量之事項為何" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✦</span><span class="toc-text">6. 上市(櫃)公司選任董事時，應考量之事項為何？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#7-獨立董事是否得由法人或其代表人擔任-是否可兼任其他公司之董事-監察人或經理人" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✧</span><span class="toc-text">7. 獨立董事是否得由法人或其代表人擔任？是否可兼任其他公司之董事、監察人或經理人？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#8-上市-櫃-公司對董事會績效之評估範圍-評估內容宜包含哪些構面-自何時須開始進行評鑑" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◆</span><span class="toc-text">8. 上市(櫃)公司對董事會績效之評估範圍？評估內容宜包含哪些構面？自何時須開始進行評鑑？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◇</span><span class="toc-text">9. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#10-法人說明會之資訊揭露規定" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">›</span><span class="toc-text">10. 法人說明會之資訊揭露規定？</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-4-結語" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">▹</span><span class="toc-text">9.4 結語</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-5-練習題" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">●</span><span class="toc-text">9.5 練習題</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#1-依上市上櫃公司治理實務守則-董事會成員組成應考量多元化-兼任公司經理人之董事不宜逾董事席次比例" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">○</span><span class="toc-text">1. 依上市上櫃公司治理實務守則，董事會成員組成應考量多元化，兼任公司經理人之董事不宜逾董事席次比例？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#2-依證券交易法第-26-條之-3-規定-公開發行公司董事間至少應有多少席次-不得具有配偶或二親等以內之親屬關係" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">■</span><span class="toc-text">2. 依證券交易法第 26 條之 3 規定，公開發行公司董事間至少應有多少席次，不得具有配偶或二親等以內之親屬關係？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#3-依上市上櫃公司治理實務守則-獨立董事應具備專業知識-其持股應予限制-除應依相關法令規定辦理外-不宜同時擔任超過幾家上市上櫃公司之董事-含獨立董事-或監察人" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">□</span><span class="toc-text">3. 依上市上櫃公司治理實務守則，獨立董事應具備專業知識，其持股應予限制，除應依相關法令規定辦理外，不宜同時擔任超過幾家上市上櫃公司之董事（含獨立董事）或監察人？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#4-上市上櫃公司董事-監察人進修推行要點-規定董事之進修時數為何" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✦</span><span class="toc-text">4. 「上市上櫃公司董事、監察人進修推行要點」規定董事之進修時數為何？</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#5-依上市上櫃公司治理實務守則-上市上櫃公司董事因故解任-致不足幾人者-公司應於最近一次股東會補選之-但董事缺額達章程所定席次三分之一者-公司應自事實發生之日起幾日內-召開股東臨時會補選之" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✧</span><span class="toc-text">5. 依上市上櫃公司治理實務守則，上市上櫃公司董事因故解任，致不足幾人者，公司應於最近一次股東會補選之。但董事缺額達章程所定席次三分之一者，公司應自事實發生之日起幾日內，召開股東臨時會補選之？</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#1-鼓勵股東參與公司治理" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">○</span><span class="toc-text">1. 鼓勵股東參與公司治理：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#2-建立與股東互動機制" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">■</span><span class="toc-text">2. 建立與股東互動機制：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#3-公司與關係人間之公司治理關係" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">□</span><span class="toc-text">3. 公司與關係人間之公司治理關係：</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-5-強化董事會職能" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✦</span><span class="toc-text">9.2.5 強化董事會職能</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#1-董事會結構" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✦</span><span class="toc-text">1. 董事會結構：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#2-獨立董事制度" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✧</span><span class="toc-text">2. 獨立董事制度：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#3-功能性委員會" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◆</span><span class="toc-text">3. 功能性委員會：</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-6-尊重利害關係人權益" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◇</span><span class="toc-text">9.2.6 尊重利害關係人權益</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#1-應與公司之利害關係人保持溝通並維護權益-第-51-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">◇</span><span class="toc-text">1. 應與公司之利害關係人保持溝通並維護權益（第 51 條）：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#2-對於往來銀行及其他債權人-應提供充足之資訊-第-52-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">›</span><span class="toc-text">2. 對於往來銀行及其他債權人，應提供充足之資訊（第 52 條）：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#3-建立員工溝通管道-第-53-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">▹</span><span class="toc-text">3. 建立員工溝通管道（第 53 條）：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#4-公司之社會責任-第-54-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">●</span><span class="toc-text">4. 公司之社會責任（第 54 條）：</span></a>
+<a class="toc-h3 toc-sub" href="第 9 章 上市上櫃公司治理實務守則之解析.html#9-2-7-提升資訊透明度" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">○</span><span class="toc-text">9.2.7 提升資訊透明度</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#1-資訊公開及網路申報系統-第-55-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">○</span><span class="toc-text">1. 資訊公開及網路申報系統（第 55 條）：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#2-設置發言人-第-56-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">■</span><span class="toc-text">2. 設置發言人（第 56 條）：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#3-架設公司治理網站-第-57-條" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">□</span><span class="toc-text">3. 架設公司治理網站（第 57 條）：</span></a>
+<a class="toc-h3 toc-sec" href="第 9 章 上市上櫃公司治理實務守則之解析.html#4-召開法人說明會" data-nav-jump="第 9 章 上市上櫃公司治理實務守則之解析.html"><span class="toc-mark">✦</span><span class="toc-text">4. 召開法人說明會：</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="第 10 永續發展之解析.html">第 10 永續發展之解析</a></summary>
+<div class="toc-kids">
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-1" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">◆</span><span class="toc-text">10.1</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-2-永續發展之演進歷程" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">◇</span><span class="toc-text">10.2 永續發展之演進歷程</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-3-金管會推動永續發展相關措施" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">›</span><span class="toc-text">10.3 金管會推動永續發展相關措施</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-4-上市上櫃公司永續發展實務守則" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">▹</span><span class="toc-text">10.4 上市上櫃公司永續發展實務守則</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-4-1-適用範圍" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">●</span><span class="toc-text">10.4.1 適用範圍</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-4-2-實踐永續發展之效益" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">○</span><span class="toc-text">10.4.2 實踐永續發展之效益</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-4-3-永續發展之實踐原則" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">■</span><span class="toc-text">10.4.3 永續發展之實踐原則</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-4-4-永續發展政策之訂定程序" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">□</span><span class="toc-text">10.4.4 永續發展政策之訂定程序</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-4-5-實踐永續發展" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">✦</span><span class="toc-text">10.4.5 實踐永續發展</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-5-永續發展資訊揭露之相關規範" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">●</span><span class="toc-text">10.5 永續發展資訊揭露之相關規範</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-5-1-年報及公開說明書揭露推動永續發展執行情形" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">○</span><span class="toc-text">10.5.1 年報及公開說明書揭露推動永續發展執行情形</span></a>
+<a class="toc-h3 toc-sub" href="第 10 永續發展之解析.html#10-5-2-上市-櫃-公司編製與申報永續報告書作業辦法" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">■</span><span class="toc-text">10.5.2 上市(櫃)公司編製與申報永續報告書作業辦法</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-6-永續發展實務小百科" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">○</span><span class="toc-text">10.6 永續發展實務小百科</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-7" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">■</span><span class="toc-text">10.7</span></a>
+<a class="toc-h3 toc-sec" href="第 10 永續發展之解析.html#10-8-練習題" data-nav-jump="第 10 永續發展之解析.html"><span class="toc-mark">□</span><span class="toc-text">10.8 練習題</span></a>
+</div></details></div>
+  </aside>
+  <div class="content">
+    <main class="wrap">
+      <p class="meta-line">公司治理講義 · 全套視覺化 · 里程碑／Tabs／Chips · 2026-08-17 00:29</p>
+      
+<div class="lecture-tabs">
+  <ul class="nav nav-pills lecture-nav" role="tablist">
+    <li class="nav-item" role="presentation"><button class="nav-link active" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button" role="tab">總覽</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-charts-btn" data-bs-toggle="pill" data-bs-target="#tab-charts" type="button" role="tab">圖表</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-path-btn" data-bs-toggle="pill" data-bs-target="#tab-path" type="button" role="tab">學習路徑</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-lecture-btn" data-bs-toggle="pill" data-bs-target="#tab-lecture" type="button" role="tab">章節講義</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick" type="button" role="tab">速查卡片</button></li>
+    <li class="nav-item" role="presentation"><button class="nav-link" id="tab-quiz-btn" data-bs-toggle="pill" data-bs-target="#tab-quiz" type="button" role="tab">練習</button></li>
+  </ul>
+  <div class="tab-content lecture-tab-content">
+    <div class="tab-pane fade show active" id="tab-overview" role="tabpanel"><header class="lecture-hero"><span class="unit-badge">公司治理 · 詳盡講義</span><h1 class='note-title'>第7章 內線交易之解析</h1><div class="chip-row">
+<span class="tag-chip chip-cyan">公司治理</span>
+<span class="tag-chip chip-mint">內線</span>
+<span class="tag-chip chip-amber">練習題</span>
+</div></header><section class="milestone-wrap" aria-label="學習里程碑">
+<div class="section-kicker">學習路徑</div>
+<h2 class="section-title">本章里程碑</h2>
+<ol class="milestone-track">
+<li class="milestone-item"><a class="milestone-link" href="#7-1-前言" data-jump-lecture><span class="ms-dot">1</span><span class="ms-label">前言</span><span class="ms-desc">股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#7-2-構成要件-5個-w" data-jump-lecture><span class="ms-dot">2</span><span class="ms-label">構成要件-5個 W</span><span class="ms-desc">簡單來說,「內線交易」包括下列五項要件,以下將以5個W分別說明。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#7-3-刑事責任與民事責任" data-jump-lecture><span class="ms-dot">3</span><span class="ms-label">刑事責任與民事責任</span><span class="ms-desc">內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#7-4-法院判決實務" data-jump-lecture><span class="ms-dot">4</span><span class="ms-label">法院判決實務</span><span class="ms-desc">內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#7-5-如何避免誤觸內線交易" data-jump-lecture><span class="ms-dot">5</span><span class="ms-label">如何避免誤觸內線交易</span><span class="ms-desc">1. 瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W 2. 對內部人及員工加強宣導並進行教育訓練 3. 對重大消息成立時點,以較早者…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#7-6-內線交易實務小百科" data-jump-lecture><span class="ms-dot">6</span><span class="ms-label">內線交易實務小百科</span><span class="ms-desc">1. 甲上市公司前任董事林先生,因為任職期間知悉公司重大利多消息,而在辭任董事後六個月內買進該公司股票,當時消息尚未公開。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#7-7-結語" data-jump-lecture><span class="ms-dot">7</span><span class="ms-label">結語</span><span class="ms-desc">目前學說及司法實務普遍認同,證券交易法第157條之1立法意旨,係為維繫證券市場之公平及公正交易,故若投資人獲悉與內部人相同之資訊,可據以判…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#1-內線交易規範的買賣標的為何" data-jump-lecture><span class="ms-dot">8</span><span class="ms-label">1. 內線交易規範的買賣標的為何</span><span class="ms-desc">證券交易法第157 條之1第1項及第2項所定內線交易的買賣標的,包括: (1) 上市股票、公司債。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-jump-lecture><span class="ms-dot">9</span><span class="ms-label">2. 什麼是「涉及公司之財務、業務,對其股票</span><span class="ms-desc">&gt; ³ 依證券交易法施行細則第11條第1項規定。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-jump-lecture><span class="ms-dot">10</span><span class="ms-label">3. 什麼是「涉及該證券之市場供求,對其股票</span><span class="ms-desc">依據「管理辦法」第3條,係指下列消息之一: 一、證券集中交易市場或證券商營業處所買賣之有價證券有被進行或停止公開收購者。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#4-什麼是-公司有重大影響其支付本息能力之消息" data-jump-lecture><span class="ms-dot">11</span><span class="ms-label">4. 什麼是「公司有重大影響其支付本息能力之</span><span class="ms-desc">依據「管理辦法」第4條,係指下列消息之一: 一、本法施行細則第7條第1款至第3款所定情事者。</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#5-重大消息之-公開方式" data-jump-lecture><span class="ms-dot">12</span><span class="ms-label">5. 重大消息之「公開方式」</span><span class="ms-desc">依據「管理辦法」第6條之規定: (1) 管理辦法第2條(涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#刑事責任" data-jump-lecture><span class="ms-dot">13</span><span class="ms-label">刑事責任</span><span class="ms-desc">有期徒刑: 3年以上10年以下 罰金(新臺幣): 得併科1千萬元以上2億元以下罰金 犯罪所得達新臺幣1億元以上: 7年以上有期徒刑,得併科…</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#民事責任" data-jump-lecture><span class="ms-dot">14</span><span class="ms-label">民事責任</span><span class="ms-desc">損害賠償: 對於當日善意從事相反買賣之人,負損害賠償責任 賠償金額: 善意交易人之交易價格,與消息公開後10個營業日收盤平均價格之差額 情…</span></a></li>
+</ol></section><section class="panel panel-mint mb-3"><h2 class="section-title">學習目標</h2><ul class="mb-0"><li>能說明「前言」的重點</li><li>能說明「構成要件-5個 W」的重點</li><li>能說明「刑事責任與民事責任」的重點</li><li>能說明「法院判決實務」的重點</li><li>能完成本章練習題並核對解答</li></ul></section><section class="mb-3"><h2 class="section-title">重點摘要</h2><div class="summary-chips"><div class="summary-chip chip-cyan">股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人如有違法行為將使公司陷於極大之危險」。</div><div class="summary-chip chip-mint">簡單來說,「內線交易」包括下列五項要件,以下將以5個W分別說明。</div><div class="summary-chip chip-amber">內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。</div><div class="summary-chip chip-coral">內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分院99年度金上易字第3號判決),供讀者參考。</div><div class="summary-chip chip-violet">1. 瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W 2. 對內部人及員工加強宣導並進行教育訓練 3. 對重大消息成立時點,以較早者為準,並及早公開重大消息 (1) 建議公司自我檢視內部重大消息時,參考金管會所訂管理辦法,並及早公開…</div></div></section><p class="tab-hint">建議路徑：總覽 → 圖表（時序／對照／演進）→ 學習路徑 → 章節講義 → 速查 → 練習。</p><div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>本章時序速覽（完整見「圖表」分頁）</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>民國1988年</td>
+<td>增訂證券交易法第 157 條之1,對於內線交易明文禁止,違者應負民事及刑事責任</td>
+</tr>
+<tr>
+<td>2006年1月</td>
+<td>11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業</td>
+</tr>
+<tr>
+<td>2006年5月</td>
+<td>30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第</td>
+</tr>
+<tr>
+<td>民國2006年1月</td>
+<td>修正後,對違法者大幅加重賠償責任</td>
+</tr>
+<tr>
+<td>2006年1月</td>
+<td>修正後的規定,「違反前項規定者,應就消息未公開前其買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額限度內,對善意從事相反買賣之人負損害賠償責任;</td>
+</tr>
+</tbody></table></div></div></div>
+    <div class="tab-pane fade" id="tab-charts" role="tabpanel"><div class="structs-wrap"><div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>全章時序總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>民國1988年</td>
+<td>增訂證券交易法第 157 條之1,對於內線交易明文禁止,違者應負民事及刑事責任</td>
+</tr>
+<tr>
+<td>2006年1月</td>
+<td>11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業</td>
+</tr>
+<tr>
+<td>2006年5月</td>
+<td>30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第</td>
+</tr>
+<tr>
+<td>民國2006年1月</td>
+<td>修正後,對違法者大幅加重賠償責任</td>
+</tr>
+<tr>
+<td>2006年1月</td>
+<td>修正後的規定,「違反前項規定者,應就消息未公開前其買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額限度內,對善意從事相反買賣之人負損害賠償責任;</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 1</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>類別</th>
+<th>條文項次</th>
+<th>規範對象</th>
+</tr></thead><tbody>
+<tr>
+<td>傳統內部人¹</td>
+<td>第1款</td>
+<td>發行股票公司之董事、監察人、經理人及受政府或法人指定代表行使職務之自然人</td>
+</tr>
+<tr>
+<td>準內部人</td>
+<td>第2款&lt;br&gt;第3款</td>
+<td>持有該公司之股份超過百分之十之股東&lt;br&gt;基於職業關係獲悉消息之人&lt;br&gt;舉凡基於工作之便利獲悉發行股票公司未公開重大消息而買賣該公司股票者,均為本款所規範之對象。&lt;br&gt;例如:公司職員,或接受公司委任處理事務之律師、會計師、財務顧問等。</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>基於控制關係獲悉消息之人²&lt;br&gt;例如:母公司基於控制關係獲悉子公司重大消息者。</td>
+</tr>
+<tr>
+<td>類別</td>
+<td>條文項次</td>
+<td>規範對象</td>
+</tr>
+<tr>
+<td>原內部人</td>
+<td>第4款</td>
+<td>喪失前三款身分後,未滿6個月者</td>
+</tr>
+<tr>
+<td>消息受領人</td>
+<td>第5款</td>
+<td>從前四款所列之人獲悉消息之人</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 2</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>被告人(即受內線交易規範之內部人)主張</td>
+<td>甲公司於2006年4月29日召開董事會後,隨即於2006年4月30日將「94年度財務報告」於公開資訊觀測站之網頁上公告周知,且依其上簡明損益表中確有載明甲公司之稅後純益為-691,910仟元,均可證實甲公司確已於2006年4月30日即將 94 年度財務報告公告周知,並將「認列損失</td>
+</tr>
+<tr>
+<td>經查</td>
+<td>完整之財務報告,依法應包含財務報表(財務報表包括資產負債表、損益表、股東權益變動表、現金流量表及其附註或附表等四大財務報表)、重要會計科目明細表及其他有助於使用者決策之揭露事項及說明等資料。反觀上開「即時公告查詢」中之簡明財務報表,不但欠缺財務報告所應包括之其他報表及內容(四大財</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>對照表 3</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>解答</td>
+<td>發行股票公司之董事、監察人、經理人及持有公司股份超過百分之十之股東,若喪失其身分未滿六個月者,依證券交易法第157條之1第1項第4款之規定,仍有同條項「禁止內線交易」之適用。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>陳小姐自乙公司財務長張先生處獲悉該公司將聲請重整之重大消息,並在消息公開前賣出該公司股票,陳小姐即屬證券交易法第157條之1第1項第5款所定「從前4款所列之人獲悉消息之人」,其賣出股票之行為則構成內線交易。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依「管理辦法」第5條規定,重大消息之成立時點,為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他依具體事證可得明確之日,以日期在前者為準,故合併案重大消息之成立時點並不限於董事會決議日。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>丁公司副總經理陳先生在該重大消息公開後逾18小時方買進該公司股票,其交易行為並未違反證交法第157條之1第1項所定「實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後十八小時內,不得對該公司之上市股票買入或賣出」之規定。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>掏空公司資產是經濟犯罪的一種,非屬內線交易。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>意圖影響集中交易市場有價證券交易價格,而散布流言或不實資料」,係屬證券交易法第155條第1項第6款「股價操縱」之違法行為態樣,並非同法第157條之1第5項所定「重大影響股票價格之消息」。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>(1) 2006年1月11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「合併」、「收購」係屬第2條第2款列舉之重大消息;依2010年</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依據主管機關2006年5月30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第1款所列同法施行細則第7條第8款列舉之重大消息,如內部人實際知悉該等重大消息,在該消息明確後,</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>經理人之定義,證券交易法第22條之2、第25條、第28條之2、第157條、第157條之1所引用之經理人,早期適用公司法條文,傳統上副理以上均屬經理人,實務上依公司法第29條,只要經董事會任免,亦包括在內,主管機關2003年3月27日發布台財證三字第0920001301 號解釋函採</td>
+</tr>
+<tr>
+<td>14. 「獲利」是否為內線交易之構成要件,假設</td>
+<td>(1) 公司公開利多之重大消息前受證券交易法規範之行為主體有買入股票,但該重大消息公布後,公司股票股價並未上漲,處分後並無獲利,此一情形有構成內線交易嗎?</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依證券交易法第157條之1之規定,「獲利」非內線交易之構成要件。另證券交易法規範之行為主體（內部人、準內部人及消息受領人）於上市公司未公開之利多重大消息前買進,公開後賣出之行為,如事證符合內線交易構成要件,仍受內線交易之規範。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依證券交易法第157條之1之規定,行為主體實際知悉重大影響上市公司股票價格之財務、業務消息時,不得在該消息明確後,未公開或公開後18小時內,自行或以他人名義買賣該上市公司</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>演進／架構總表</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>受證券交易法第157條之1規範對象</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>實際知悉</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>發行股票公司有重大影響其股票價格/支付本息能力之消息</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>在消息明確後,未公開前或公開後18小時內</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>促進證券市場交易公平性,維護投資大眾信心。</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>促進證券市場資訊流通,以利投資人作最佳的投資評估與決策。</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>促使公司股價反映其真實價值,導引市場資金作更有效之配置。</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>防止公司內部人之道德風險,避免違反受任人之信賴義務。</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>對內部人及員工加強宣導並進行教育訓練</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>對重大消息成立時點,以較早者為準,並及早公開重大消息</td>
+</tr>
+</tbody></table></div></div></div>
+<div class="structs-wrap viz-root" id="viz-root">
+  <p class="tab-hint mb-2">以下僅顯示本章有資料的圖表；每張圖獨立一格，可分別操作。</p>
+  <div class="viz-toolkit-badge"><span class="viz-pill">markmap</span><span class="viz-pill">Tabulator</span><span class="viz-pill">Chart.js</span><span class="viz-pill">ECharts</span><span class="viz-pill">vis-timeline</span><span class="viz-pill">Plotly</span><span class="viz-pill">Grid.js</span><span class="viz-pill">Mermaid</span><span class="viz-pill">D3</span><span class="viz-pill">Cytoscape</span><span class="viz-pill">vis-network</span></div>
+  <script type="application/json" id="note-viz-data">{"title": "第7章 內線交易之解析", "timeline": [{"when": "民國1988年", "what": "增訂證券交易法第 157 條之1,對於內線交易明文禁止,違者應負民事及刑事責任"}, {"when": "2006年1月", "what": "11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業"}, {"when": "2006年5月", "what": "30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第"}, {"when": "民國2006年1月", "what": "修正後,對違法者大幅加重賠償責任"}, {"when": "2006年1月", "what": "修正後的規定,「違反前項規定者,應就消息未公開前其買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額限度內,對善意從事相反買賣之人負損害賠償責任;"}], "compares": [{"headers": ["類別", "條文項次", "規範對象"], "rows": [["傳統內部人¹", "第1款", "發行股票公司之董事、監察人、經理人及受政府或法人指定代表行使職務之自然人"], ["準內部人", "第2款<br>第3款", "持有該公司之股份超過百分之十之股東<br>基於職業關係獲悉消息之人<br>舉凡基於工作之便利獲悉發行股票公司未公開重大消息而買賣該公司股票者,均為本款所規範之對象。<br>例如:公司職員,或接受公司委任處理事務之律師、會計師、財務顧問等。"], ["", "", "基於控制關係獲悉消息之人²<br>例如:母公司基於控制關係獲悉子公司重大消息者。"], ["類別", "條文項次", "規範對象"], ["原內部人", "第4款", "喪失前三款身分後,未滿6個月者"], ["消息受領人", "第5款", "從前四款所列之人獲悉消息之人"]]}, {"headers": ["項目", "說明／對照"], "rows": [["被告人(即受內線交易規範之內部人)主張", "甲公司於2006年4月29日召開董事會後,隨即於2006年4月30日將「94年度財務報告」於公開資訊觀測站之網頁上公告周知,且依其上簡明損益表中確有載明甲公司之稅後純益為-691,910仟元,均可證實甲公司確已於2006年4月30日即將 94 年度財務報告公告周知,並將「認列損失"], ["經查", "完整之財務報告,依法應包含財務報表(財務報表包括資產負債表、損益表、股東權益變動表、現金流量表及其附註或附表等四大財務報表)、重要會計科目明細表及其他有助於使用者決策之揭露事項及說明等資料。反觀上開「即時公告查詢」中之簡明財務報表,不但欠缺財務報告所應包括之其他報表及內容(四大財"]]}, {"headers": ["項目", "說明／對照"], "rows": [["解答", "發行股票公司之董事、監察人、經理人及持有公司股份超過百分之十之股東,若喪失其身分未滿六個月者,依證券交易法第157條之1第1項第4款之規定,仍有同條項「禁止內線交易」之適用。"], ["解答", "陳小姐自乙公司財務長張先生處獲悉該公司將聲請重整之重大消息,並在消息公開前賣出該公司股票,陳小姐即屬證券交易法第157條之1第1項第5款所定「從前4款所列之人獲悉消息之人」,其賣出股票之行為則構成內線交易。"], ["解答", "依「管理辦法」第5條規定,重大消息之成立時點,為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他依具體事證可得明確之日,以日期在前者為準,故合併案重大消息之成立時點並不限於董事會決議日。"], ["解答", "丁公司副總經理陳先生在該重大消息公開後逾18小時方買進該公司股票,其交易行為並未違反證交法第157條之1第1項所定「實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後十八小時內,不得對該公司之上市股票買入或賣出」之規定。"], ["解答", "掏空公司資產是經濟犯罪的一種,非屬內線交易。"], ["解答", "意圖影響集中交易市場有價證券交易價格,而散布流言或不實資料」,係屬證券交易法第155條第1項第6款「股價操縱」之違法行為態樣,並非同法第157條之1第5項所定「重大影響股票價格之消息」。"], ["解答", "(1) 2006年1月11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「合併」、「收購」係屬第2條第2款列舉之重大消息;依2010年"], ["解答", "依據主管機關2006年5月30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第1款所列同法施行細則第7條第8款列舉之重大消息,如內部人實際知悉該等重大消息,在該消息明確後,"], ["解答", "經理人之定義,證券交易法第22條之2、第25條、第28條之2、第157條、第157條之1所引用之經理人,早期適用公司法條文,傳統上副理以上均屬經理人,實務上依公司法第29條,只要經董事會任免,亦包括在內,主管機關2003年3月27日發布台財證三字第0920001301 號解釋函採"], ["14. 「獲利」是否為內線交易之構成要件,假設", "(1) 公司公開利多之重大消息前受證券交易法規範之行為主體有買入股票,但該重大消息公布後,公司股票股價並未上漲,處分後並無獲利,此一情形有構成內線交易嗎?"], ["解答", "依證券交易法第157條之1之規定,「獲利」非內線交易之構成要件。另證券交易法規範之行為主體（內部人、準內部人及消息受領人）於上市公司未公開之利多重大消息前買進,公開後賣出之行為,如事證符合內線交易構成要件,仍受內線交易之規範。"], ["解答", "依證券交易法第157條之1之規定,行為主體實際知悉重大影響上市公司股票價格之財務、業務消息時,不得在該消息明確後,未公開或公開後18小時內,自行或以他人名義買賣該上市公司"]]}], "evolution": [{"stage": "階段 1", "content": "受證券交易法第157條之1規範對象"}, {"stage": "階段 2", "content": "實際知悉"}, {"stage": "階段 3", "content": "發行股票公司有重大影響其股票價格/支付本息能力之消息"}, {"stage": "階段 4", "content": "在消息明確後,未公開前或公開後18小時內"}, {"stage": "階段 5", "content": "自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債"}, {"stage": "階段 1", "content": "促進證券市場交易公平性,維護投資大眾信心。"}, {"stage": "階段 2", "content": "促進證券市場資訊流通,以利投資人作最佳的投資評估與決策。"}, {"stage": "階段 3", "content": "促使公司股價反映其真實價值,導引市場資金作更有效之配置。"}, {"stage": "階段 4", "content": "防止公司內部人之道德風險,避免違反受任人之信賴義務。"}, {"stage": "階段 1", "content": "瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W"}, {"stage": "階段 2", "content": "對內部人及員工加強宣導並進行教育訓練"}, {"stage": "階段 3", "content": "對重大消息成立時點,以較早者為準,並及早公開重大消息"}], "outline": [{"title": "7.1 前言", "kids": []}, {"title": "7.2 構成要件-5個 W", "kids": ["7.2.1 WHY:為什麼要禁止內線交易", "7.2.2 WHO:內線交易的受規範對象", "7.2.3 HOW:怎樣會構成內線交易", "7.2.4 WHAT:規範的買賣標的及重大消息"]}, {"title": "7.3 刑事責任與民事責任", "kids": ["內線交易法律責任"]}, {"title": "7.4 法院判決實務", "kids": ["7.4.1 案例事實", "7.4.2 法院見解"]}, {"title": "7.5 如何避免誤觸內線交易", "kids": []}, {"title": "7.6 內線交易實務小百科", "kids": []}, {"title": "7.7 結語", "kids": []}, {"title": "1. 內線交易規範的買賣標的為何", "kids": []}, {"title": "2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」", "kids": []}, {"title": "3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」", "kids": []}, {"title": "4. 什麼是「公司有重大影響其支付本息能力之消息」", "kids": []}, {"title": "5. 重大消息之「公開方式」", "kids": ["7.2.5 WHEN:內線交易的禁止交易期間"]}, {"title": "刑事責任", "kids": []}, {"title": "民事責任", "kids": ["7.3.1 刑事責任", "7.3.2 民事責任"]}], "nodes": [{"id": "n0", "label": "7.1 前言"}, {"id": "n1", "label": "7.2 構成要件-5個 W"}, {"id": "n1k0", "label": "7.2.1 WHY:為什麼要禁止內線"}, {"id": "n1k1", "label": "7.2.2 WHO:內線交易的受規範"}, {"id": "n1k2", "label": "7.2.3 HOW:怎樣會構成內線交"}, {"id": "n1k3", "label": "7.2.4 WHAT:規範的買賣標的"}, {"id": "n2", "label": "7.3 刑事責任與民事責任"}, {"id": "n2k0", "label": "內線交易法律責任"}, {"id": "n3", "label": "7.4 法院判決實務"}, {"id": "n3k0", "label": "7.4.1 案例事實"}, {"id": "n3k1", "label": "7.4.2 法院見解"}, {"id": "n4", "label": "7.5 如何避免誤觸內線交易"}, {"id": "n5", "label": "7.6 內線交易實務小百科"}, {"id": "n6", "label": "7.7 結語"}, {"id": "n7", "label": "1. 內線交易規範的買賣標的為何"}, {"id": "n8", "label": "2. 什麼是「涉及公司之財務、業務,對其股票"}, {"id": "n9", "label": "3. 什麼是「涉及該證券之市場供求,對其股票"}, {"id": "n10", "label": "4. 什麼是「公司有重大影響其支付本息能力之"}, {"id": "n11", "label": "5. 重大消息之「公開方式」"}, {"id": "n11k0", "label": "7.2.5 WHEN:內線交易的禁止"}, {"id": "n12", "label": "刑事責任"}, {"id": "n13", "label": "民事責任"}, {"id": "n13k0", "label": "7.3.1 刑事責任"}, {"id": "n13k1", "label": "7.3.2 民事責任"}], "edges": [{"from": "n0", "to": "n1"}, {"from": "n1", "to": "n1k0"}, {"from": "n1", "to": "n1k1"}, {"from": "n1", "to": "n1k2"}, {"from": "n1", "to": "n1k3"}, {"from": "n1", "to": "n2"}, {"from": "n2", "to": "n2k0"}, {"from": "n2", "to": "n3"}, {"from": "n3", "to": "n3k0"}, {"from": "n3", "to": "n3k1"}, {"from": "n3", "to": "n4"}, {"from": "n4", "to": "n5"}, {"from": "n5", "to": "n6"}, {"from": "n6", "to": "n7"}, {"from": "n7", "to": "n8"}, {"from": "n8", "to": "n9"}, {"from": "n9", "to": "n10"}, {"from": "n10", "to": "n11"}, {"from": "n11", "to": "n11k0"}, {"from": "n11", "to": "n12"}, {"from": "n12", "to": "n13"}, {"from": "n13", "to": "n13k0"}, {"from": "n13", "to": "n13k1"}], "charts": [], "mermaids": []}</script>
+  <div class="viz-grid viz-grid-dense">
+    <article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">markmap</span>章節心智圖</div><div class="viz-cell-b"><div class="markmap-host" id="viz-markmap" aria-label="章節心智圖"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>時序表</div><div class="viz-cell-b"><div id="viz-tabulator-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Chart.js</span>時序長條圖</div><div class="viz-cell-b"><div class="viz-box viz-box-sm"><canvas id="viz-chartjs-timeline"></canvas></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>時序折線</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-timeline</span>時間軸</div><div class="viz-cell-b"><div class="viz-box" id="viz-vis-timeline"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Plotly</span>時序互動圖</div><div class="viz-cell-b"><div class="viz-box" id="viz-plotly-timeline"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>對照表</div><div class="viz-cell-b"><div id="viz-tabulator-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Grid.js</span>對照表（可搜尋）</div><div class="viz-cell-b"><div id="viz-gridjs-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>演進表</div><div class="viz-cell-b"><div id="viz-tabulator-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>演進流程</div><div class="viz-cell-b"><div class="mermaid-host"><pre class="mermaid" id="viz-mermaid-evolve"></pre></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>演進關係</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">D3</span>演進樹狀圖</div><div class="viz-cell-b"><div class="d3-host viz-box" id="viz-d3-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Cytoscape</span>章節關係網</div><div class="viz-cell-b"><div class="cy-host" id="viz-cytoscape"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-network</span>概念網路</div><div class="viz-cell-b"><div class="vis-host" id="viz-vis-network"></div></div></article>
+  </div>
+</div></div>
+    <div class="tab-pane fade" id="tab-path" role="tabpanel"><div class="path-cards">
+<a class="path-card" href="#7-1-前言" data-jump-lecture><div class="path-idx">站 1</div><div class="path-title">前言</div><div class="path-desc">股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#7-2-構成要件-5個-w" data-jump-lecture><div class="path-idx">站 2</div><div class="path-title">構成要件-5個 W</div><div class="path-desc">簡單來說,「內線交易」包括下列五項要件,以下將以5個W分別說明。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#7-3-刑事責任與民事責任" data-jump-lecture><div class="path-idx">站 3</div><div class="path-title">刑事責任與民事責任</div><div class="path-desc">內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#7-4-法院判決實務" data-jump-lecture><div class="path-idx">站 4</div><div class="path-title">法院判決實務</div><div class="path-desc">內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#7-5-如何避免誤觸內線交易" data-jump-lecture><div class="path-idx">站 5</div><div class="path-title">如何避免誤觸內線交易</div><div class="path-desc">1. 瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W 2. 對內部人及員工加強宣導並進行教育訓練 3. 對重大消息成立時點,以較早者…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#7-6-內線交易實務小百科" data-jump-lecture><div class="path-idx">站 6</div><div class="path-title">內線交易實務小百科</div><div class="path-desc">1. 甲上市公司前任董事林先生,因為任職期間知悉公司重大利多消息,而在辭任董事後六個月內買進該公司股票,當時消息尚未公開。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#7-7-結語" data-jump-lecture><div class="path-idx">站 7</div><div class="path-title">結語</div><div class="path-desc">目前學說及司法實務普遍認同,證券交易法第157條之1立法意旨,係為維繫證券市場之公平及公正交易,故若投資人獲悉與內部人相同之資訊,可據以判…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#1-內線交易規範的買賣標的為何" data-jump-lecture><div class="path-idx">站 8</div><div class="path-title">1. 內線交易規範的買賣標的為何</div><div class="path-desc">證券交易法第157 條之1第1項及第2項所定內線交易的買賣標的,包括: (1) 上市股票、公司債。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-jump-lecture><div class="path-idx">站 9</div><div class="path-title">2. 什麼是「涉及公司之財務、業務,對其股票</div><div class="path-desc">&gt; ³ 依證券交易法施行細則第11條第1項規定。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-jump-lecture><div class="path-idx">站 10</div><div class="path-title">3. 什麼是「涉及該證券之市場供求,對其股票</div><div class="path-desc">依據「管理辦法」第3條,係指下列消息之一: 一、證券集中交易市場或證券商營業處所買賣之有價證券有被進行或停止公開收購者。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#4-什麼是-公司有重大影響其支付本息能力之消息" data-jump-lecture><div class="path-idx">站 11</div><div class="path-title">4. 什麼是「公司有重大影響其支付本息能力之</div><div class="path-desc">依據「管理辦法」第4條,係指下列消息之一: 一、本法施行細則第7條第1款至第3款所定情事者。</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#5-重大消息之-公開方式" data-jump-lecture><div class="path-idx">站 12</div><div class="path-title">5. 重大消息之「公開方式」</div><div class="path-desc">依據「管理辦法」第6條之規定: (1) 管理辦法第2條(涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#刑事責任" data-jump-lecture><div class="path-idx">站 13</div><div class="path-title">刑事責任</div><div class="path-desc">有期徒刑: 3年以上10年以下 罰金(新臺幣): 得併科1千萬元以上2億元以下罰金 犯罪所得達新臺幣1億元以上: 7年以上有期徒刑,得併科…</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#民事責任" data-jump-lecture><div class="path-idx">站 14</div><div class="path-title">民事責任</div><div class="path-desc">損害賠償: 對於當日善意從事相反買賣之人,負損害賠償責任 賠償金額: 善意交易人之交易價格,與消息公開後10個營業日收盤平均價格之差額 情…</div><div class="path-go">前往講義 →</div></a>
+</div></div>
+    <div class="tab-pane fade" id="tab-lecture" role="tabpanel"><article class="sec-block" id="7-1-前言">
+<div class="sec-kicker">站 1｜前言</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">7.1 前言</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-1-前言" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.1 前言」。首先，股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人如有違法行為將使公司陷於極大之危險」。毫無疑問的,內部人內線交易對公司本身之聲譽就是一項嚴重危害,應嚴格禁止。依證券交易法第157條之1第1項規定,受規範對象實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後18小時內,若對該公司之上市或在證券商營業處所買賣之股票或其他具有股權性質之有價證券,自行或以他人名義買入或賣出,即構成「內線交易」。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人如有違法行為將使公司陷於極大之危險」。毫無疑問的,內部人內線交易對公司本身之聲譽就是一項嚴重危害,應嚴格禁止。</p>
+
+<p>依證券交易法第157條之1第1項規定,受規範對象實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後18小時內,若對該公司之上市或在證券商營業處所買賣之股票或其他具有股權性質之有價證券,自行或以他人名義買入或賣出,即構成「內線交易」。</p>
+
+<p>另依證券交易法第157條之1第2項規定,受規範對象實際知悉發行股票公司有重大影響其支付本息能力之消息時,在該消息明確後,未公開前或公開後18小時內,若對該公司之上市或在證券商營業處所買賣之非股權性質之公司債,自行或以他人名義賣出,亦構成「內線交易」。</p>
+
+<p>簡而言之,內線交易係指具特定身分之人,獲悉影響證券價格且未經公開的重要消息後買賣證券之行為。其規範目的即在維持證券交易判斷時「武器」之平等,藉以保障市場健全。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="7-2-構成要件-5個-w">
+<div class="sec-kicker">站 2｜構成要件-5個 W</div>
+<div class="sec-head"><span class="sec-num">2</span><h2 class="sec-title">7.2 構成要件-5個 W</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-2-構成要件-5個-w" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.2 構成要件-5個 W」。首先，簡單來說,「內線交易」包括下列五項要件,以下將以5個W分別說明。1. 受證券交易法第157條之1規範對象 2. 實際知悉 3. 發行股票公司有重大影響其股票價格/支付本息能力之消息 4. 在消息明確後,未公開前或公開後18小時內 5. 自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債。接著，關於可以這樣記。7.2.1 WHY:為什麼要禁止內線交易：目前世界主要國家均已立法規範內線交易,我國於民國1988年增訂證券交易法第 157 條之1,對於內線交易明文禁止,違者應負民事及刑事責任。禁止內線交易的理由如下: 1. 促進證券市場交易公平性,維護投資大眾信心。 2. 促進證券市場資訊流通,以利投資人作最佳的投資評估與決策。 3. 促使公司股價反映其真實價值,導引市場資金作更有效之配置。 4. 防止公司內部；7.2.2 WHO:內線交易的受規範對象：證券交易法第157條之1第1項規定下列各款之人,均屬內線交易禁止規定的適用範圍: | 類別 | 條文項次 | 規範對象 | | :--- | :--- | :--- | | 傳統內部人¹ | 第1款 | 發行股票公司之董事、監察人、經理人及受政府或法人指定代表行使職務之自然人 | | 準內部人 | 第2款&lt;br第3款 | 持有該公司之股份超過百分之十之股東&lt;；7.2.3 HOW:怎樣會構成內線交易：依證券交易法第157條之1第1項規定,受規範對象實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後18小時內,自行或以他人名義買進或賣出該公司股票或其他具有股權性質之有價證券,即有可能構成內線交易。 另依證券交易法第157條之1第2項規定,受規範對象實際知悉發行股票公司有重大影響其支付本息能力之消息時,在該消息明確後,未公開前。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>構成要件-5個 W｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>類別</th>
+<th>條文項次</th>
+<th>規範對象</th>
+</tr></thead><tbody>
+<tr>
+<td>傳統內部人¹</td>
+<td>第1款</td>
+<td>發行股票公司之董事、監察人、經理人及受政府或法人指定代表行使職務之自然人</td>
+</tr>
+<tr>
+<td>準內部人</td>
+<td>第2款&lt;br&gt;第3款</td>
+<td>持有該公司之股份超過百分之十之股東&lt;br&gt;基於職業關係獲悉消息之人&lt;br&gt;舉凡基於工作之便利獲悉發行股票公司未公開重大消息而買賣該公司股票者,均為本款所規範之對象。&lt;br&gt;例如:公司職員,或接受公司委任處理事務之律師、會計師、財務顧問等。</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>基於控制關係獲悉消息之人²&lt;br&gt;例如:母公司基於控制關係獲悉子公司重大消息者。</td>
+</tr>
+<tr>
+<td>類別</td>
+<td>條文項次</td>
+<td>規範對象</td>
+</tr>
+<tr>
+<td>原內部人</td>
+<td>第4款</td>
+<td>喪失前三款身分後,未滿6個月者</td>
+</tr>
+<tr>
+<td>消息受領人</td>
+<td>第5款</td>
+<td>從前四款所列之人獲悉消息之人</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>構成要件-5個 W｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>受證券交易法第157條之1規範對象</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>實際知悉</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>發行股票公司有重大影響其股票價格/支付本息能力之消息</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>在消息明確後,未公開前或公開後18小時內</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>2.1 WHY:為什麼要禁止內線交易</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>促進證券市場交易公平性,維護投資大眾信心。</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>促進證券市場資訊流通,以利投資人作最佳的投資評估與決策。</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>促使公司股價反映其真實價值,導引市場資金作更有效之配置。</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>防止公司內部人之道德風險,避免違反受任人之信賴義務。</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>2.2 WHO:內線交易的受規範對象</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>2.3 HOW:怎樣會構成內線交易</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>簡單來說,「內線交易」包括下列五項要件,以下將以5個W分別說明。</p>
+
+<ol>
+<li>受證券交易法第157條之1規範對象</li>
+<li>實際知悉</li>
+<li>發行股票公司有重大影響其股票價格/支付本息能力之消息</li>
+<li>在消息明確後,未公開前或公開後18小時內</li>
+<li>自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債</li>
+</ol>
+</div>
+<section class="sub-sec" id="7-2-1-why-為什麼要禁止內線交易">
+<h3 class="subhead">7.2.1 WHY:為什麼要禁止內線交易</h3>
+<details class="narration-box" data-tts-root id="narration-7-2-1-why-為什麼要禁止內線交易" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.2.1 WHY:為什麼要禁止內線交易」。首先，目前世界主要國家均已立法規範內線交易,我國於民國1988年增訂證券交易法第 157 條之1,對於內線交易明文禁止,違者應負民事及刑事責任。禁止內線交易的理由如下: 1. 促進證券市場交易公平性,維護投資大眾信心。2. 促進證券市場資訊流通,以利投資人作最佳的投資評估與決策。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>目前世界主要國家均已立法規範內線交易,我國於民國1988年增訂證券交易法第 157 條之1,對於內線交易明文禁止,違者應負民事及刑事責任。禁止內線交易的理由如下:</p>
+
+<ol>
+<li>促進證券市場交易公平性,維護投資大眾信心。</li>
+<li>促進證券市場資訊流通,以利投資人作最佳的投資評估與決策。</li>
+<li>促使公司股價反映其真實價值,導引市場資金作更有效之配置。</li>
+<li>防止公司內部人之道德風險,避免違反受任人之信賴義務。
+促進公司決策之健全性,維護資訊財產之正當利用。</li>
+</ol>
+
+</section>
+<section class="sub-sec" id="7-2-2-who-內線交易的受規範對象">
+<h3 class="subhead">7.2.2 WHO:內線交易的受規範對象</h3>
+<details class="narration-box" data-tts-root id="narration-7-2-2-who-內線交易的受規範對象" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.2.2 WHO:內線交易的受規範對象」。首先，證券交易法第157條之1第1項規定下列各款之人,均屬內線交易禁止規定的適用範圍: | 類別 | 條文項次 | 規範對象 | | :--- | :--- | :--- | | 傳統內部人¹ | 第1款 | 發行股票公司之董事、監察人、經理人及受政府或法人指定代表行使職務之自然人 | | 準內部人 | 第2款&lt;br第3款 | 持有該公司之股份超過百分之十之股東&lt;br基於職業關係獲悉消息之人&lt;br舉凡基於工作之便利獲悉發行股票公司未公開重大消息而買賣該公司股票者,均為本款所規範之對象。&lt;br例如:公司職員,或接受公司委任處理事務之律師、會計師、財務顧問等。| | | | 基於控制關係獲悉消息之人²&lt;br例如:母公司基於控制關係獲悉子公司重大消息者。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>證券交易法第157條之1第1項規定下列各款之人,均屬內線交易禁止規定的適用範圍:</p>
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:left;">類別</th>
+  <th style="text-align:left;">條文項次</th>
+  <th style="text-align:left;">規範對象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left;">傳統內部人¹</td>
+  <td style="text-align:left;">第1款</td>
+  <td style="text-align:left;">發行股票公司之董事、監察人、經理人及受政府或法人指定代表行使職務之自然人</td>
+</tr>
+<tr>
+  <td style="text-align:left;">準內部人</td>
+  <td style="text-align:left;">第2款<br>第3款</td>
+  <td style="text-align:left;">持有該公司之股份超過百分之十之股東<br>基於職業關係獲悉消息之人<br>舉凡基於工作之便利獲悉發行股票公司未公開重大消息而買賣該公司股票者,均為本款所規範之對象。<br>例如:公司職員,或接受公司委任處理事務之律師、會計師、財務顧問等。</td>
+</tr>
+<tr>
+  <td style="text-align:left;"></td>
+  <td style="text-align:left;"></td>
+  <td style="text-align:left;">基於控制關係獲悉消息之人²<br>例如:母公司基於控制關係獲悉子公司重大消息者。</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+  <th style="text-align:left;">類別</th>
+  <th style="text-align:left;">條文項次</th>
+  <th style="text-align:left;">規範對象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td style="text-align:left;">原內部人</td>
+  <td style="text-align:left;">第4款</td>
+  <td style="text-align:left;">喪失前三款身分後,未滿6個月者</td>
+</tr>
+<tr>
+  <td style="text-align:left;">消息受領人</td>
+  <td style="text-align:left;">第5款</td>
+  <td style="text-align:left;">從前四款所列之人獲悉消息之人</td>
+</tr>
+</tbody>
+</table>
+
+<blockquote>
+  <p>¹ 另依同條第7項規定,發行股票公司之董事、監察人、經理人及持有該公司股份超過百分之十之股東,其持股包括其配偶、未成年子女及利用他人名義持有者。
+  ² 前財政部證券管理委員會(78)台財證(二)字第14860號函。</p>
+</blockquote>
+
+</section>
+<section class="sub-sec" id="7-2-3-how-怎樣會構成內線交易">
+<h3 class="subhead">7.2.3 HOW:怎樣會構成內線交易</h3>
+<details class="narration-box" data-tts-root id="narration-7-2-3-how-怎樣會構成內線交易" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.2.3 HOW:怎樣會構成內線交易」。首先，依證券交易法第157條之1第1項規定,受規範對象實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後18小時內,自行或以他人名義買進或賣出該公司股票或其他具有股權性質之有價證券,即有可能構成內線交易。另依證券交易法第157條之1第2項規定,受規範對象實際知悉發行股票公司有重大影響其支付本息能力之消息時,在該消息明確後,未公開前或公開後18小時內,自行或以他人名義賣出該公司之上市或在證券商營業處所買賣之非股權性質之公司債,亦有可能構成內線交易。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>依證券交易法第157條之1第1項規定,受規範對象實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後18小時內,自行或以他人名義買進或賣出該公司股票或其他具有股權性質之有價證券,即有可能構成內線交易。</p>
+
+<p>另依證券交易法第157條之1第2項規定,受規範對象實際知悉發行股票公司有重大影響其支付本息能力之消息時,在該消息明確後,未公開前或公開後18小時內,自行或以他人名義賣出該公司之上市或在證券商營業處所買賣之非股權性質之公司債,亦有可能構成內線交易。</p>
+
+</section>
+<section class="sub-sec" id="7-2-4-what-規範的買賣標的及重大消息">
+<h3 class="subhead">7.2.4 WHAT:規範的買賣標的及重大消息</h3>
+<details class="narration-box" data-tts-root id="narration-7-2-4-what-規範的買賣標的及重大消息" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.2.4 WHAT:規範的買賣標的及重大消息」。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">受證券交易法第157條之1規範對象</span>
+<span class="tag-chip chip-mint">發行股票公司有重大影響其股票價格/支付本息能力之消息</span>
+<span class="tag-chip chip-amber">在消息明確後,未公開前或公開後18小時內</span>
+<span class="tag-chip chip-coral">自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債</span>
+<span class="tag-chip chip-violet">促進證券市場交易公平性,維護投資大眾信心。</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="7-3-刑事責任與民事責任">
+<div class="sec-kicker">站 3｜刑事責任與民事責任</div>
+<div class="sec-head"><span class="sec-num">3</span><h2 class="sec-title">7.3 刑事責任與民事責任</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-3-刑事責任與民事責任" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.3 刑事責任與民事責任」。首先，內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。簡要圖示內容如下:。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。簡要圖示內容如下:</p>
+</div>
+<section class="sub-sec" id="內線交易法律責任">
+<h3 class="subhead">內線交易法律責任</h3>
+<details class="narration-box" data-tts-root id="narration-內線交易法律責任" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「內線交易法律責任」。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="7-4-法院判決實務">
+<div class="sec-kicker">站 4｜法院判決實務</div>
+<div class="sec-head"><span class="sec-num">4</span><h2 class="sec-title">7.4 法院判決實務</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實務小百科</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-4-法院判決實務" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.4 法院判決實務」。首先，內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分院99年度金上易字第3號判決),供讀者參考。接著，關於可以這樣記。7.4.1 案例事實：本件甲公司之股本約7億4,272萬元,於2006年4月29日董事會中,承認94年度財務報表,並認列2005年度稅後損失6億9,191萬元,2006年5月2日19時55分許,甲公司始於公開資訊觀測站上傳94年度經會計師查核簽證之財務報告,此消息公開後,甲公司之股票跌幅由發布前6個營業日之 15.42% 擴大至發布後6個營業日之34.38%,並有7個交易日係以跌；7.4.2 法院見解：證券交易法第157條之1第1項所稱有重大影響其股票價格之消息,指涉及公司之財務、業務或該證券之市場供求、公開收購,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息,證券交易法第157條之1第1項、第4項前段分別定有明文。準此,公司內部人於獲悉消息時,一般理性之投資人咸認該消息足以影響其買賣股票之意願,即屬重大消息。至於證券交易法第157條之1。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>法院判決實務｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>被告人(即受內線交易規範之內部人)主張</td>
+<td>甲公司於2006年4月29日召開董事會後,隨即於2006年4月30日將「94年度財務報告」於公開資訊觀測站之網頁上公告周知,且依其上簡明損益表中確有載明甲公司之稅後純益為-691,910仟元,均可證實甲公司確已於2006年4月30日即將 94 年度財務報告公告周知,並將「認列損失</td>
+</tr>
+<tr>
+<td>經查</td>
+<td>完整之財務報告,依法應包含財務報表(財務報表包括資產負債表、損益表、股東權益變動表、現金流量表及其附註或附表等四大財務報表)、重要會計科目明細表及其他有助於使用者決策之揭露事項及說明等資料。反觀上開「即時公告查詢」中之簡明財務報表,不但欠缺財務報告所應包括之其他報表及內容(四大財</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分院99年度金上易字第3號判決),供讀者參考。</p>
+</div>
+<section class="sub-sec" id="7-4-1-案例事實">
+<h3 class="subhead">7.4.1 案例事實</h3>
+<details class="narration-box" data-tts-root id="narration-7-4-1-案例事實" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.4.1 案例事實」。首先，本件甲公司之股本約7億4,272萬元,於2006年4月29日董事會中,承認94年度財務報表,並認列2005年度稅後損失6億9,191萬元,2006年5月2日19時55分許,甲公司始於公開資訊觀測站上傳94年度經會計師查核簽證之財務報告,此消息公開後,甲公司之股票跌幅由發布前6個營業日之 15.42% 擴大至發布後6個營業日之34.38%,並有7個交易日係以跌停作收等情,足見此度稅後鉅額損失之消息,對甲公司之股票價格有重大影響,屬於證券交易法第157 條之1規定所稱之重大消息。被告人(即受內線交易規範之內部人)主張:甲公司於2006年4月29日召開董事會後,隨即於2006年4月30日將「94年度財務報告」於公開資訊觀測站之網頁上公告周知,且依其上簡明損益表中確有載明甲公司之稅後純益為-691,910仟元,均可證實甲公司確已於2006年4月30日即將 94 年度財務報告公告周知,並將「認列損失6億9,191 萬元」之資訊,向大眾公示。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>本件甲公司之股本約7億4,272萬元,於2006年4月29日董事會中,承認94年度財務報表,並認列2005年度稅後損失6億9,191萬元,2006年5月2日19時55分許,甲公司始於公開資訊觀測站上傳94年度經會計師查核簽證之財務報告,此消息公開後,甲公司之股票跌幅由發布前6個營業日之 15.42% 擴大至發布後6個營業日之34.38%,並有7個交易日係以跌停作收等情,足見此度稅後鉅額損失之消息,對甲公司之股票價格有重大影響,屬於證券交易法第157 條之1規定所稱之重大消息。</p>
+
+<p>被告人(即受內線交易規範之內部人)主張:甲公司於2006年4月29日召開董事會後,隨即於2006年4月30日將「94年度財務報告」於公開資訊觀測站之網頁上公告周知,且依其上簡明損益表中確有載明甲公司之稅後純益為-691,910仟元,均可證實甲公司確已於2006年4月30日即將 94 年度財務報告公告周知,並將「認列損失6億9,191 萬元」之資訊,向大眾公示。</p>
+
+</section>
+<section class="sub-sec" id="7-4-2-法院見解">
+<h3 class="subhead">7.4.2 法院見解</h3>
+<details class="narration-box" data-tts-root id="narration-7-4-2-法院見解" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.4.2 法院見解」。首先，證券交易法第157條之1第1項所稱有重大影響其股票價格之消息,指涉及公司之財務、業務或該證券之市場供求、公開收購,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息,證券交易法第157條之1第1項、第4項前段分別定有明文。準此,公司內部人於獲悉消息時,一般理性之投資人咸認該消息足以影響其買賣股票之意願,即屬重大消息。至於證券交易法第157條之1第4項後段規定,授權主管機關訂定重大消息之範圍及其公開方式等相關事項,乃因重大影響其股票之價格消息,乃屬不確定之法律概念,或不免發生如何認定個案事實有無內線交易之存在及成立之困擾,乃授權主管機關訂定重大消息之範圍及其公開方式等相關事項以供個案認定參考,惟主管機關所公告之重大消息範圍僅供司法機關於個案中參考,就個別訊息,如足以使一般理性之投資人咸認該消息足以影響其買賣股票之意願,雖未經主管機關所公告之重大消息範圍,仍不影響其屬重大消息之性質。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>證券交易法第157條之1第1項所稱有重大影響其股票價格之消息,指涉及公司之財務、業務或該證券之市場供求、公開收購,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息,證券交易法第157條之1第1項、第4項前段分別定有明文。準此,公司內部人於獲悉消息時,一般理性之投資人咸認該消息足以影響其買賣股票之意願,即屬重大消息。至於證券交易法第157條之1第4項後段規定,授權主管機關訂定重大消息之範圍及其公開方式等相關事項,乃因重大影響其股票之價格消息,乃屬不確定之法律概念,或不免發生如何認定個案事實有無內線交易之存在及成立之困擾,乃授權主管機關訂定重大消息之範圍及其公開方式等相關事項以供個案認定參考,惟主管機關所公告之重大消息範圍僅供司法機關於個案中參考,就個別訊息,如足以使一般理性之投資人咸認該消息足以影響其買賣股票之意願,雖未經主管機關所公告之重大消息範圍,仍不影響其屬重大消息之性質。</p>
+
+<p>依財政部證券期貨管理委員會2002年6月28日台財證一字第0910003635號函⁴規定可知,各股票公開發行公司辦理證券交易法第36條規定應公告或申報之事項,應向證券主管機關指定之資訊申報網站(即公開資訊觀測站)進行傳輸,於完成傳輸後,即視已依規定完成公告申報。惟上開公告申報之目的乃在使股票公開發行公司就其公司足以影響投資人買賣股票意願之重大消息,得公開之方式示眾,使不特定人平等取得資訊,以決定如何處置其持有相關公司之股票。</p>
+
+<p>經查:完整之財務報告,依法應包含財務報表(財務報表包括資產負債表、損益表、股東權益變動表、現金流量表及其附註或附表等四大財務報表)、重要會計科目明細表及其他有助於使用者決策之揭露事項及說明等資料。反觀上開「即時公告查詢」中之簡明財務報表,不但欠缺財務報告所應包括之其他報表及內容(四大財務報表中尚欠缺股東權益變動表、現金流量表及其附註或附表),亦無關於簡明報表上所揭露事項之附註及說明,並無助於投資人之使用決策,尚非完整之財務報告。</p>
+
+<p>另查甲公司確係於2006年5月2日始將94年度財務報告電子書上傳至公開資訊觀測站,亦即甲公司係於2006年5月2日在公開資訊觀測站公告 94年度個別暨合併財務報告。再者,本件甲公司認列損失6億9,191 萬元此一重大消息,係由甲公司於2006年5月2日19時55分許在「公開資訊觀測站」發布重大訊息。準此,本件重大消息公開使不特定人得以平等閱覽之時間為2006年5月2日 19時55分許,本件重大消息公開之時間應為2006年5月2日19時55分。</p>
+
+<p>本案臺灣高等法院臺中分院認為,甲公司先公告簡明財務報表,後公告完整財務報告並發布認列損失之重大訊息,臺灣高等法院臺中分院認為有關稅後鉅額損失之重大消息,尚未達不特定人得以平等閱覽之程度。</p>
+
+<blockquote>
+  <p>⁴ 業由行政院金融監督管理委員會2010年12月8日金管證發字第0990041685號令取代。</p>
+</blockquote>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="7-5-如何避免誤觸內線交易">
+<div class="sec-kicker">站 5｜如何避免誤觸內線交易</div>
+<div class="sec-head"><span class="sec-num">5</span><h2 class="sec-title">7.5 如何避免誤觸內線交易</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-5-如何避免誤觸內線交易" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.5 如何避免誤觸內線交易」。首先，1. 瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W 2. 對內部人及員工加強宣導並進行教育訓練 3. 對重大消息成立時點,以較早者為準,並及早公開重大消息 (1) 建議公司自我檢視內部重大消息時,參考金管會所訂管理辦法,並及早公開重大消息,以降低觸法風險。(2) 公司確實依相關規定即時、準確、完整、真實申報財務業務重大資訊。4. 控管公司資訊傳遞對象 (1) 在重大消息公開前,公司嚴格控管訊息之傳遞對象,以免遭人利用進行內線交易。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>如何避免誤觸內線交易｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 1</td>
+<td>瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>對內部人及員工加強宣導並進行教育訓練</td>
+</tr>
+<tr>
+<td>階段 3</td>
+<td>對重大消息成立時點,以較早者為準,並及早公開重大消息</td>
+</tr>
+<tr>
+<td>階段 4</td>
+<td>控管公司資訊傳遞對象</td>
+</tr>
+<tr>
+<td>階段 5</td>
+<td>訂定防範內線交易之管理作業程序</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><ol>
+<li>瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W</li>
+<li>對內部人及員工加強宣導並進行教育訓練</li>
+<li>對重大消息成立時點,以較早者為準,並及早公開重大消息
+(1) 建議公司自我檢視內部重大消息時,參考金管會所訂管理辦法,並及早公開重大消息,以降低觸法風險。
+(2) 公司確實依相關規定即時、準確、完整、真實申報財務業務重大資訊。</li>
+<li>控管公司資訊傳遞對象
+(1) 在重大消息公開前,公司嚴格控管訊息之傳遞對象,以免遭人利用進行內線交易。
+(2) 對知悉公司內線消息之人員進行登記,要求簽署保密協定,強化內部知情人員的保密意識,有利於減少消息外洩的可能。</li>
+<li>訂定防範內線交易之管理作業程序
+(1) 依「公開發行公司建立內部控制制度處理準則」第8條第2項之規定,股票已上市或在證券商營業處所買賣之公司,其內部控制制度,尚應包括防範內線交易之管理。
+(2) 參酌「○○股份有限公司內部重大資訊處理作業程序參考範例」之規定,建立公司之內部重大資訊處理及揭露機制,以避免資訊不當洩漏,並確保公司對外界發表資訊之一致性與正確性。</li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W</span>
+<span class="tag-chip chip-mint">對內部人及員工加強宣導並進行教育訓練</span>
+<span class="tag-chip chip-amber">對重大消息成立時點,以較早者為準,並及早公開重大消息</span>
+<span class="tag-chip chip-coral">控管公司資訊傳遞對象</span>
+<span class="tag-chip chip-violet">訂定防範內線交易之管理作業程序</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="7-6-內線交易實務小百科">
+<div class="sec-kicker">站 6｜內線交易實務小百科</div>
+<div class="sec-head"><span class="sec-num">6</span><h2 class="sec-title">7.6 內線交易實務小百科</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實務小百科</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-6-內線交易實務小百科" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.6 內線交易實務小百科」。首先，1. 甲上市公司前任董事林先生,因為任職期間知悉公司重大利多消息,而在辭任董事後六個月內買進該公司股票,當時消息尚未公開。請問這樣是否構成內線交易? 解答：發行股票公司之董事、監察人、經理人及持有公司股份超過百分之十之股東,若喪失其身分未滿六個月者,依證券交易法第157條之1第1項第4款之規定,仍有同條項「禁止內線交易」之適用。2. 乙上市公司財務長張先生獲悉公司財務困難將聲請重整,而且明知消息尚未公開,但仍然告知其好友陳小姐,陳小姐據此賣出乙公司股票以規避未來可能發生的損失。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>內線交易實務小百科｜時序</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>2006年1月</td>
+<td>11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業</td>
+</tr>
+<tr>
+<td>2006年5月</td>
+<td>30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>內線交易實務小百科｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>解答</td>
+<td>發行股票公司之董事、監察人、經理人及持有公司股份超過百分之十之股東,若喪失其身分未滿六個月者,依證券交易法第157條之1第1項第4款之規定,仍有同條項「禁止內線交易」之適用。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>陳小姐自乙公司財務長張先生處獲悉該公司將聲請重整之重大消息,並在消息公開前賣出該公司股票,陳小姐即屬證券交易法第157條之1第1項第5款所定「從前4款所列之人獲悉消息之人」,其賣出股票之行為則構成內線交易。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依「管理辦法」第5條規定,重大消息之成立時點,為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他依具體事證可得明確之日,以日期在前者為準,故合併案重大消息之成立時點並不限於董事會決議日。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>丁公司副總經理陳先生在該重大消息公開後逾18小時方買進該公司股票,其交易行為並未違反證交法第157條之1第1項所定「實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後十八小時內,不得對該公司之上市股票買入或賣出」之規定。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>掏空公司資產是經濟犯罪的一種,非屬內線交易。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>意圖影響集中交易市場有價證券交易價格,而散布流言或不實資料」,係屬證券交易法第155條第1項第6款「股價操縱」之違法行為態樣,並非同法第157條之1第5項所定「重大影響股票價格之消息」。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>(1) 2006年1月11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「合併」、「收購」係屬第2條第2款列舉之重大消息;依2010年</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依據主管機關2006年5月30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第1款所列同法施行細則第7條第8款列舉之重大消息,如內部人實際知悉該等重大消息,在該消息明確後,</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>經理人之定義,證券交易法第22條之2、第25條、第28條之2、第157條、第157條之1所引用之經理人,早期適用公司法條文,傳統上副理以上均屬經理人,實務上依公司法第29條,只要經董事會任免,亦包括在內,主管機關2003年3月27日發布台財證三字第0920001301 號解釋函採</td>
+</tr>
+<tr>
+<td>14. 「獲利」是否為內線交易之構成要件,假設</td>
+<td>(1) 公司公開利多之重大消息前受證券交易法規範之行為主體有買入股票,但該重大消息公布後,公司股票股價並未上漲,處分後並無獲利,此一情形有構成內線交易嗎?</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依證券交易法第157條之1之規定,「獲利」非內線交易之構成要件。另證券交易法規範之行為主體（內部人、準內部人及消息受領人）於上市公司未公開之利多重大消息前買進,公開後賣出之行為,如事證符合內線交易構成要件,仍受內線交易之規範。</td>
+</tr>
+<tr>
+<td>解答</td>
+<td>依證券交易法第157條之1之規定,行為主體實際知悉重大影響上市公司股票價格之財務、業務消息時,不得在該消息明確後,未公開或公開後18小時內,自行或以他人名義買賣該上市公司</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><ol>
+<li><p>甲上市公司前任董事林先生,因為任職期間知悉公司重大利多消息,而在辭任董事後六個月內買進該公司股票,當時消息尚未公開。請問這樣是否構成內線交易?</p>
+
+<ul>
+<li><strong>解答</strong>：發行股票公司之董事、監察人、經理人及持有公司股份超過百分之十之股東,若喪失其身分未滿六個月者,依證券交易法第157條之1第1項第4款之規定,仍有同條項「禁止內線交易」之適用。</li>
+</ul></li>
+<li><p>乙上市公司財務長張先生獲悉公司財務困難將聲請重整,而且明知消息尚未公開,但仍然告知其好友陳小姐,陳小姐據此賣出乙公司股票以規避未來可能發生的損失。請問陳小姐這樣是否構成內線交易?</p>
+
+<ul>
+<li><strong>解答</strong>：陳小姐自乙公司財務長張先生處獲悉該公司將聲請重整之重大消息,並在消息公開前賣出該公司股票,陳小姐即屬證券交易法第157條之1第1項第5款所定「從前4款所列之人獲悉消息之人」,其賣出股票之行為則構成內線交易。</li>
+</ul></li>
+<li><p>丙上市公司總經理李先生代表該公司洽談合併案,並在磋商過程中買進該公司股票。請問李先生是否因「合併案重大消息在丙公司董事會決議通過之前尚未確定或成立」,而免除內線交易之適用?</p>
+
+<ul>
+<li><strong>解答</strong>：依「管理辦法」第5條規定,重大消息之成立時點,為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他依具體事證可得明確之日,以日期在前者為準,故合併案重大消息之成立時點並不限於董事會決議日。</li>
+</ul></li>
+<li><p>丁上市公司副總經理陳先生在該公司將屬重大消息之投資計畫相關內容輸入臺灣證券交易所「公開資訊觀測站」後逾18小時買進自家股票。請問陳先生是否涉及內線交易?</p>
+
+<ul>
+<li><strong>解答</strong>：丁公司副總經理陳先生在該重大消息公開後逾18小時方買進該公司股票,其交易行為並未違反證交法第157條之1第1項所定「實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開前或公開後十八小時內,不得對該公司之上市股票買入或賣出」之規定。</li>
+</ul></li>
+
+<li><p>戊上市公司董事長王先生利用職權掏空公司資產的行為,是否構成內線交易?</p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan">解答：掏空公司資產是經濟犯罪的一種,非屬內線交易。</span>
+</div></li>
+<li><p>意圖影響股價而散布之流言或不實資料,是否屬於「重大影響股票價格之消息」?</p>
+
+<ul>
+<li><strong>解答</strong>：意圖影響集中交易市場有價證券交易價格,而散布流言或不實資料」,係屬證券交易法第155條第1項第6款「股價操縱」之違法行為態樣,並非同法第157條之1第5項所定「重大影響股票價格之消息」。</li>
+</ul></li>
+<li><p>甲公司與乙公司於洽談合併前,甲公司因認同乙公司之經營,事先買入部分乙公司之股份,再與其洽談合併,數日後合併成立,乙公司股價大漲,請問:
+(1) 洽談合併前所購入之股份,是否屬內線交易?
+(2) 合併或收購等重大消息,其成立時點以何時為準?</p>
+
+<ul>
+<li><strong>解答</strong>：
+(1) 2006年1月11日證券交易法第157條之1修法後,主管機關依據法律授權,已於同年5月30日訂定證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「合併」、「收購」係屬第2條第2款列舉之重大消息;依2010年6月2日公布修正之證券交易法第157條之1第1項規定,如內部人實際知悉該等重大消息,在該消息明確後,未公開前或公開後 18 小時內自行或以他人名義買賣公司股票,則有違反內線交易之虞。
+(2) 至洽談合併或收購進行至何階段才算成立,依上開管理辦法第4條規定,重大消息之成立時點,係就事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他足資確定之日,以日期在前者為準。如有具體個案,須由法院依上開規定及證據作事實認定。</li>
+</ul></li>
+<li><p>公司於3月份與A客戶接洽業務,4月份公司之研發人員開始投入研發,6月份公司與A客戶簽訂重大之合作契約,某研發人員於5月份大量買入公司股票,8月份予以賣出,是否違反內線交易?</p>
+
+<ul>
+<li><strong>解答</strong>：依據主管機關2006年5月30日訂定之證券交易法第157條之1第4項重大消息範圍及其公開方式管理辦法,涉及公司財務業務、市場供求之重大消息已有具體規定,「簽訂重大之合作契約」係屬第2條第1款所列同法施行細則第7條第8款列舉之重大消息,如內部人實際知悉該等重大消息,在該消息明確後,未公開前或公開後18小時內自行或以他人名義買賣公司股票,則有違反內線交易之虞。至簽訂重大之合作契約進行至何階段才算成立,依上開管理辦法第4條規定,重大消息之成立時點,係就事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他足資確定之日,以日期在前者為準。如有具體個案,須由法院依上開規定及證據作事實認定。</li>
+</ul></li>
+<li><p>內部人所指之經理人範圍及定義為何?是否以職稱或實際工作之內容決定經理人之定義?</p>
+
+<ul>
+<li><strong>解答</strong>：經理人之定義,證券交易法第22條之2、第25條、第28條之2、第157條、第157條之1所引用之經理人,早期適用公司法條文,傳統上副理以上均屬經理人,實務上依公司法第29條,只要經董事會任免,亦包括在內,主管機關2003年3月27日發布台財證三字第0920001301 號解釋函採列舉式,凡總經理、副總、協理等相當等級職務者均屬之,財務主管、會計主管,其他有為公司管理事務及簽名權利者亦屬之。以民法觀念而言,原則上相當於副理以上均含在經理人範圍內。</li>
+</ul></li>
+</ol>
+
+<p>分或全部業務往來」規定者,即屬重大消息,如內部人獲悉實際知悉該等重大消息,在該消息明確後,未公開前或公開後18小時內自行或以他人名義買賣公司股票,則有違反內線交易之虞。倘內部人在該消息未公開前無買賣公司股票情事,但賣出非股權性質之公司債,依2010年6月2日公布修正之證券交易法第157條之1第2項規定,如內部人實際知悉發行股票公司有重大影響其支付本息能力之消息時,在該消息明確後,未公開前或公開後18小時內,自行或以他人名義賣出非股權性質之公司債,則有違反內線交易之虞。至何謂有重大影響其支付本息能力之消息,可參考上開管理辦法第4條規範。</p>
+
+<ol start="14">
+<li><p>「獲利」是否為內線交易之構成要件,假設:<br />
+(1) 公司公開利多之重大消息前受證券交易法規範之行為主體有買入股票,但該重大消息公布後,公司股票股價並未上漲,處分後並無獲利,此一情形有構成內線交易嗎?<br />
+(2) 公司公開利多之重大消息前受證券交易法規範之行為主體有買入股票,但一直沒有賣出,若公司股票股價有上漲,但沒處分,此一情形有構成內線交易嗎?</p>
+
+<ul>
+<li><strong>解答</strong>：依證券交易法第157條之1之規定,「獲利」非內線交易之構成要件。另證券交易法規範之行為主體（內部人、準內部人及消息受領人）於上市公司未公開之利多重大消息前買進,公開後賣出之行為,如事證符合內線交易構成要件,仍受內線交易之規範。</li>
+</ul></li>
+<li><p>上市公司重大消息之發生,如同時有利多與利空,如何判定是否有內線交易?</p>
+
+<ul>
+<li><strong>解答</strong>：依證券交易法第157條之1之規定,行為主體實際知悉重大影響上市公司股票價格之財務、業務消息時,不得在該消息明確後,未公開或公開後18小時內,自行或以他人名義買賣該上市公司</li>
+</ul></li>
+</ol>
+
+<p>之股票,如同時發生利多或利空之重大消息,實務上,應會就重大消息整體面評估其影響程度,並由司法單位綜合其他事證,判定是否構成內線交易。</p>
+
+<ol start="16">
+<li><p>實務上併購案過程時間長短不一,此類重大消息之成立時點如何認定?如公司內部人並不知悉併購相關訊息是否亦不得進行交易?公司內部人及員工如何避免涉及內線交易不法情事?</p>
+
+<ul>
+<li><strong>解答</strong>：
+(1) 依主管機關所訂「重大消息範圍及其公開方式管理辦法」第4條規定,涉及公司財務、業務之重大消息,其成立時點為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他足資確定之日,以日期在前者為準。如有併購具體個案,須由法院依客觀事證認定成立時點。
+(2) 以美國法制而言,有關重大消息之成立時點亦未具體明確界定至何階段才算成立。實務上,美國聯邦最高法院在 Basic Inc. v. Levinson 案認為消息重大性應依事件發生之機率及其發生在公司整體活動中的影響程度等兩項因素綜合判斷。
+(3) 如上市公司內部人確未獲悉併購案之重大消息,則尚未符合內線交易法律構成要件,自不受證券交易法第157條之1之適用。
+(4) 為避免上市公司內線交易之發生,上市公司可採行下列因應措施:<br />
+    A 建立重大消息保密及發布之標準作業程序。<br />
+    B 對公司內部人及辦理與重大消息相關業務職員加強宣導。<br />
+    C 要求實際知悉重大消息之公司內部人或員工,在該消息明確後,未公開前或公開後18小時內,避免自行或以他人名義買賣該公司股票或其他具有股權性質之有價證券。</li>
+</ul></li>
+<li><p>按內線交易規範之行為主體有內部人、準內部人及消息受領人,投資人若從市場上輾轉獲悉上市公司之重大消息屬第4手者是否仍受內線交易規範?</p>
+
+<ul>
+<li><strong>解答</strong>：依證券交易法第157條之1規定,下列各款之人,實際知悉發行股票公司有重大影響其股票價格之消息時,在該消息明確後,未公開或公開後18小時內,不得對該公司之上市或在證券商營業處所買賣之股票或其他具有股權性質之有價證券,自行或以他人名義買入或賣出:<br />
+(1) 該公司之董事、監察人、經理人及依公司法第27條第1項規定受指定代表行使職務之自然人。<br />
+(2) 持有該公司之股份超過百分之十之股東。<br />
+(3) 基於職業或控制關係獲悉消息之人。<br />
+(4) 喪失前三款身分後,未滿六個月者。<br />
+(5) 從前四款所列之人獲悉消息之人。<br />
+就我國內線交易判決個案觀之,法院認定重大消息若來自於特定身分之人傳遞,則獲悉該重大消息者,仍受內線交易之規範。</li>
+</ul></li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">解答：掏空公司資產是經濟犯罪的一種,非屬內線交易。</span>
+<span class="tag-chip chip-mint">戊上市公司董事長王先生利用職權掏空公司資產的行為,是否構成內線交易?</span>
+<span class="tag-chip chip-amber">意圖影響股價而散布之流言或不實資料,是否屬於「重大影響股票價格之消息」?</span>
+<span class="tag-chip chip-coral">甲公司與乙公司於洽談合併前,甲公司因認同乙公司之經營,事先買入部分乙公司之股份,再與其洽談合併,數日後合併成立,乙公司股價大漲,請問:</span>
+<span class="tag-chip chip-violet">內部人所指之經理人範圍及定義為何?是否以職稱或實際工作之內容決定經理人之定義?</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="7-7-結語">
+<div class="sec-kicker">站 7｜結語</div>
+<div class="sec-head"><span class="sec-num">7</span><h2 class="sec-title">7.7 結語</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">導讀／收束</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-7-結語" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.7 結語」。首先，目前學說及司法實務普遍認同,證券交易法第157條之1立法意旨,係為維繫證券市場之公平及公正交易,故若投資人獲悉與內部人相同之資訊,可據以判斷是否買賣公司股票,方可認為符合證券交易法第157條之1公開之規定。因此,建議內部人回到禁止內線交易之理論源頭:資訊平等理論—將「戒絕交易,否則公開(abstain or disclose)」作為中心思想,於未確定重大消息已完整公開前(即未確定其他投資人已能完整知悉重大消息全貌前),不進場買賣股票,共同為建構證券交易市場之公平與公正,持續努力。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>目前學說及司法實務普遍認同,證券交易法第157條之1立法意旨,係為維繫證券市場之公平及公正交易,故若投資人獲悉與內部人相同之資訊,可據以判斷是否買賣公司股票,方可認為符合證券交易法第157條之1公開之規定。因此,建議內部人回到禁止內線交易之理論源頭:資訊平等理論—將「戒絕交易,否則公開(abstain or disclose)」作為中心思想,於未確定重大消息已完整公開前(即未確定其他投資人已能完整知悉重大消息全貌前),不進場買賣股票,共同為建構證券交易市場之公平與公正,持續努力。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">目前學說及司法實務普遍認同,證券交易法第157條之1立法意旨,係為維繫證券市場之公平及公正交易,故若投資人獲悉與內部人相同之資訊,可據以判…</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="1-內線交易規範的買賣標的為何">
+<div class="sec-kicker">站 8｜1. 內線交易規範的買賣標的為何</div>
+<div class="sec-head"><span class="sec-num">8</span><h2 class="sec-title">1. 內線交易規範的買賣標的為何</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-1-內線交易規範的買賣標的為何" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「1. 內線交易規範的買賣標的為何」。首先，證券交易法第157 條之1第1項及第2項所定內線交易的買賣標的,包括: (1) 上市股票、公司債。(2) 在證券商營業處所買賣之股票(含上櫃及興櫃股票)、公司債。³ (3) 其他具有股權性質之有價證券,包括:可轉換公司債、附認股權公司債、認股權憑證、認購(售)權證、股款繳納憑證、新股認購權利證書、新股權利證書、債券換股權利證書、臺灣存託憑證及其他具有股權性質之有價證券。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>證券交易法第157 條之1第1項及第2項所定內線交易的買賣標的,包括:</p>
+
+<p>(1) 上市股票、公司債。
+(2) 在證券商營業處所買賣之股票(含上櫃及興櫃股票)、公司債。³
+(3) 其他具有股權性質之有價證券,包括:可轉換公司債、附認股權公司債、認股權憑證、認購(售)權證、股款繳納憑證、新股認購權利證書、新股權利證書、債券換股權利證書、臺灣存託憑證及其他具有股權性質之有價證券。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">證券交易法第157 條之1第1項及第2項所定內線交易的買賣標的,包括: (1) 上市股票、公司債。</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息">
+<div class="sec-kicker">站 9｜2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</div>
+<div class="sec-head"><span class="sec-num">9</span><h2 class="sec-title">2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」」。首先，³ 依證券交易法施行細則第11條第1項規定。內線交易之解析 依據「證券交易法第157條之1第5項及第6項重大消息範圍及其公開方式管理辦法」(下稱管理辦法)第2條,係指下列消息之一: 一、本法施行細則第7條所定之事項。二、公司辦理重大之募集發行或私募具股權性質之有價證券、減資、合併、收購、分割、股份交換、轉換或受讓、直接或間接進行之投資計畫,或前開事項有重大變更者。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><blockquote>
+  <p>³ 依證券交易法施行細則第11條第1項規定。</p>
+</blockquote>
+
+<p>內線交易之解析</p>
+
+<p>依據「證券交易法第157條之1第5項及第6項重大消息範圍及其公開方式管理辦法」(下稱管理辦法)第2條,係指下列消息之一:</p>
+
+<p>一、本法施行細則第7條所定之事項。
+二、公司辦理重大之募集發行或私募具股權性質之有價證券、減資、合併、收購、分割、股份交換、轉換或受讓、直接或間接進行之投資計畫,或前開事項有重大變更者。
+三、公司辦理重整、破產、解散、或申請股票終止上市或在證券商營業處所終止買賣,或前開事項有重大變更者。
+四、公司董事受停止行使職權之假處分裁定,致董事會無法行使職權者,或公司獨立董事均解任者。
+五、發生災難、集體抗議、罷工、環境污染或其他重大情事,致造成公司重大損害,或經有關機關命令停工、停業、歇業、廢止或撤銷相關許可者。
+六、公司之關係人或主要債務人或其連帶保證人遭退票、聲請破產、重整或其他重大類似情事;公司背書或保證之主債務人無法償付到期之票據、貸款或其他債務者。
+七、公司發生重大之內部控制舞弊、非常規交易或資產被掏空者。
+八、公司與主要客戶或供應商停止部分或全部業務往來者。
+九、公司財務報告有下列情形之一:
+(一) 未依本法第36條規定公告申報者。
+(二) 編製之財務報告發生錯誤或疏漏,有本法施行細則第6條規定應更正且重編者。
+(三) 會計師出具無保留意見或修正式無保留意見以外之查核或核閱報告者。但依法律規定損失得分年攤銷,或第一季、第三季及半年度財務報告若因長期股權投資金額及其損益之計算係採被投資公司未經會計師查核簽證或核閱之報表計算等情事,經其簽證會計師出具保留意見之查核或核閱報告者,不在此限。
+(四) 會計師出具繼續經營假設存有重大疑慮之查核或核閱報告者。</p>
+
+<p>十、公開之財務預測與實際數有重大差異者或財務預測更新(正)與原預測數有重大差異者。
+十一、公司營業損益或稅前損益與去年同期相較有重大變動,或與前期相較有重大變動且非受季節性因素影響所致者。
+十二、公司有下列會計事項,不影響當期損益,致當期淨值產生重大變動者:
+(一) 辦理資產重估。
+(二) 金融商品期末評價。
+(三) 外幣換算調整。
+(四) 金融商品採避險會計處理。
+(五) 未認列為退休金成本之淨損失。
+十三、為償還公司債之資金籌措計畫無法達成者。
+十四、公司辦理買回本公司股份者。
+十五、進行或停止公開收購公開發行公司所發行之有價證券者。
+十六、公司取得或處分重大資產者。
+十七、公司發行海外有價證券,發生依上市地國政府法令及其證券交易市場規章之規定應即時公告或申報之重大情事者。
+十八、其他涉及公司之財務、業務,對公司股票價格有重大影響,或對正當投資人之投資決定有重要影響者。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">&gt; ³ 依證券交易法施行細則第11條第1項規定。</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息">
+<div class="sec-kicker">站 10｜3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</div>
+<div class="sec-head"><span class="sec-num">10</span><h2 class="sec-title">3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」」。首先，依據「管理辦法」第3條,係指下列消息之一: 一、證券集中交易市場或證券商營業處所買賣之有價證券有被進行或停止公開收購者。二、公司或其所從屬之控制公司股權有重大異動者。三、在證券集中交易市場或證券商營業處所買賣之有價證券有標購、拍賣、重大違約交割、變更原有交易方法、停止買賣、限制買賣或終止買賣之情事或事由者。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>依據「管理辦法」第3條,係指下列消息之一:</p>
+
+<p>一、證券集中交易市場或證券商營業處所買賣之有價證券有被進行或停止公開收購者。
+二、公司或其所從屬之控制公司股權有重大異動者。
+三、在證券集中交易市場或證券商營業處所買賣之有價證券有標購、拍賣、重大違約交割、變更原有交易方法、停止買賣、限制買賣或終止買賣之情事或事由者。
+四、依法執行搜索之人員至公司、其控制公司或其符合會計師查核簽證財務報表規則第2條之1第2項所定重要子公司執行搜索者。
+五、其他涉及該證券之市場供求,對公司股票價格有重大影響,或對正當投資人之投資決定有重要影響者。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">依據「管理辦法」第3條,係指下列消息之一: 一、證券集中交易市場或證券商營業處所買賣之有價證券有被進行或停止公開收購者。</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="4-什麼是-公司有重大影響其支付本息能力之消息">
+<div class="sec-kicker">站 11｜4. 什麼是「公司有重大影響其支付本息能力之消息」</div>
+<div class="sec-head"><span class="sec-num">11</span><h2 class="sec-title">4. 什麼是「公司有重大影響其支付本息能力之消息」</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-4-什麼是-公司有重大影響其支付本息能力之消息" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「4. 什麼是「公司有重大影響其支付本息能力之消息」」。首先，依據「管理辦法」第4條,係指下列消息之一: 一、本法施行細則第7條第1款至第3款所定情事者。二、第2條第5款至第8款、第9款第4目及第13款所定情事者。三、公司辦理重整、破產或解散者。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><p>依據「管理辦法」第4條,係指下列消息之一:</p>
+
+<p>一、本法施行細則第7條第1款至第3款所定情事者。
+二、第2條第5款至第8款、第9款第4目及第13款所定情事者。
+三、公司辦理重整、破產或解散者。
+四、公司發生重大虧損,致有財務困難、暫停營業或停業之虞者。
+五、公司流動資產扣除存貨及預付費用後之金額加計公司債到期前之淨現金流入,不足支應最近期將到期之本金或利息及其他之流動負債者。
+六、已發行之公司債採非固定利率計息,因市場利率變動,致大幅增加利息支出,影響公司支付本息能力者。
+七、其他足以影響公司支付本息能力之情事者。
+前揭規定,於公司發行經銀行保證之公司債者,不適用之。</p>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">依據「管理辦法」第4條,係指下列消息之一: 一、本法施行細則第7條第1款至第3款所定情事者。</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="5-重大消息之-公開方式">
+<div class="sec-kicker">站 12｜5. 重大消息之「公開方式」</div>
+<div class="sec-head"><span class="sec-num">12</span><h2 class="sec-title">5. 重大消息之「公開方式」</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-5-重大消息之-公開方式" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「5. 重大消息之「公開方式」」。首先，依據「管理辦法」第6條之規定: (1) 管理辦法第2條(涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息)及第4條(公司有重大影響其支付本息能力之消息)消息之公開方式,係指經公司輸入公開資訊觀測站。(2) 管理辦法第3條(涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息)消息之公開,係指透過下列方式之一公開: 一、公司輸入公開資訊觀測站。二、臺灣證券交易所股份有限公司基本市況報導網站中公告。接著，關於可以這樣記。7.2.5 WHEN:內線交易的禁止交易期間：證券交易法第 157 條之1第1項及第2項所定之人若實際知悉重大消息,在重大消息明確後,未公開前或公開後18小時內,不得自行或以他人名義買入或賣出該公司之上市或在證券商營業處所買賣之股票或其他具有股權性質之有價證券、不得自行或以他人名義賣出該公司之上市或在證券商營業處所買賣之非股權性質之公司債。圖示內容如下： 實際知悉未公開重大消息之受規範對象 公開時點 重。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>5. 重大消息之「公開方式」｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>依據「管理辦法」第6條之規定</td>
+<td>(1) 管理辦法第2條(涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息)及第4條(公司有重大影響其支付本息能力之消息)消息之公開方式,係指經公司輸入公開資訊觀測站。</td>
+</tr>
+<tr>
+<td>7.2.5 WHEN</td>
+<td>內線交易的禁止交易期間</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><p>依據「管理辦法」第6條之規定:</p>
+
+<p>(1) 管理辦法第2條(涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息)及第4條(公司有重大影響其支付本息能力之消息)消息之公開方式,係指經公司輸入公開資訊觀測站。
+(2) 管理辦法第3條(涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息)消息之公開,係指透過下列方式之一公開:</p>
+
+<p>一、公司輸入公開資訊觀測站。
+二、臺灣證券交易所股份有限公司基本市況報導網站中公告。
+三、財團法人中華民國證券櫃檯買賣中心基本市況報導網站中公告。
+四、兩家以上每日於全國發行報紙之非地方性版面、全國性電視新聞或前開媒體所發行之電子報報導。</p>
+
+<p>(3) 消息透過全國發行報紙、電視新聞或前開媒體所發行之電子報報導之方式公開者,本法第157條之1第1項十八小時之計算係以派報或電視新聞首次播出或輸入電子網站時點在後者起算。另派報時間早報以上午六時起算,晚報以下午三時起算。
+(4) 為何上開(1)及(2)兩類重大消息之公開方式不同,其區別標準為何?
+根據「管理辦法」之條文說明,關於公司財務、業務及影響支付本息能力等重大消息,係指公司所能決定或控制者,考量資訊公開平台「公開資訊觀測站」僅供公開發行公司發布重大訊息,且該平台業已行之有年,投資人已習於該平台查詢公司之重大消息,爰明定涉及公司財務、業務消息之公開方式,應經公司輸入公開資訊觀測站;至於涉及證券市場供求之消息,非屬公司所能決定或控制,其消息公開之方式,經參酌日本之立法例,爰訂定較多元之公開方式。</p>
+</div>
+<section class="sub-sec" id="7-2-5-when-內線交易的禁止交易期間">
+<h3 class="subhead">7.2.5 WHEN:內線交易的禁止交易期間</h3>
+<details class="narration-box" data-tts-root id="narration-7-2-5-when-內線交易的禁止交易期間" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.2.5 WHEN:內線交易的禁止交易期間」。首先，證券交易法第 157 條之1第1項及第2項所定之人若實際知悉重大消息,在重大消息明確後,未公開前或公開後18小時內,不得自行或以他人名義買入或賣出該公司之上市或在證券商營業處所買賣之股票或其他具有股權性質之有價證券、不得自行或以他人名義賣出該公司之上市或在證券商營業處所買賣之非股權性質之公司債。圖示內容如下： 實際知悉未公開重大消息之受規範對象 公開時點 重大消息 消息明確 公開後18小時 禁止交易期間 依金管會「管理辦法」第5條規定,重大消息之成立時點,為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他依具體事證可得明確之日,以日期在前者為準。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>證券交易法第 157 條之1第1項及第2項所定之人若實際知悉重大消息,在重大消息明確後,未公開前或公開後18小時內,不得自行或以他人名義買入或賣出該公司之上市或在證券商營業處所買賣之股票或其他具有股權性質之有價證券、不得自行或以他人名義賣出該公司之上市或在證券商營業處所買賣之非股權性質之公司債。圖示內容如下：</p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實際知悉未公開重大消息之受規範對象</span>
+<span class="tag-chip chip-mint">公開時點</span>
+<span class="tag-chip chip-amber">重大消息</span>
+<span class="tag-chip chip-coral">消息明確</span>
+<span class="tag-chip chip-violet">公開後18小時</span>
+<span class="tag-chip chip-sky">禁止交易期間</span>
+</div>
+
+<p>依金管會「管理辦法」第5條規定,重大消息之成立時點,為事實發生日、協議日、簽約日、付款日、委託日、成交日、過戶日、審計委員會或董事會決議日或其他依具體事證可得明確之日,以日期在前者為準。</p>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">實際知悉未公開重大消息之受規範對象</span>
+<span class="tag-chip chip-mint">公開後18小時</span>
+<span class="tag-chip chip-amber">禁止交易期間</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="刑事責任">
+<div class="sec-kicker">站 13｜刑事責任</div>
+<div class="sec-head"><span class="sec-num">13</span><h2 class="sec-title">刑事責任</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-刑事責任" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「刑事責任」。首先，有期徒刑: 3年以上10年以下 罰金(新臺幣): 得併科1千萬元以上2億元以下罰金 犯罪所得達新臺幣1億元以上: 7年以上有期徒刑,得併科2千5百萬元以上5億元以下罰金 犯罪所得利益超過罰金最高額者: 得於所得利益之範圍內加重罰金 損及證券市場穩定者: 加重其刑至二分之一 於犯罪後自首或於偵查中自白者: 得減輕或免除其刑。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>刑事責任｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>有期徒刑</td>
+<td>3年以上10年以下</td>
+</tr>
+<tr>
+<td>罰金(新臺幣)</td>
+<td>得併科1千萬元以上2億元以下罰金</td>
+</tr>
+<tr>
+<td>犯罪所得達新臺幣1億元以上</td>
+<td>7年以上有期徒刑,得併科2千5百萬元以上5億元以下罰金</td>
+</tr>
+<tr>
+<td>犯罪所得利益超過罰金最高額者</td>
+<td>得於所得利益之範圍內加重罰金</td>
+</tr>
+<tr>
+<td>損及證券市場穩定者</td>
+<td>加重其刑至二分之一</td>
+</tr>
+<tr>
+<td>於犯罪後自首或於偵查中自白者</td>
+<td>得減輕或免除其刑</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><div class="chip-row">
+<span class="tag-chip chip-cyan">有期徒刑: 3年以上10年以下</span>
+<span class="tag-chip chip-mint">罰金(新臺幣): 得併科1千萬元以上2億元以下罰金</span>
+<span class="tag-chip chip-amber">犯罪所得達新臺幣1億元以上: 7年以上有期徒刑,得併科2千5百萬元以上5億元以下罰金</span>
+<span class="tag-chip chip-coral">犯罪所得利益超過罰金最高額者: 得於所得利益之範圍內加重罰金</span>
+<span class="tag-chip chip-violet">損及證券市場穩定者: 加重其刑至二分之一</span>
+<span class="tag-chip chip-sky">於犯罪後自首或於偵查中自白者: 得減輕或免除其刑</span>
+</div>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">有期徒刑</span>
+<span class="tag-chip chip-mint">罰金(新臺幣)</span>
+<span class="tag-chip chip-amber">犯罪所得達新臺幣1億元以上</span>
+<span class="tag-chip chip-coral">犯罪所得利益超過罰金最高額者</span>
+<span class="tag-chip chip-violet">損及證券市場穩定者</span>
+</div>
+</div>
+</article>
+<article class="sec-block" id="民事責任">
+<div class="sec-kicker">站 14｜民事責任</div>
+<div class="sec-head"><span class="sec-num">14</span><h2 class="sec-title">民事責任</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">核心講義</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-民事責任" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「民事責任」。首先，損害賠償: 對於當日善意從事相反買賣之人,負損害賠償責任 賠償金額: 善意交易人之交易價格,與消息公開後10個營業日收盤平均價格之差額 情節重大: 法院得將賠償金額提高至三倍 情節輕微: 法院得減輕賠償金額。接著，關於可以這樣記。7.3.1 刑事責任：刑事責任部分,應特別注意目前有兩種加重內線交易罪,分述如下: 1. 如犯罪所得金額達新臺幣1億元以上者,處7年以上有期徒刑,得併科新臺幣2,500 萬元以上5億元以下罰金。犯罪所得利益超過罰金最高額時,得於所得利益範圍內加重罰金。(證券交易法第171條第2項、第6項) 2. 內線交易的行為如損及證券市場穩定者,加重其刑至二分之一。(證券交易法第171條第6項；7.3.2 民事責任：民事責任部分,應特別注意民國2006年1月修正後,對違法者大幅加重賠償責任。現行證券交易法第157條之1第3項規定:「違反第一項或前項規定者,對於當日善意從事相反買賣之人買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額,負損害賠償責任;其情節重大者,法院得依善意從事相反買賣之人之請求,將賠償額提高至三倍;其情節輕微者,法院得減輕賠償金額。」;。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="struct-table table-timeline">
+<div class="struct-cap"><span class="struct-badge">時序表</span>民事責任｜時序</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>時點</th>
+<th>事件／規範重點</th>
+</tr></thead><tbody>
+<tr>
+<td>民國2006年1月</td>
+<td>修正後,對違法者大幅加重賠償責任</td>
+</tr>
+<tr>
+<td>2006年1月</td>
+<td>修正後的規定,「違反前項規定者,應就消息未公開前其買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額限度內,對善意從事相反買賣之人負損害賠償責任;</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-compare">
+<div class="struct-cap"><span class="struct-badge">對照表</span>民事責任｜對照</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>項目</th>
+<th>說明／對照</th>
+</tr></thead><tbody>
+<tr>
+<td>損害賠償</td>
+<td>對於當日善意從事相反買賣之人,負損害賠償責任</td>
+</tr>
+<tr>
+<td>賠償金額</td>
+<td>善意交易人之交易價格,與消息公開後10個營業日收盤平均價格之差額</td>
+</tr>
+<tr>
+<td>情節重大</td>
+<td>法院得將賠償金額提高至三倍</td>
+</tr>
+<tr>
+<td>情節輕微</td>
+<td>法院得減輕賠償金額</td>
+</tr>
+</tbody></table></div></div>
+<div class="struct-table table-evolve">
+<div class="struct-cap"><span class="struct-badge">演進表</span>民事責任｜演進／架構</div>
+<div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr>
+<th>階段</th>
+<th>重點內容</th>
+</tr></thead><tbody>
+<tr>
+<td>階段 7</td>
+<td>3.1 刑事責任</td>
+</tr>
+<tr>
+<td>階段 1</td>
+<td>如犯罪所得金額達新臺幣1億元以上者,處7年以上有期徒刑,得併科新臺幣2,500 萬元以上5億元以下罰金。犯罪所得利益超過罰金最高額時,得於所得利益範圍內加重罰金。(證券交易法第171條第2項、第6項)</td>
+</tr>
+<tr>
+<td>階段 2</td>
+<td>內線交易的行為如損及證券市場穩定者,加重其刑至二分之一。(證券交易法第171條第6項)</td>
+</tr>
+<tr>
+<td>階段 7</td>
+<td>3.2 民事責任</td>
+</tr>
+</tbody></table></div></div>
+<div class="sec-body"><div class="chip-row">
+<span class="tag-chip chip-cyan">損害賠償: 對於當日善意從事相反買賣之人,負損害賠償責任</span>
+<span class="tag-chip chip-mint">賠償金額: 善意交易人之交易價格,與消息公開後10個營業日收盤平均價格之差額</span>
+<span class="tag-chip chip-amber">情節重大: 法院得將賠償金額提高至三倍</span>
+<span class="tag-chip chip-coral">情節輕微: 法院得減輕賠償金額</span>
+</div>
+</div>
+<section class="sub-sec" id="7-3-1-刑事責任">
+<h3 class="subhead">7.3.1 刑事責任</h3>
+<details class="narration-box" data-tts-root id="narration-7-3-1-刑事責任" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.3.1 刑事責任」。首先，刑事責任部分,應特別注意目前有兩種加重內線交易罪,分述如下: 1. 如犯罪所得金額達新臺幣1億元以上者,處7年以上有期徒刑,得併科新臺幣2,500 萬元以上5億元以下罰金。犯罪所得利益超過罰金最高額時,得於所得利益範圍內加重罰金。(證券交易法第171條第2項、第6項) 2. 內線交易的行為如損及證券市場穩定者,加重其刑至二分之一。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>刑事責任部分,應特別注意目前有兩種加重內線交易罪,分述如下:</p>
+
+<ol>
+<li>如犯罪所得金額達新臺幣1億元以上者,處7年以上有期徒刑,得併科新臺幣2,500 萬元以上5億元以下罰金。犯罪所得利益超過罰金最高額時,得於所得利益範圍內加重罰金。(證券交易法第171條第2項、第6項)</li>
+<li>內線交易的行為如損及證券市場穩定者,加重其刑至二分之一。(證券交易法第171條第6項)</li>
+</ol>
+
+<p>另刑事責任處罰對象為獲悉內線消息後買賣證券之人,如無買賣的行為,即不受處罰,因此單純傳遞消息者,如與買賣證券之人無犯意聯絡、行為分擔的情形,並無刑責。惟傳遞消息者應與買賣股票的消息受領人負連帶賠償責任。(證券交易法第157條之1第3項、第4項)</p>
+
+</section>
+<section class="sub-sec" id="7-3-2-民事責任">
+<h3 class="subhead">7.3.2 民事責任</h3>
+<details class="narration-box" data-tts-root id="narration-7-3-2-民事責任" open>
+  <summary><span class="narration-badge">聽讀</span>小節語音講解</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.3.2 民事責任」。首先，民事責任部分,應特別注意民國2006年1月修正後,對違法者大幅加重賠償責任。現行證券交易法第157條之1第3項規定:「違反第一項或前項規定者,對於當日善意從事相反買賣之人買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額,負損害賠償責任;其情節重大者,法院得依善意從事相反買賣之人之請求,將賠償額提高至三倍;其情節輕微者,法院得減輕賠償金額。」;同條第4項規定:「第一項第五款之人,對於前項損害賠償,應與第一項第一款至第四款提供消息之人,負連帶賠償責任。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<p>民事責任部分,應特別注意民國2006年1月修正後,對違法者大幅加重賠償責任。現行證券交易法第157條之1第3項規定:「違反第一項或前項規定者,對於當日善意從事相反買賣之人買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額,負損害賠償責任;其情節重大者,法院得依善意從事相反買賣之人之請求,將賠償額提高至三倍;其情節輕微者,法院得減輕賠償金額。」;同條第4項規定:「第一項第五款之人,對於前項損害賠償,應與第一項第一款至第四款提供消息之人,負連帶賠償責任。但第一項第一款至第四款提供消息之人有正當理由相信消息已公開者,不負賠償責任」。</p>
+
+<p>對照2006年1月修正後的規定,「違反前項規定者,應就消息未公開前其買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額限度內,對善意從事相反買賣之人負損害賠償責任;其情節重大者,法院得依善意從事相反買賣之人之請求,將責任限額提高至三倍」,兩相比較,修正後之規定,不再以內部人買賣股票的價格與數量為基礎,而改從投資人買賣股票的價格與數量為基礎,計算賠償金額,內部人之民事責任明顯加重。</p>
+
+</section>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">損害賠償</span>
+<span class="tag-chip chip-mint">賠償金額</span>
+<span class="tag-chip chip-amber">情節重大</span>
+<span class="tag-chip chip-coral">情節輕微</span>
+<span class="tag-chip chip-violet">損害賠償: 對於當日善意從事相反買賣之人,負損害賠償責任</span>
+</div>
+</div>
+</article></div>
+    <div class="tab-pane fade" id="tab-quick" role="tabpanel"><div class="row g-3">
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 1 節</div>
+<h3 class="h6">7.1 前言</h3>
+<ul class='mb-2 small'>
+<li>股神巴菲特(Warren Buffett)在「雪球」(THE SNOWBALL)一書中提到,「內部人首要之務是保護公司之存在,公司的內部人…</li>
+</ul>
+<a class="small" href="#7-1-前言" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 2 節</div>
+<h3 class="h6">7.2 構成要件-5個 W</h3>
+<ul class='mb-2 small'>
+<li>受證券交易法第157條之1規範對象</li>
+<li>發行股票公司有重大影響其股票價格/支付本息能力之消息</li>
+<li>在消息明確後,未公開前或公開後18小時內</li>
+<li>自行或以他人名義,買入或賣出該公司上市櫃股票或其他具股權性質之有價證券/賣出該公司上市櫃公司債</li>
+</ul>
+<a class="small" href="#7-2-構成要件-5個-w" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 3 節</div>
+<h3 class="h6">7.3 刑事責任與民事責任</h3>
+<ul class='mb-2 small'>
+<li>內線交易的刑事責任與民事責任,請詳證券交易法第171條及第157條之1第3項及第4項之規定。</li>
+</ul>
+<a class="small" href="#7-3-刑事責任與民事責任" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 4 節</div>
+<h3 class="h6">7.4 法院判決實務</h3>
+<ul class='mb-2 small'>
+<li>內線交易各個要件,在學術上都有大量文章討論,司法實務也隨判決不斷累積,以下就重大消息之「公開」部分,列舉一個有趣的判決(臺灣高等法院臺中分…</li>
+</ul>
+<a class="small" href="#7-4-法院判決實務" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 5 節</div>
+<h3 class="h6">7.5 如何避免誤觸內線交易</h3>
+<ul class='mb-2 small'>
+<li>瞭解並熟悉前面所介紹有關內線交易之構成要件——5個W</li>
+<li>對內部人及員工加強宣導並進行教育訓練</li>
+<li>對重大消息成立時點,以較早者為準,並及早公開重大消息</li>
+<li>控管公司資訊傳遞對象</li>
+</ul>
+<a class="small" href="#7-5-如何避免誤觸內線交易" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 6 節</div>
+<h3 class="h6">7.6 內線交易實務小百科</h3>
+<ul class='mb-2 small'>
+<li>解答：掏空公司資產是經濟犯罪的一種,非屬內線交易。</li>
+<li>戊上市公司董事長王先生利用職權掏空公司資產的行為,是否構成內線交易?</li>
+<li>意圖影響股價而散布之流言或不實資料,是否屬於「重大影響股票價格之消息」?</li>
+<li>甲公司與乙公司於洽談合併前,甲公司因認同乙公司之經營,事先買入部分乙公司之股份,再與其洽談合併,數日後合併成立,乙公司股價大漲,請問:</li>
+</ul>
+<a class="small" href="#7-6-內線交易實務小百科" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 7 節</div>
+<h3 class="h6">7.7 結語</h3>
+<ul class='mb-2 small'>
+<li>目前學說及司法實務普遍認同,證券交易法第157條之1立法意旨,係為維繫證券市場之公平及公正交易,故若投資人獲悉與內部人相同之資訊,可據以判…</li>
+</ul>
+<a class="small" href="#7-7-結語" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 8 節</div>
+<h3 class="h6">1. 內線交易規範的買賣標的為何</h3>
+<ul class='mb-2 small'>
+<li>證券交易法第157 條之1第1項及第2項所定內線交易的買賣標的,包括: (1) 上市股票、公司債。</li>
+</ul>
+<a class="small" href="#1-內線交易規範的買賣標的為何" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 9 節</div>
+<h3 class="h6">2. 什麼是「涉及公司之財務、業務,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</h3>
+<ul class='mb-2 small'>
+<li>&gt; ³ 依證券交易法施行細則第11條第1項規定。</li>
+</ul>
+<a class="small" href="#2-什麼是-涉及公司之財務-業務-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 10 節</div>
+<h3 class="h6">3. 什麼是「涉及該證券之市場供求,對其股票價格有重大影響,或對正當投資人之投資決定有重要影響之消息」</h3>
+<ul class='mb-2 small'>
+<li>依據「管理辦法」第3條,係指下列消息之一: 一、證券集中交易市場或證券商營業處所買賣之有價證券有被進行或停止公開收購者。</li>
+</ul>
+<a class="small" href="#3-什麼是-涉及該證券之市場供求-對其股票價格有重大影響-或對正當投資人之投資決定有重要影響之消息" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 11 節</div>
+<h3 class="h6">4. 什麼是「公司有重大影響其支付本息能力之消息」</h3>
+<ul class='mb-2 small'>
+<li>依據「管理辦法」第4條,係指下列消息之一: 一、本法施行細則第7條第1款至第3款所定情事者。</li>
+</ul>
+<a class="small" href="#4-什麼是-公司有重大影響其支付本息能力之消息" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 12 節</div>
+<h3 class="h6">5. 重大消息之「公開方式」</h3>
+<ul class='mb-2 small'>
+<li>實際知悉未公開重大消息之受規範對象</li>
+<li>公開後18小時</li>
+<li>禁止交易期間</li>
+</ul>
+<a class="small" href="#5-重大消息之-公開方式" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 13 節</div>
+<h3 class="h6">刑事責任</h3>
+<ul class='mb-2 small'>
+<li>有期徒刑</li>
+<li>罰金(新臺幣)</li>
+<li>犯罪所得達新臺幣1億元以上</li>
+<li>犯罪所得利益超過罰金最高額者</li>
+</ul>
+<a class="small" href="#刑事責任" data-jump-lecture>看完整講義</a>
+</div></div>
+<div class="col-md-6">
+<div class="quick-card">
+<div class="quick-kicker">速查 · 第 14 節</div>
+<h3 class="h6">民事責任</h3>
+<ul class='mb-2 small'>
+<li>損害賠償</li>
+<li>賠償金額</li>
+<li>情節重大</li>
+<li>情節輕微</li>
+</ul>
+<a class="small" href="#民事責任" data-jump-lecture>看完整講義</a>
+</div></div>
+</div></div>
+    <div class="tab-pane fade" id="tab-quiz" role="tabpanel"><article class="sec-block" id="7-8-練習題">
+<div class="sec-kicker">課後練習</div>
+<div class="sec-head"><span class="sec-num">1</span><h2 class="sec-title">7.8 練習題</h2></div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">練習檢核</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-7-8-練習題" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「7.8 練習題」。首先，1. 目前世界主要國家對於內線交易是否有處罰規定? (A) 是 (B) 否,僅少部分國家 (C) 否,僅台灣有處罰規定 (D) 以上皆非 解答：(A) 2. 請問上櫃股票有納入內線交易處罰的標的嗎? (A) 有 (B) 無 (C) 視個案情形決定 (D) 以上皆非 解答：(A) 3. 請問內線交易之刑事責任為何? (A) 處三年以上十年以下有期徒刑,得併科新臺幣一千萬元以上二億元以下罰金 (B) 因犯罪獲取之財物或財產上利益金額達新臺幣一億元以上者,處七年以上有期徒刑,得併科新臺幣二千五百萬元以上五億元以下罰金 (C) 如損及證券市場穩定者,加重其刑至二分之一 (D) 以上皆是 解答：(D) 4. 交易「獲利」是否為內線交易之構成要件? (A) 是 (B) 否 (C) 無規定 (D) 以上皆非 解答：(B) 5. 下列何者為內線交易規範之經理人? (A) 總經理 (B) 副總經理 (C) 財務長 (D) 以上皆是 解答：(D) 6. 內部人將重大消息傳遞第三人,第三人因買賣股票而構成內線交易,但內部人本身並未買賣該公司有價證券,內部人有無違法? (A) 無法律責任 (B) 未規定 (C) 至少有民事責任 (D) 以上皆非 解答：(C) 7. 請問內線交易之民事責任為何? (A) 無民事責任 (B) 由投保中心主張 (C) 對於當日善意從事相反買賣之人買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額,負損害賠償責任 (D) 以上皆非 解答：(C)。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<div class="sec-body"><ol>
+<li><p>目前世界主要國家對於內線交易是否有處罰規定?<br />
+(A) 是<br />
+(B) 否,僅少部分國家<br />
+(C) 否,僅台灣有處罰規定<br />
+(D) 以上皆非  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(A)</span></div></div></span>
+</div></li>
+<li><p>請問上櫃股票有納入內線交易處罰的標的嗎?<br />
+(A) 有<br />
+(B) 無<br />
+(C) 視個案情形決定<br />
+(D) 以上皆非  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(A)</span></div></div></span>
+</div></li>
+<li><p>請問內線交易之刑事責任為何?<br />
+(A) 處三年以上十年以下有期徒刑,得併科新臺幣一千萬元以上二億元以下罰金<br />
+(B) 因犯罪獲取之財物或財產上利益金額達新臺幣一億元以上者,處七年以上有期徒刑,得併科新臺幣二千五百萬元以上五億元以下罰金<br />
+(C) 如損及證券市場穩定者,加重其刑至二分之一<br />
+(D) 以上皆是  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(D)</span></div></div></span>
+</div></li>
+<li><p>交易「獲利」是否為內線交易之構成要件?<br />
+(A) 是<br />
+(B) 否<br />
+(C) 無規定<br />
+(D) 以上皆非  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(B)</span></div></div></span>
+</div></li>
+<li><p>下列何者為內線交易規範之經理人?<br />
+(A) 總經理<br />
+(B) 副總經理<br />
+(C) 財務長<br />
+(D) 以上皆是  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(D)</span></div></div></span>
+</div></li>
+<li><p>內部人將重大消息傳遞第三人,第三人因買賣股票而構成內線交易,但內部人本身並未買賣該公司有價證券,內部人有無違法?<br />
+(A) 無法律責任<br />
+(B) 未規定<br />
+(C) 至少有民事責任<br />
+(D) 以上皆非  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(C)</span></div></div></span>
+</div></li>
+<li><p>請問內線交易之民事責任為何?<br />
+(A) 無民事責任<br />
+(B) 由投保中心主張<br />
+(C) 對於當日善意從事相反買賣之人買入或賣出該證券之價格,與消息公開後十個營業日收盤平均價格之差額,負損害賠償責任<br />
+(D) 以上皆非  </p>
+
+<div class="chip-row">
+<span class="tag-chip chip-cyan"><div class="ans-row"><button type="button" class="ans-btn" data-reveal-answer aria-pressed="false">顯示解答</button><div class="ans-box is-masked" data-secret-box><span class="ans-text">(C)</span></div></div></span>
+</div></li>
+</ol>
+</div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">解答：(A)</span>
+<span class="tag-chip chip-mint">解答：(D)</span>
+<span class="tag-chip chip-amber">解答：(B)</span>
+<span class="tag-chip chip-coral">解答：(C)</span>
+<span class="tag-chip chip-violet">目前世界主要國家對於內線交易是否有處罰規定?</span>
+</div>
+</div>
+</article></div>
+  </div>
+</div>
+
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script>
+window.markmap = {
+  autoLoader: {
+    manual: true,
+    toolbar: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18.11"></script>
+<script>
+(function(){
+  try {
+    if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "loose" });
+  } catch (e) {}
+})();
+</script>
+<script>
+(function(){
+  const body = document.body;
+  const key = 'gov-ebook-side-collapsed';
+  const backdrop = document.getElementById('side-backdrop');
+  const mq = window.matchMedia('(max-width:900px)');
+  const isMobile = () => mq.matches;
+  const edge = document.getElementById('edge-toggle');
+  const burger = document.getElementById('burger-fab');
+  function setCollapsed(v){
+    body.classList.toggle('side-collapsed', !!v);
+    try{ localStorage.setItem(key, v ? '1' : '0'); }catch(e){}
+  }
+  function openMobile(v){
+    body.classList.toggle('side-open-mobile', !!v);
+    if(backdrop) backdrop.hidden = !v;
+    body.style.overflow = v ? 'hidden' : '';
+    if(burger){
+      burger.setAttribute('aria-expanded', v ? 'true' : 'false');
+      burger.title = v ? '關閉目錄' : '打開目錄';
+      burger.setAttribute('aria-label', v ? '關閉目錄' : '打開目錄');
+    }
+  }
+  function syncViewport(){
+    if(isMobile()){
+      setCollapsed(true);
+      openMobile(false);
+    } else {
+      openMobile(false);
+      try{
+        setCollapsed(localStorage.getItem(key)==='1');
+      }catch(e){ setCollapsed(false); }
+    }
+  }
+  syncViewport();
+  if(mq.addEventListener) mq.addEventListener('change', syncViewport);
+  else if(mq.addListener) mq.addListener(syncViewport);
+  if(edge) edge.addEventListener('click', ()=>{ if(isMobile()) openMobile(false); else setCollapsed(true); });
+  if(burger) burger.addEventListener('click', (e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    if(isMobile()){
+      openMobile(!body.classList.contains('side-open-mobile'));
+    } else {
+      setCollapsed(false);
+    }
+  });
+  if(backdrop) backdrop.addEventListener('click', ()=> openMobile(false));
+
+  document.querySelectorAll('[data-nav-jump], [data-jump-lecture], .milestone-link, .path-card').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href')||'';
+      const hashIdx = href.indexOf('#');
+      if(hashIdx < 0) return;
+      const hash = href.slice(hashIdx);
+      const file = href.slice(0, hashIdx);
+      const cur = decodeURIComponent(location.pathname.split('/').pop()||'');
+      if(file && file !== cur) return;
+      const btn = document.getElementById('tab-lecture-btn');
+      if(btn && window.bootstrap){
+        e.preventDefault();
+        bootstrap.Tab.getOrCreateInstance(btn).show();
+        if(isMobile()) openMobile(false);
+        setTimeout(()=>{ const t=document.querySelector(hash); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }, 160);
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-reveal-answer]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const row = btn.closest('.ans-row');
+      const box = row && row.querySelector('[data-secret-box]');
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      if(box) box.classList.toggle('is-masked', !show);
+      btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+      btn.textContent = show ? '隱藏解答' : '顯示解答';
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function parsePayload(){
+    const el = document.getElementById('note-viz-data');
+    if(!el) return {};
+    try { return JSON.parse(el.textContent || '{}'); } catch(e){ return {}; }
+  }
+  const data = parsePayload();
+  const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+  const compares = Array.isArray(data.compares) ? data.compares : [];
+  const evolution = Array.isArray(data.evolution) ? data.evolution : [];
+  const outline = Array.isArray(data.outline) ? data.outline : [];
+  const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+  const edges = Array.isArray(data.edges) ? data.edges : [];
+  const charts = Array.isArray(data.charts) ? data.charts : [];
+  const mermaids = Array.isArray(data.mermaids) ? data.mermaids : [];
+
+  const state = {
+    ready: false,
+    echarts: [],
+    cy: null,
+    network: null,
+    timeline: null,
+    markmapSvg: null
+  };
+
+  function showEmpty(id, on){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('d-none', !on);
+  }
+  function short(s, n){
+    s = String(s||'');
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+  }
+  function isNarrow(){ return window.matchMedia('(max-width:767px)').matches; }
+  function tableH(desktop){ return isNarrow() ? Math.max(180, Math.min(260, Math.round(window.innerHeight*0.32))) + 'px' : desktop; }
+  function boxSize(el){
+    if(!el) return { w: 320, h: 240 };
+    const w = Math.max(el.clientWidth || el.offsetWidth || 0, 280);
+    const h = Math.max(el.clientHeight || el.offsetHeight || 0, 200);
+    return { w, h };
+  }
+  function chartsTabVisible(){
+    const pane = document.getElementById('tab-charts');
+    if(!pane) return true;
+    return pane.classList.contains('active') || pane.classList.contains('show');
+  }
+
+  function buildOutlineMd(){
+    let md = '# 講義大綱\n';
+    if(outline.length){
+      outline.forEach((o,i)=>{
+        const title = String(o.title||('節 '+(i+1))).replace(/\n/g,' ');
+        md += `\n## ${i+1}. ${title}`;
+        (o.kids||[]).forEach(k=>{
+          md += `\n- ${String(k).replace(/\n/g,' ')}`;
+        });
+      });
+    } else if(nodes.length){
+      nodes.forEach(n=>{ md += `\n## ${n.label||n.id}`; });
+    } else {
+      md += '\n## （尚無大綱）\n- 請見章節講義';
+    }
+    return md;
+  }
+
+  function waitMarkmapReady(){
+    return new Promise((resolve)=>{
+      const al = window.markmap && markmap.autoLoader;
+      if(!al){ resolve(false); return; }
+      if(al.ready && typeof al.ready.then === 'function'){
+        al.ready.then(()=>resolve(true)).catch(()=>resolve(!!al.renderAll));
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        n++;
+        const ok = !!(window.markmap && markmap.autoLoader && (markmap.autoLoader.render || markmap.autoLoader.renderAll));
+        if(ok || n > 50){ clearInterval(t); resolve(ok); }
+      }, 120);
+    });
+  }
+
+  async function renderMarkmap(){
+    const host = document.getElementById('viz-markmap');
+    if(!host) return;
+    const md = buildOutlineMd();
+    host.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'markmap';
+    const tpl = document.createElement('script');
+    tpl.type = 'text/template';
+    tpl.textContent = md;
+    el.appendChild(tpl);
+    host.appendChild(el);
+
+    const ok = await waitMarkmapReady();
+    const al = window.markmap && markmap.autoLoader;
+    if(!ok || !al){
+      host.innerHTML = '<p class="viz-empty">心智圖套件尚未載入完成，請重新整理頁面。</p>';
+      return;
+    }
+    try {
+      if(typeof al.render === 'function') await al.render(el);
+      else if(typeof al.renderAllUnder === 'function') await al.renderAllUnder(host);
+      else if(typeof al.renderAll === 'function') await al.renderAll();
+      // 強制 SVG 填滿容器
+      const svg = host.querySelector('svg');
+      if(svg){
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        state.markmapSvg = svg;
+      }
+      // 觸發 fit：模擬 resize
+      setTimeout(()=> window.dispatchEvent(new Event('resize')), 60);
+    } catch(e){
+      console.warn('markmap render', e);
+      host.innerHTML = '<p class="viz-empty">心智圖渲染失敗：' + String(e && e.message || e) + '</p>';
+    }
+  }
+
+  function fitAll(){
+    state.echarts.forEach(c=>{ try{ c.resize(); }catch(e){} });
+    if(state.cy){ try{ state.cy.resize(); state.cy.fit(undefined, 24); }catch(e){} }
+    if(state.network){ try{ state.network.redraw(); state.network.fit(); }catch(e){} }
+    if(state.timeline){ try{ state.timeline.redraw(); }catch(e){} }
+    if(window.Plotly){
+      document.querySelectorAll('#viz-plotly-timeline .js-plotly-plot, #viz-plotly-timeline').forEach(el=>{
+        try{ Plotly.Plots.resize(el); }catch(e){}
+      });
+    }
+    const host = document.getElementById('viz-markmap');
+    const svg = host && host.querySelector('svg');
+    if(svg){
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+    }
+    // D3 重畫交由 init 內的資料；窄螢幕時僅調整既有 svg 寬度
+    const d3svg = document.querySelector('#viz-d3-evolve svg');
+    if(d3svg){
+      const wrap = document.getElementById('viz-d3-evolve');
+      const { w } = boxSize(wrap);
+      d3svg.setAttribute('width', String(w));
+    }
+  }
+
+  function initViz(){
+    if(state.ready){ fitAll(); return; }
+    state.ready = true;
+
+    /* —— markmap —— */
+    renderMarkmap();
+
+    /* —— timeline —— */
+    if(timeline.length){
+      const rows = timeline.map(r=>({ when:r.when||r[0]||'', what:r.what||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-timeline')){
+        new Tabulator('#viz-tabulator-timeline', {
+          data: rows, layout:'fitDataStretch', height: tableH('220px'),
+          columns:[
+            {title:'時點', field:'when', minWidth:88, widthGrow:1, headerFilter: isNarrow()?false:'input'},
+            {title:'事件／規範重點', field:'what', minWidth:160, widthGrow:3, headerFilter: isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      if(window.Chart){
+        const ctx = document.getElementById('viz-chartjs-timeline');
+        if(ctx){
+          new Chart(ctx, {
+            type:'bar',
+            data:{
+              labels: rows.map(r=>short(r.when, isNarrow()?8:12)),
+              datasets:[{ label:'事件數', data: rows.map(()=>1), backgroundColor:'rgba(94,200,255,.55)' }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{ legend:{ labels:{ color:'#c9d7ea', boxWidth:12 } } },
+              scales:{
+                x:{ ticks:{ color:'#93a4b8', maxRotation:45, minRotation:0, autoSkip:true }, grid:{ color:'#2a3544' } },
+                y:{ ticks:{ color:'#93a4b8', stepSize:1 }, grid:{ color:'#2a3544' }, beginAtZero:true }
+              }
+            }
+          });
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-timeline');
+        if(el){
+          const chart = echarts.init(el, 'dark');
+          chart.setOption({
+            backgroundColor:'transparent',
+            grid:{ left:36, right:16, top:24, bottom: isNarrow()?64:40, containLabel:true },
+            tooltip:{ trigger:'axis' },
+            xAxis:{ type:'category', data: rows.map(r=>short(r.when, isNarrow()?8:14)), axisLabel:{ color:'#9fb0c6', hideOverlap:true } },
+            yAxis:{ type:'value', show:false },
+            series:[{
+              type:'line', smooth:true, symbolSize:10,
+              data: rows.map((_,i)=>i+1),
+              areaStyle:{ color:'rgba(94,200,255,.15)' },
+              lineStyle:{ color:'#5ec8ff' },
+              itemStyle:{ color:'#3ee0a2' }
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.vis && vis.Timeline){
+        const el = document.getElementById('viz-vis-timeline');
+        if(el){
+          const items = new vis.DataSet(rows.map((r,i)=>{
+            const y = String(r.when).match(/(19|20)\d{2}/);
+            const start = y ? (y[0]+'-01-01') : (`2020-0${(i%9)+1}-01`);
+            return { id:i+1, content: short(r.what, isNarrow()?22:40), start };
+          }));
+          state.timeline = new vis.Timeline(el, items, {
+            stack:true, horizontalScroll:true, zoomKey:'ctrlKey',
+            orientation:'top', margin:{ item:8 },
+            height: isNarrow() ? 200 : 240
+          });
+        }
+      }
+      if(window.Plotly){
+        const el = document.getElementById('viz-plotly-timeline');
+        if(el){
+          Plotly.newPlot(el, [{
+            type:'scatter', mode:'lines+markers',
+            x: rows.map(r=>r.when), y: rows.map((_,i)=>i+1),
+            text: rows.map(r=>r.what),
+            marker:{ color:'#5ec8ff', size:10 },
+            line:{ color:'#3ee0a2' }
+          }], {
+            paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+            font:{ color:'#c9d7ea', size: isNarrow()?11:12 },
+            margin:{ t:20,r:12,b: isNarrow()?70:40, l:36 },
+            yaxis:{ title:'序', gridcolor:'#2a3544' },
+            xaxis:{ gridcolor:'#2a3544', tickangle: isNarrow()?-35:0 }
+          }, {responsive:true, displayModeBar:false});
+        }
+      }
+    }
+
+    /* —— compare —— */
+    const firstCompare = compares[0] || null;
+    if(firstCompare){
+      const headers = firstCompare.headers || firstCompare[0] || [];
+      const body = firstCompare.rows || firstCompare[1] || [];
+      const fields = headers.map((h,i)=> 'c'+i);
+      const dataRows = body.map(r=>{
+        const o={}; fields.forEach((f,i)=>{ o[f]= (r&&r[i]!=null)? String(r[i]) : ''; }); return o;
+      });
+      if(window.Tabulator && document.getElementById('viz-tabulator-compare')){
+        new Tabulator('#viz-tabulator-compare', {
+          data: dataRows, layout:'fitDataStretch', height: tableH('240px'),
+          columns: headers.map((h,i)=>({
+            title:String(h), field:fields[i], minWidth:100, widthGrow:1,
+            headerFilter: isNarrow()?false:'input', formatter:'textarea'
+          }))
+        });
+      }
+      if(window.gridjs && document.getElementById('viz-gridjs-compare')){
+        new gridjs.Grid({
+          columns: headers.map(String),
+          data: body.map(r=> (r||[]).map(c=> String(c??''))),
+          search: !isNarrow(), sort: true,
+          pagination: { enabled:true, limit: isNarrow()?5:8 },
+          style: { table:{ 'font-size': isNarrow()?'12px':'13px' } }
+        }).render(document.getElementById('viz-gridjs-compare'));
+      }
+    }
+
+    /* —— evolution —— */
+    if(evolution.length){
+      const rows = evolution.map(r=>({ stage:r.stage||r[0]||'', content:r.content||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-evolve')){
+        new Tabulator('#viz-tabulator-evolve', {
+          data: rows, layout:'fitDataStretch', height: tableH('200px'),
+          columns:[
+            {title:'階段', field:'stage', minWidth:90, widthGrow:1, headerFilter:isNarrow()?false:'input'},
+            {title:'重點內容', field:'content', minWidth:140, widthGrow:3, headerFilter:isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      const mEl = document.getElementById('viz-mermaid-evolve');
+      if(mEl && window.mermaid){
+        const dir = isNarrow() ? 'TD' : 'LR';
+        let code = 'flowchart ' + dir + '\n';
+        rows.forEach((r,i)=>{
+          const id = 'S'+(i+1);
+          const label = short(r.stage, isNarrow()?14:18).replace(/"/g,"'");
+          code += `  ${id}["${label}"]\n`;
+          if(i>0) code += `  S${i} --> ${id}\n`;
+        });
+        mEl.removeAttribute('data-processed');
+        mEl.textContent = code;
+        try { mermaid.run({ nodes: [mEl] }); } catch(e){
+          try { mermaid.init(undefined, mEl); } catch(_e){}
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-evolve');
+        if(el){
+          const { w, h } = boxSize(el);
+          const chart = echarts.init(el, 'dark');
+          const n = rows.length || 1;
+          chart.setOption({
+            backgroundColor:'transparent',
+            tooltip:{ formatter: p => (p.data && (p.data.name + '<br/>' + (p.data.value||''))) || '' },
+            series:[{
+              type:'graph', layout:'none', roam:true,
+              label:{ show:true, color:'#e8eef7', fontSize: isNarrow()?10:12 },
+              edgeSymbol:['none','arrow'],
+              data: rows.map((r,i)=>({
+                name: short(r.stage, isNarrow()?10:12),
+                x: isNarrow() ? (w*0.5) : (40 + i * Math.max(70, (w-80)/Math.max(n-1,1))),
+                y: isNarrow() ? (30 + i * Math.max(42, (h-60)/Math.max(n-1,1))) : (h*0.45),
+                value: r.content
+              })),
+              links: rows.slice(1).map((_,i)=>({ source:i, target:i+1 }))
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.d3){
+        const el = document.getElementById('viz-d3-evolve');
+        if(el){
+          el.innerHTML = '';
+          const { w } = boxSize(el);
+          const height = Math.max(el.clientHeight || 240, 200);
+          const svg = d3.select(el).append('svg').attr('width', w).attr('height', height);
+          const root = { name:'演進', children: rows.map(r=>({ name: short(r.stage, isNarrow()?12:16), children:[{ name: short(r.content, isNarrow()?20:28) }] })) };
+          const hier = d3.hierarchy(root);
+          d3.tree().size([height-36, Math.max(120, w-120)])(hier);
+          const g = svg.append('g').attr('transform','translate(56,18)');
+          g.selectAll('.link').data(hier.links()).enter().append('path')
+            .attr('class','link').attr('fill','none')
+            .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+          const node = g.selectAll('.node').data(hier.descendants()).enter().append('g')
+            .attr('class','node').attr('transform', d=>`translate(${d.y},${d.x})`);
+          node.append('circle').attr('r',4);
+          node.append('text').attr('dy',3).attr('x', d=> d.children? -8:8)
+            .attr('text-anchor', d=> d.children? 'end':'start').text(d=>d.data.name);
+        }
+      }
+    }
+
+    /* —— graphs —— */
+    if(document.getElementById('viz-cytoscape') || document.getElementById('viz-vis-network')){
+      const gNodes = nodes.length ? nodes : outline.map((o,i)=>({ id:'n'+i, label: short(o.title||('節'+(i+1)), 18) }));
+      const gEdges = edges.length ? edges : gNodes.slice(1).map((n,i)=>({ from: gNodes[i].id, to: n.id }));
+      if(window.cytoscape && gNodes.length && document.getElementById('viz-cytoscape')){
+        state.cy = cytoscape({
+          container: document.getElementById('viz-cytoscape'),
+          elements: [
+            ...gNodes.map(n=>({ data:{ id:String(n.id), label:n.label||String(n.id) } })),
+            ...gEdges.map((e,i)=>({ data:{ id:'e'+i, source:String(e.from||e.source), target:String(e.to||e.target) } }))
+          ],
+          style:[
+            { selector:'node', style:{ 'background-color':'#5ec8ff', 'label':'data(label)', 'color':'#e8eef7', 'font-size': isNarrow()?'9px':'10px', 'text-wrap':'wrap', 'text-max-width': isNarrow()?64:80 } },
+            { selector:'edge', style:{ 'width':2, 'line-color':'#3ee0a2', 'target-arrow-color':'#3ee0a2', 'target-arrow-shape':'triangle', 'curve-style':'bezier' } }
+          ],
+          layout:{ name:'cose', animate:false, padding:16 }
+        });
+      }
+      if(window.vis && vis.Network && gNodes.length && document.getElementById('viz-vis-network')){
+        const el = document.getElementById('viz-vis-network');
+        const ns = new vis.DataSet(gNodes.map(n=>({ id:n.id, label:n.label||String(n.id) })));
+        const es = new vis.DataSet(gEdges.map((e,i)=>({ id:i, from:e.from||e.source, to:e.to||e.target })));
+        state.network = new vis.Network(el, { nodes:ns, edges:es }, {
+          nodes:{ shape:'dot', size: isNarrow()?11:14, font:{ color:'#e8eef7', size: isNarrow()?11:13 }, color:{ background:'#5ec8ff', border:'#3ee0a2' } },
+          edges:{ color:'#6ee7f5', arrows:'to' },
+          physics:{ stabilization:true },
+          interaction:{ zoomView:true, dragView:true }
+        });
+      }
+    }
+
+    /* —— extra（HTML 已為每張圖建獨立格） —— */
+    if(charts.length && window.Chart){
+      charts.forEach((c, i)=>{
+        const canvas = document.getElementById('viz-extra-chart-'+i);
+        if(!canvas) return;
+        const cfg = c.config || {};
+        new Chart(canvas, {
+          type: cfg.type || c.type || 'bar',
+          data: cfg.data || { labels:c.labels||[], datasets:c.datasets||[] },
+          options: Object.assign({
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#c9d7ea' } } },
+            scales:{
+              x:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } },
+              y:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } }
+            }
+          }, cfg.options||{})
+        });
+      });
+    }
+    const mHost = document.getElementById('viz-extra-mermaids');
+    if(mHost && mermaids.length){
+      mermaids.forEach((code)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'mb-3 mermaid-host';
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = code;
+        wrap.appendChild(pre);
+        mHost.appendChild(wrap);
+      });
+      if(window.mermaid){
+        try { mermaid.run({ querySelector: '#viz-extra-mermaids .mermaid' }); } catch(e){}
+      }
+    }
+
+    setTimeout(fitAll, 80);
+    setTimeout(fitAll, 320);
+  }
+
+  function requestInit(){
+    // 等一幀確保 tab 已顯示、容器有寬度
+    requestAnimationFrame(()=> requestAnimationFrame(initViz));
+  }
+
+  // 圖表 tab 顯示後才初始化（避免隱藏 tab 寬度為 0）
+  const chartsBtn = document.getElementById('tab-charts-btn');
+  if(chartsBtn){
+    chartsBtn.addEventListener('shown.bs.tab', ()=> requestInit());
+  }
+  document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn=>{
+    btn.addEventListener('shown.bs.tab', (ev)=>{
+      const target = (ev.target && ev.target.getAttribute('data-bs-target')) || '';
+      if(target === '#tab-charts') requestInit();
+      else if(state.ready) setTimeout(fitAll, 50);
+    });
+  });
+
+  // 若圖表本來就是作用中（或沒有 tabs），直接初始化
+  if(chartsTabVisible()){
+    requestInit();
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+  });
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize', ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  if(!('speechSynthesis' in window)){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      const st = root.querySelector('[data-tts-status]');
+      if(st) st.textContent = '此瀏覽器不支援語音播放，仍可閱讀講解稿。';
+      root.querySelectorAll('button[data-tts-play],button[data-tts-pause],button[data-tts-stop]').forEach(b=> b.disabled = true);
+      root.querySelectorAll('[data-tts-voice]').forEach(s=> s.disabled = true);
+    });
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const STORE_KEY = 'note-tts-voice-uri-v2';
+  let currentRoot = null;
+  let currentUtter = null;
+  let voicesReady = false;
+
+  function voiceScore(v){
+    const blob = ((v.name||'') + ' ' + (v.lang||'')).toLowerCase();
+    let s = 0;
+    if(/zh|chinese|中文|國語|台|hong|澳門|yue/.test(blob)) s += 100;
+    // 預設優先 Google 中文語音
+    if(/google/.test(blob)) s += 200;
+    if(/zh-tw|taiwan|國語（台灣）|國語 \(台灣\)|chinese \(taiwan\)/.test(blob)) s += 90;
+    if(/hanhan|hsia.?chen|yunjhe|yun-jie|zhiwei|meijia|tingting/.test(blob)) s += 70;
+    if(/zh-cn|xiaoxiao|xiaoyi|yunxi|yunyang|huihui|普通话|國語（中國）/.test(blob)) s += 50;
+    if(/natural|neural|online|自然|神經|雲端/.test(blob)) s += 35;
+    if(/microsoft|edge/.test(blob)) s += 8;
+    if(/desktop|sapi|espeak|compact/.test(blob)) s -= 15;
+    return s;
+  }
+  function listVoices(){
+    const all = synth.getVoices() || [];
+    const zh = all.filter(v => voiceScore(v) >= 100).sort((a,b)=> voiceScore(b)-voiceScore(a));
+    if(zh.length) return zh;
+    return all.slice().sort((a,b)=> voiceScore(b)-voiceScore(a));
+  }
+  function voiceKey(v){
+    return (v.voiceURI || (v.name + '|' + v.lang) || '').trim();
+  }
+  function savedVoiceKey(){
+    try{ return localStorage.getItem(STORE_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveVoiceKey(key){
+    try{ localStorage.setItem(STORE_KEY, key || ''); }catch(e){}
+  }
+  function findVoiceByKey(key){
+    if(!key) return null;
+    const voices = synth.getVoices() || [];
+    return voices.find(v => voiceKey(v) === key) || null;
+  }
+  function defaultVoice(){
+    const voices = listVoices();
+    if(!voices.length) return null;
+    const saved = findVoiceByKey(savedVoiceKey());
+    if(saved) return saved;
+    const googleTw = voices.find(v => /google/i.test(v.name) && /zh-tw|taiwan|台灣|台湾/i.test(v.name + v.lang));
+    const googleZh = voices.find(v => /google/i.test(v.name) && /zh|chinese|中文|國語|普通话/i.test(v.name + v.lang));
+    const googleAny = voices.find(v => /google/i.test(v.name));
+    return googleTw || googleZh || googleAny || voices[0];
+  }
+  function fillVoiceSelects(){
+    const voices = listVoices();
+    const preferred = defaultVoice();
+    const preferredKey = preferred ? voiceKey(preferred) : '';
+    document.querySelectorAll('[data-tts-voice]').forEach(sel=>{
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if(!voices.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '（尚無可用語音）';
+        sel.appendChild(opt);
+        return;
+      }
+      voices.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = voiceKey(v);
+        let tag = '';
+        if(/google/i.test(v.name)) tag = ' ★Google';
+        else if(/natural|neural|online|自然/i.test(v.name)) tag = ' ★較自然';
+        opt.textContent = (v.name || '語音') + '（' + (v.lang || '?') + '）' + tag;
+        sel.appendChild(opt);
+      });
+      const want = prev || preferredKey || voiceKey(voices[0]);
+      if([...sel.options].some(o => o.value === want)) sel.value = want;
+      else sel.selectedIndex = 0;
+    });
+    voicesReady = true;
+  }
+  function selectedVoice(root){
+    const sel = root && root.querySelector('[data-tts-voice]');
+    const key = sel && sel.value;
+    return findVoiceByKey(key) || defaultVoice();
+  }
+  function setStatus(root, text){
+    const st = root && root.querySelector('[data-tts-status]');
+    if(st) st.textContent = text || '';
+  }
+  function setSpeaking(root, on){
+    const box = root && root.querySelector('[data-tts-text]');
+    if(box) box.classList.toggle('is-speaking', !!on);
+  }
+  function stopAll(){
+    try{ synth.cancel(); }catch(e){}
+    if(currentRoot){
+      setSpeaking(currentRoot, false);
+      setStatus(currentRoot, '使用系統語音朗讀（可自選聲線）');
+    }
+    currentRoot = null;
+    currentUtter = null;
+  }
+  function playRoot(root){
+    const textEl = root.querySelector('[data-tts-text]');
+    const text = (textEl && (textEl.innerText || textEl.textContent) || '').trim();
+    if(!text){ setStatus(root, '尚無講解稿'); return; }
+    if(!voicesReady) fillVoiceSelects();
+    stopAll();
+    const u = new SpeechSynthesisUtterance(text);
+    const voice = selectedVoice(root);
+    if(voice){
+      u.voice = voice;
+      u.lang = voice.lang || 'zh-TW';
+      saveVoiceKey(voiceKey(voice));
+    }else{
+      u.lang = 'zh-TW';
+    }
+    const rateEl = root.querySelector('[data-tts-rate]');
+    u.rate = rateEl ? Number(rateEl.value || 1) : 1;
+    u.pitch = 1;
+    u.onstart = ()=>{
+      currentRoot = root;
+      setSpeaking(root, true);
+      setStatus(root, '播放中… ' + ((voice && voice.name) || ''));
+    };
+    u.onend = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放結束');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    u.onerror = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放中斷（可改選其他語音）');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    currentUtter = u;
+    // Chrome 偶發 cancel 後立刻 speak 會失敗
+    setTimeout(()=> synth.speak(u), 40);
+  }
+
+  function bindRoots(){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      if(root.dataset.ttsBound) return;
+      root.dataset.ttsBound = '1';
+      const play = root.querySelector('[data-tts-play]');
+      const pause = root.querySelector('[data-tts-pause]');
+      const stop = root.querySelector('[data-tts-stop]');
+      const voiceSel = root.querySelector('[data-tts-voice]');
+      if(play) play.addEventListener('click', ()=>{
+        if(synth.paused && currentRoot === root){ synth.resume(); setStatus(root, '繼續播放…'); return; }
+        playRoot(root);
+      });
+      if(pause) pause.addEventListener('click', ()=>{
+        if(synth.speaking && !synth.paused){ synth.pause(); setStatus(root, '已暫停'); }
+      });
+      if(stop) stop.addEventListener('click', ()=> stopAll());
+      if(voiceSel) voiceSel.addEventListener('change', ()=>{
+        saveVoiceKey(voiceSel.value);
+        document.querySelectorAll('[data-tts-voice]').forEach(other=>{
+          if(other !== voiceSel) other.value = voiceSel.value;
+        });
+        setStatus(root, '已選語音，按朗讀試聽');
+      });
+    });
+  }
+
+  fillVoiceSelects();
+  bindRoots();
+  try{
+    synth.getVoices();
+    synth.addEventListener('voiceschanged', ()=>{ fillVoiceSelects(); });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "meta": {
+    "title": "完整流程：開頁→爬蟲→AI整理→存檔→開程式",
+    "description": "你平常整理好素材後，用這份當母版改欄位即可",
+    "tags": ["pipeline", "ai", "run_app"]
+  },
+  "task": {
+    "enabled": true,
+    "output": {
+      "name": "專案A_整理結果",
+      "dir": "output",
+      "overwrite": true
+    },
+    "materials": {
+      "urls": [
+        "https://example.com/a",
+        "https://example.com/b"
+      ],
+      "files": [
+        {
+          "path": "D:/資料/參考稿.docx",
+          "role": "source"
+        }
+      ],
+      "text": "（可選）你事先貼好的補充說明",
+      "vars": {
+        "project": "專案A",
+        "owner": "you"
+      }
+    },
+    "defaults": {
+      "browser": "chromium",
+      "headless": true,
+      "timeout_ms": 60000,
+      "wait_ms": 2500
+    },
+    "actions": [
+      {
+        "id": "1_open",
+        "type": "open_url",
+        "params": { "url_index": 0 }
+      },
+      {
+        "id": "2_scrape",
+        "type": "scrape",
+        "params": {
+          "target": {
+            "by": "id",
+            "value": "content",
+            "include_children": true,
+            "all_matches": false
+          },
+          "extract": "text",
+          "filename": "專案A_原始"
+        }
+      },
+      {
+        "id": "3_shot",
+        "type": "screenshot",
+        "params": {
+          "mode": "full_page",
+          "filename": "專案A_整頁"
+        }
+      },
+      {
+        "id": "4_ai",
+        "type": "ai_clean",
+        "params": {
+          "source": "last_scrape",
+          "provider": "none",
+          "model": "",
+          "instruction": "去除導覽與廣告殘留，整理成：標題、重點條列、正文。輸出繁體中文。",
+          "output_schema": {
+            "title": "string",
+            "bullets": ["string"],
+            "body": "string"
+          },
+          "filename": "專案A_整理結果"
+        }
+      },
+      {
+        "id": "5_save",
+        "type": "save",
+        "params": {
+          "from": "last_ai",
+          "filename": "專案A_整理結果",
+          "format": "json"
+        }
+      },
+      {
+        "id": "6_open_notepad",
+        "type": "run_app",
+        "params": {
+          "path": "notepad.exe",
+          "args": ["{{output.dir}}/專案A_整理結果.json"],
+          "wait": false
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "meta": {
+    "title": "最小範本｜改網址、class、檔名即可"
+  },
+  "task": {
+    "output": {
+      "name": "我的結果",
+      "dir": "output"
+    },
+    "materials": {
+      "urls": [
+        "https://example.com"
+      ],
+      "files": [],
+      "text": "",
+      "vars": {}
+    },
+    "defaults": {
+      "headless": true,
+      "wait_ms": 2500
+    },
+    "actions": [
+      {
+        "type": "open_url",
+        "params": {
+          "url_index": 0
+        }
+      },
+      {
+        "type": "scrape",
+        "params": {
+          "target": {
+            "by": "class",
+            "value": "article-content",
+            "include_children": true,
+            "all_matches": true
+          },
+          "extract": "text",
+          "filename": "我的結果"
+        }
+      },
+      {
+        "type": "screenshot",
+        "params": {
+          "mode": "full_page",
+          "filename": "我的結果_截圖"
+        }
+      }
+    ]
+  }
+}

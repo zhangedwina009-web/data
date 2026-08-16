@@ -1,0 +1,64 @@
+{
+  "version": "1.0",
+  "meta": {
+    "title": "截圖三種模式示範（實際執行請拆成多份或只留需要的 action）",
+    "tags": ["screenshot"]
+  },
+  "task": {
+    "output": {
+      "name": "首頁截圖",
+      "dir": "output"
+    },
+    "materials": {
+      "urls": ["https://example.com"]
+    },
+    "actions": [
+      {
+        "id": "open",
+        "type": "open_url",
+        "params": { "url_index": 0 }
+      },
+      {
+        "id": "shot_viewport",
+        "type": "screenshot",
+        "enabled": false,
+        "params": {
+          "mode": "single",
+          "filename": "可視區"
+        }
+      },
+      {
+        "id": "shot_full",
+        "type": "screenshot",
+        "params": {
+          "mode": "full_page",
+          "filename": "整頁"
+        }
+      },
+      {
+        "id": "shot_scroll",
+        "type": "screenshot",
+        "enabled": false,
+        "params": {
+          "mode": "scroll",
+          "filename": "滾動拼接",
+          "scroll": {
+            "step_px": 900,
+            "delay_ms": 250,
+            "max_steps": 40
+          }
+        }
+      },
+      {
+        "id": "shot_element",
+        "type": "screenshot",
+        "enabled": false,
+        "params": {
+          "mode": "element",
+          "selector": ".hero",
+          "filename": "區塊截圖"
+        }
+      }
+    ]
+  }
+}

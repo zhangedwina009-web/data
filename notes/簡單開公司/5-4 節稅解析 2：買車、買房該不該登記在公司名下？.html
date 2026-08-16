@@ -1,0 +1,1838 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>節稅解析 2：買車、買房該不該登記在公司名下？</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/css/tabulator_midnight.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/theme/mermaid.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-alpine-dark.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/styles/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/styles/vis-network.min.css" rel="stylesheet" />
+<style>
+:root{
+  --side-w:320px; --side-blue:#0d2137;
+}
+.layout{min-height:100vh;}
+.sidebar{
+  position:fixed; inset:0 auto 0 0; width:min(var(--side-w), 88vw); z-index:40;
+  background:linear-gradient(180deg, #0a2744 0%, var(--side-blue) 40%, #0b1a2a 100%);
+  border-right:1px solid rgba(94,200,255,.18);
+  display:flex; flex-direction:column;
+  transform:translateX(0); transition:transform .22s ease;
+  box-shadow:8px 0 28px rgba(0,0,0,.25);
+}
+body.side-collapsed .sidebar{transform:translateX(-105%);}
+.side-scroll{overflow:auto; -webkit-overflow-scrolling:touch; padding:.85rem .75rem 5rem; flex:1;}
+.side-brand-block{padding:.35rem .45rem 0.85rem; border-bottom:1px solid rgba(94,200,255,.15); margin-bottom:.75rem;}
+.side-brand{font-weight:850; font-size:1.05rem; color:#fff; letter-spacing:.04em;}
+.side-sub{font-size:.75rem; color:rgba(158,200,230,.85); margin-top:.15rem;}
+.side-home{
+  display:inline-flex; margin-top:.55rem; font-size:.78rem; font-weight:700;
+  color:var(--cyan); text-decoration:none;
+}
+.side-home:hover{color:#fff;}
+.chap-drop{
+  border:1px solid rgba(94,200,255,.14); border-radius:12px;
+  background:rgba(8,24,40,.72); margin:0 0 .45rem; overflow:hidden;
+}
+.chap-drop.active-chap{border-color:rgba(94,200,255,.45); box-shadow:inset 3px 0 0 var(--cyan);}
+.chap-drop > summary{
+  list-style:none; cursor:pointer; padding:.55rem .65rem;
+  display:flex; align-items:center; gap:.35rem;
+  font-size:.84rem; font-weight:750; color:#e8f4ff;
+}
+.chap-drop > summary::-webkit-details-marker{display:none;}
+.chap-drop > summary::before{content:"▸"; color:rgba(158,200,230,.7); width:1rem; flex:0 0 auto;}
+.chap-drop[open] > summary::before{content:"▾"; color:var(--cyan);}
+.chap-sum-link{color:inherit; text-decoration:none; flex:1; min-width:0; word-break:break-word;}
+.chap-sum-link:hover{color:var(--cyan);}
+.toc-kids{padding:0 .35rem .55rem .35rem; display:flex; flex-direction:column; gap:.08rem;}
+.toc-h3{
+  display:flex; align-items:flex-start; gap:.4rem; text-decoration:none; color:rgba(200,220,235,.88);
+  font-size:.78rem; padding:.32rem .45rem; border-radius:8px; line-height:1.35;
+}
+.toc-h3:hover{background:rgba(94,200,255,.12); color:#fff;}
+.toc-sub{padding-left:1.15rem; font-size:.74rem; color:rgba(170,195,215,.8);}
+.toc-mark{flex:0 0 auto; width:1.1rem; text-align:center; color:var(--cyan); font-size:.85rem;}
+.toc-sub .toc-mark{color:var(--amber); font-size:.78rem;}
+.toc-text{flex:1; min-width:0; overflow-wrap:anywhere;}
+.edge-toggle{
+  position:fixed; left:calc(min(var(--side-w), 88vw) - 16px); top:max(12px, env(safe-area-inset-top));
+  z-index:50; width:32px; height:32px; border-radius:10px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(13,33,55,.95); color:#fff; cursor:pointer;
+  display:grid; place-items:center; transition:left .22s ease, opacity .2s ease;
+}
+body.side-collapsed .edge-toggle{display:none;}
+.burger-fab{
+  display:none; position:fixed;
+  left:max(12px, env(safe-area-inset-left));
+  top:max(12px, env(safe-area-inset-top));
+  z-index:55; width:42px; height:42px; border-radius:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(135deg,rgba(94,200,255,.45),rgba(62,224,162,.32));
+  color:#071018; font-size:1.1rem; font-weight:800; cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.35);
+}
+body.side-collapsed .burger-fab{display:grid; place-items:center;}
+.content{margin-left:min(var(--side-w), 88vw); min-width:0; width:auto; transition:margin-left .22s ease;}
+body.side-collapsed .content{margin-left:0;}
+.note-wrap,.wrap{
+  max-width:980px; margin:0 auto;
+  padding:1.25rem 1.15rem 3.2rem; overflow-x:clip;
+}
+body.side-collapsed .note-wrap, body.side-collapsed .wrap{padding-top:4.2rem;}
+.backdrop{display:none; position:fixed; inset:0; z-index:35; background:rgba(0,0,0,.45);}
+body.side-open-mobile .backdrop{display:block;}
+@media (max-width:900px){
+  .sidebar{
+    width:min(86vw, 320px);
+    transform:translateX(-105%);
+    box-shadow:12px 0 40px rgba(0,0,0,.45);
+  }
+  body.side-open-mobile .sidebar{transform:translateX(0);}
+  body.side-collapsed .sidebar{transform:translateX(-105%);}
+  body.side-collapsed.side-open-mobile .sidebar{transform:translateX(0);}
+  .content{margin-left:0 !important; width:100%;}
+  .edge-toggle{display:none !important;}
+  .burger-fab{display:grid !important; place-items:center;}
+  .note-wrap,.wrap{
+    padding:4.4rem max(.85rem, env(safe-area-inset-right))
+            calc(2.5rem + env(safe-area-inset-bottom))
+            max(.85rem, env(safe-area-inset-left));
+  }
+}
+@media (min-width:901px){
+  body.side-open-mobile .backdrop{display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  .sidebar,.content,.edge-toggle{transition:none;}
+}
+@media print{
+  .sidebar,.burger-fab,.edge-toggle,.backdrop{display:none !important;}
+  .content{margin-left:0 !important;}
+}
+.viz-toolkit-badge{display:inline-flex;flex-wrap:wrap;gap:.35rem;margin:.35rem 0 1rem;}
+.viz-pill{font-size:.68rem;font-weight:750;padding:.18rem .5rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted);background:rgba(18,24,33,.85);}
+.viz-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:.9rem;
+  align-items:stretch;
+}
+@media (min-width:768px){
+  .viz-grid{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+@media (min-width:1200px){
+  .viz-grid.viz-grid-dense{grid-template-columns:repeat(2, minmax(0, 1fr));}
+}
+.viz-cell{
+  margin:0;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(16,22,30,.92);
+  max-width:100%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.viz-cell-wide{grid-column:1 / -1;}
+.viz-panel-h,.viz-cell-h{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;
+  padding:.65rem .85rem;border-bottom:1px solid rgba(255,255,255,.08);font-weight:720;
+}
+.viz-lib{font-size:.7rem;font-weight:800;padding:.15rem .45rem;border-radius:999px;background:rgba(94,200,255,.16);color:var(--cyan);}
+.viz-body,.viz-cell-b{padding:.75rem .85rem 1rem;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0;}
+.viz-box{min-height:clamp(180px,42vw,260px);width:100%;max-width:100%;position:relative;}
+.viz-box-sm{min-height:clamp(160px,38vw,220px);}
+.viz-box-lg{min-height:clamp(220px,48vw,340px);}
+.viz-empty{color:var(--muted);font-size:.9rem;padding:.4rem 0;}
+.viz-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.tabulator,.tabulator-header,.tabulator-row{background:transparent !important;color:var(--text) !important;}
+.tabulator{border:1px solid rgba(255,255,255,.08) !important;border-radius:10px;overflow:hidden;max-width:100%;}
+.gridjs-wrapper{overflow-x:auto !important;max-width:100%;}
+.gridjs-th,.gridjs-td{background:#121821 !important;border-color:rgba(255,255,255,.1) !important;color:#e8eef7 !important;}
+table.dataTable{color:var(--text);width:100% !important;}
+.ag-theme-alpine-dark{--ag-background-color:#121821;--ag-header-background-color:#0d1520;height:clamp(220px,50vw,300px);width:100%;max-width:100%;}
+.markmap-host{position:relative;width:100%;max-width:100%;height:clamp(280px,58vw,420px);border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;overflow:hidden;}
+.markmap-host .markmap{position:relative;width:100%;height:100%;}
+.markmap-host .markmap > svg,
+.markmap > svg{width:100% !important;height:100% !important;min-height:260px;display:block;}
+.cy-host,.vis-host{height:clamp(240px,55vw,340px);width:100%;max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#0a0e14;}
+.vis-timeline{border:0 !important;background:transparent !important;width:100% !important;}
+.vis-item{background:rgba(94,200,255,.25) !important;border-color:rgba(94,200,255,.55) !important;color:#e8eef7 !important;font-size:12px !important;}
+.d3-host{height:clamp(220px,50vw,300px);width:100%;max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch;}
+.d3-host text{fill:#c9d7ea;font-size:11px;}
+.d3-host .link{stroke:rgba(94,200,255,.35);}
+.d3-host .node circle{fill:#5ec8ff;}
+.mermaid-host{padding:.5rem;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:#0a0e14;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+.mermaid-host .mermaid,.mermaid-host svg{max-width:100%;}
+@media (max-width:767px){
+  .viz-cell-b{padding:.65rem .7rem .85rem;}
+  .viz-cell-h{padding:.55rem .7rem;font-size:.92rem;}
+  .viz-toolkit-badge{gap:.28rem;}
+  .viz-pill{font-size:.62rem;padding:.14rem .42rem;}
+  .tabulator .tabulator-header-filter input{font-size:12px;}
+}
+@media (max-width:420px){
+  .markmap-host{height:260px;}
+  .cy-host,.vis-host{height:220px;}
+}
+.narration-box{
+  margin:.85rem 0 1.1rem;border:1px solid rgba(110,231,245,.28);border-radius:14px;
+  background:linear-gradient(135deg,rgba(110,231,245,.08),rgba(16,22,30,.95));
+  overflow:hidden;
+}
+.narration-box > summary{
+  list-style:none;cursor:pointer;padding:.7rem .9rem;font-weight:750;
+  display:flex;align-items:center;gap:.45rem;color:#e8eef7;
+}
+.narration-box > summary::-webkit-details-marker{display:none;}
+.narration-box > summary::before{content:"▸";color:var(--sky,#6ee7f5);}
+.narration-box[open] > summary::before{content:"▾";}
+.narration-badge{
+  font-size:.7rem;font-weight:800;padding:.14rem .45rem;border-radius:999px;
+  background:rgba(110,231,245,.18);color:var(--sky,#6ee7f5);
+}
+.narration-body{padding:0 .9rem 1rem;}
+.narration-toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin:0 0 .65rem;
+}
+.narration-toolbar button{
+  border:1px solid rgba(255,255,255,.14);border-radius:999px;
+  background:rgba(18,24,33,.9);color:#e8eef7;padding:.32rem .75rem;
+  font-size:.82rem;font-weight:700;cursor:pointer;
+}
+.narration-toolbar button.main{
+  background:linear-gradient(135deg,rgba(94,200,255,.9),rgba(62,224,162,.75));
+  color:#071018;border:0;
+}
+.narration-toolbar button:hover{filter:brightness(1.08);}
+.narration-toolbar button:disabled{opacity:.45;cursor:not-allowed;}
+.narration-rate{display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);}
+.narration-rate input{width:90px;accent-color:#5ec8ff;}
+.narration-voice{
+  display:inline-flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--muted,#9fb0c6);
+  flex:1 1 220px;min-width:180px;
+}
+.narration-voice select{
+  flex:1;min-width:0;max-width:100%;
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;
+  background:rgba(18,24,33,.95);color:#e8eef7;
+  padding:.28rem .7rem;font-size:.78rem;
+}
+.narration-hint{font-size:.72rem;color:var(--muted,#9fb0c6);margin:.15rem 0 .45rem;line-height:1.45;}
+.narration-status{font-size:.78rem;color:var(--mint,#3ee0a2);min-height:1.1em;}
+.narration-script{
+  white-space:pre-wrap;line-height:1.75;color:#d7e2f0;font-size:.92rem;
+  padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(110,231,245,.25);
+  background:rgba(10,14,20,.72);max-height:280px;overflow:auto;-webkit-overflow-scrolling:touch;
+}
+.narration-script.is-speaking{border-color:rgba(62,224,162,.55);box-shadow:inset 3px 0 0 var(--mint,#3ee0a2);}
+@media (max-width:560px){
+  .narration-toolbar{gap:.35rem;}
+  .narration-voice{flex-basis:100%;}
+  .narration-script{max-height:220px;font-size:.88rem;}
+}
+:root{
+  --bg:#0b0f14; --bg2:#121821; --text:#e8eef7; --muted:#9fb0c6;
+  --cyan:#5ec8ff; --mint:#3ee0a2; --amber:#ffc857; --coral:#ff7b72;
+  --violet:#c3a6ff; --sky:#6ee7f5;
+}
+body{
+  background:
+    radial-gradient(1100px 480px at 8% -8%, rgba(94,200,255,.15), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgba(195,166,255,.12), transparent 50%),
+    radial-gradient(700px 360px at 50% 110%, rgba(62,224,162,.08), transparent 45%),
+    var(--bg);
+  color:var(--text);
+}
+.meta-line{color:var(--muted);font-size:.85rem;}
+.lecture-hero{margin-bottom:1.4rem;}
+.unit-badge{display:inline-block;font-size:.75rem;font-weight:800;letter-spacing:.04em;padding:.28rem .7rem;border-radius:999px;background:linear-gradient(135deg,rgba(94,200,255,.25),rgba(195,166,255,.25));border:1px solid rgba(255,255,255,.1);margin-bottom:.65rem;}
+.note-title{font-weight:780;letter-spacing:.01em;line-height:1.28;font-size:clamp(1.45rem,3vw,2rem);}
+.title-link{text-decoration:none;background:linear-gradient(90deg,var(--cyan),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.source-line a{color:var(--sky);text-decoration:none;border-bottom:1px dashed rgba(110,231,245,.45);}
+.section-kicker{font-size:.75rem;font-weight:800;letter-spacing:.08em;color:var(--cyan);margin-bottom:.25rem;}
+.section-title{font-size:1.15rem;font-weight:720;margin-bottom:.85rem;}
+.panel{background:rgba(18,24,33,.88);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:1rem 1.1rem;}
+.panel-violet{border-left:4px solid var(--violet);}
+.panel-mint{border-left:4px solid var(--mint);}
+.chip-row{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 1rem;}
+.tag-chip{display:inline-flex;align-items:center;padding:.28rem .7rem;border-radius:999px;font-size:.78rem;font-weight:650;border:1px solid transparent;background:rgba(18,24,33,.95);}
+.summary-chips{display:flex;flex-direction:column;gap:.65rem;}
+.summary-chip{border-radius:12px;padding:.75rem .95rem;border:1px solid transparent;background:rgba(18,24,33,.9);}
+.chip-cyan,.tag-chip.chip-cyan{border-color:rgba(94,200,255,.4);box-shadow:inset 3px 0 0 var(--cyan);}
+.chip-mint,.tag-chip.chip-mint{border-color:rgba(62,224,162,.4);box-shadow:inset 3px 0 0 var(--mint);}
+.chip-amber,.tag-chip.chip-amber{border-color:rgba(255,200,87,.4);box-shadow:inset 3px 0 0 var(--amber);}
+.chip-coral,.tag-chip.chip-coral{border-color:rgba(255,123,114,.4);box-shadow:inset 3px 0 0 var(--coral);}
+.chip-violet,.tag-chip.chip-violet{border-color:rgba(195,166,255,.4);box-shadow:inset 3px 0 0 var(--violet);}
+.chip-sky,.tag-chip.chip-sky{border-color:rgba(110,231,245,.4);box-shadow:inset 3px 0 0 var(--sky);}
+.milestone-wrap{margin:1.25rem 0 1.5rem;}
+.milestone-track{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;position:relative;}
+.milestone-item{margin:0;}
+.milestone-link{display:flex;flex-direction:column;gap:.35rem;height:100%;padding:.85rem .9rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.92);border:1px solid rgba(255,255,255,.08);transition:transform .15s ease,border-color .15s ease;}
+.milestone-link:hover{transform:translateY(-2px);border-color:rgba(94,200,255,.45);color:inherit;}
+.ms-dot{width:1.7rem;height:1.7rem;border-radius:999px;display:grid;place-items:center;font-size:.8rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.ms-label{font-weight:720;font-size:.95rem;}
+.ms-desc{font-size:.78rem;color:var(--muted);line-height:1.45;}
+.lecture-nav{gap:.4rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lecture-nav .nav-link{border-radius:999px;color:var(--muted);background:rgba(18,24,33,.8);border:1px solid rgba(255,255,255,.08);padding:.4rem .9rem;}
+.lecture-nav .nav-link.active{color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));border-color:transparent;font-weight:750;}
+.lecture-tab-content{background:rgba(12,16,22,.45);border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:1.1rem 1rem 1.4rem;}
+.tab-hint{color:var(--muted);font-size:.9rem;margin-top:.5rem;}
+.path-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;}
+.path-card{display:block;padding:1rem;border-radius:14px;text-decoration:none;color:inherit;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.path-card:hover{border-color:rgba(195,166,255,.5);color:inherit;}
+.path-idx{font-size:.75rem;font-weight:800;color:var(--violet);}
+.path-title{font-weight:720;margin:.25rem 0;}
+.path-desc{font-size:.82rem;color:var(--muted);}
+.path-go{margin-top:.55rem;font-size:.82rem;color:var(--cyan);}
+.chapter-block{padding:1rem 0 1.4rem;border-bottom:1px solid rgba(255,255,255,.06);scroll-margin-top:1rem;}
+.chapter-block:last-child{border-bottom:0;}
+.chapter-head{margin-bottom:.55rem;}
+.milestone-badge{display:inline-block;font-size:.72rem;font-weight:800;color:var(--amber);margin-bottom:.35rem;letter-spacing:.04em;}
+.chapter-title{display:flex;align-items:center;gap:.65rem;font-size:1.2rem;font-weight:720;margin:0;}
+.chapter-num{display:inline-grid;place-items:center;min-width:1.85rem;height:1.85rem;padding:0 .35rem;border-radius:999px;font-size:.9rem;font-weight:800;color:#071018;background:linear-gradient(135deg,var(--cyan),var(--mint));}
+.subhead{font-size:1rem;font-weight:700;margin:1rem 0 .5rem;color:var(--sky);}
+.lecture-list,.check-list{padding-left:1.15rem;color:#d7e2f0;}
+.lecture-list li,.check-list li{margin:.25rem 0;}
+.body-p{color:#d7e2f0;}
+.kp-box{margin:.75rem 0 1rem;padding:.75rem .85rem;border-radius:12px;border:1px dashed rgba(94,200,255,.35);background:rgba(94,200,255,.06);}
+.callout{border-radius:14px;padding:.9rem 1rem;border:1px solid rgba(255,255,255,.08);background:rgba(16,22,30,.92);}
+.callout-label{font-size:.78rem;font-weight:800;letter-spacing:.06em;margin-bottom:.35rem;}
+.callout-body,.callout-list{color:#e8eef7;}
+.callout-list{padding-left:1.1rem;}
+.callout-key{border-color:rgba(94,200,255,.4);background:linear-gradient(135deg,rgba(94,200,255,.16),rgba(16,22,30,.95));}
+.callout-key .callout-label{color:var(--cyan);}
+.callout-judge{border-color:rgba(195,166,255,.4);background:linear-gradient(135deg,rgba(195,166,255,.14),rgba(16,22,30,.95));}
+.callout-judge .callout-label{color:var(--violet);}
+.callout-note,.callout-tip{border-color:rgba(62,224,162,.4);background:linear-gradient(135deg,rgba(62,224,162,.14),rgba(16,22,30,.95));}
+.callout-note .callout-label,.callout-tip .callout-label{color:var(--mint);}
+.callout-warn{border-color:rgba(255,200,87,.45);background:linear-gradient(135deg,rgba(255,200,87,.16),rgba(16,22,30,.95));}
+.callout-warn .callout-label{color:var(--amber);}
+.callout-fact{border-color:rgba(110,231,245,.4);background:linear-gradient(135deg,rgba(110,231,245,.14),rgba(16,22,30,.95));}
+.callout-fact .callout-label{color:var(--sky);}
+.tip-card{background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;}
+.tip-card .card-header{background:transparent;border-bottom:1px solid rgba(255,255,255,.08);font-weight:700;}
+.tip-card .card-title{font-weight:720;}
+.tip-card .card-text,.tip-card li{color:#c9d7ea;}
+.accent-cyan{box-shadow:inset 0 3px 0 var(--cyan);}
+.accent-mint{box-shadow:inset 0 3px 0 var(--mint);}
+.accent-amber{box-shadow:inset 0 3px 0 var(--amber);}
+.accent-coral{box-shadow:inset 0 3px 0 var(--coral);}
+.accent-violet{box-shadow:inset 0 3px 0 var(--violet);}
+.accent-sky{box-shadow:inset 0 3px 0 var(--sky);}
+.quick-kicker{font-size:.72rem;font-weight:800;color:var(--cyan);margin-bottom:.2rem;}
+.table{--bs-table-bg:rgba(16,22,30,.9);--bs-table-color:var(--text);}
+.mermaid{text-align:center;border-radius:14px;border:1px solid rgba(255,255,255,.06);}
+.quiz-intro{color:var(--muted);font-size:.92rem;margin-bottom:.9rem;}
+.quiz-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.55rem;margin-bottom:1rem;}
+.quiz-tool-btn{border:1px solid rgba(255,255,255,.12);background:rgba(18,24,33,.9);color:var(--text);border-radius:999px;padding:.28rem .75rem;}
+.quiz-tool-btn:hover{border-color:rgba(94,200,255,.45);color:var(--cyan);}
+.quiz-count{font-size:.8rem;color:var(--muted);margin-left:.25rem;}
+.quiz-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:.9rem;}
+.quiz-item{padding:1rem 1.05rem;border-radius:14px;background:rgba(16,22,30,.95);border:1px solid rgba(255,255,255,.08);}
+.quiz-item-head{display:flex;flex-wrap:wrap;align-items:center;gap:.45rem;margin-bottom:.45rem;}
+.quiz-no{font-weight:800;font-size:.85rem;color:var(--cyan);}
+.quiz-kind{font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:.18rem .55rem;border-radius:999px;}
+.quiz-kind-know{background:rgba(62,224,162,.16);color:var(--mint);border:1px solid rgba(62,224,162,.35);}
+.quiz-kind-data{background:rgba(255,200,87,.14);color:var(--amber);border:1px solid rgba(255,200,87,.4);}
+.quiz-topic{font-size:.8rem;color:var(--muted);}
+.quiz-q{margin:0 0 .7rem;font-weight:650;line-height:1.55;}
+.quiz-answer-row{display:flex;flex-wrap:wrap;align-items:stretch;gap:.55rem;}
+.quiz-reveal-btn{flex:0 0 auto;border-radius:10px;border:1px solid rgba(195,166,255,.4);background:rgba(195,166,255,.12);color:var(--violet);font-size:.82rem;font-weight:700;padding:.4rem .75rem;}
+.quiz-reveal-btn[aria-pressed="true"]{background:rgba(94,200,255,.14);border-color:rgba(94,200,255,.4);color:var(--cyan);}
+.quiz-secret-box{flex:1 1 200px;min-height:2.4rem;display:flex;align-items:center;padding:.45rem .75rem;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:#0a0e14;font-family:ui-monospace,Consolas,monospace;}
+.quiz-secret-text{letter-spacing:.04em;color:var(--mint);}
+.quiz-secret-box.is-masked .quiz-secret-text{
+  -webkit-text-security:disc;
+  text-security:disc;
+  color:var(--muted);
+  user-select:none;
+  filter:blur(.5px);
+}
+.quiz-explain{margin-top:.55rem;font-size:.86rem;color:#c9d7ea;padding:.55rem .7rem;border-radius:10px;background:rgba(94,200,255,.08);border:1px dashed rgba(94,200,255,.3);}
+.quiz-explain-label{display:inline-block;font-size:.72rem;font-weight:800;color:var(--cyan);margin-right:.4rem;}
+.quiz-explain.is-hidden{display:none;}
+a{color:var(--cyan);}
+@media (max-width:576px){
+  .lecture-tab-content{padding:.85rem .7rem 1.1rem;}
+}
+</style>
+</head>
+<body>
+<div class="backdrop" id="side-backdrop" hidden></div>
+<button type="button" class="burger-fab" id="burger-fab" title="打開目錄" aria-label="打開目錄">☰</button>
+<button type="button" class="edge-toggle" id="edge-toggle" title="收起目錄" aria-label="收起目錄">‹</button>
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="左側目錄">
+    <div class="side-scroll"><div class="side-brand-block">
+<div class="side-brand">簡單開公司</div>
+<div class="side-sub">課程目錄</div>
+<a class="side-home" href="../index.html">← 筆記首頁</a>
+</div>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="1-1 給創業者的財稅地圖：從個人到公司.html" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html">給創業者的財稅地圖：從個人到公司</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-1" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">課程定位與怎麼上路</span></a>
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-2" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">階段一：公司成立前的籌備期</span></a>
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-3" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">階段二：成立過程的起步期</span></a>
+<a class="toc-h3" href="1-1 給創業者的財稅地圖：從個人到公司.html#ch-4" data-nav-jump="1-1 給創業者的財稅地圖：從個人到公司.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">階段三：營運後的稅務與節稅</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="1-2 創業必知！開公司有哪些成本？.html" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html">創業必知！開公司有哪些成本？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-1" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">成本總覽：一次付 vs 一直付</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-2" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">一次性設立費用</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-3" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">營運類成本：租金、地址、記帳</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-4" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">稅務類：營業稅與營所稅</span></a>
+<a class="toc-h3" href="1-2 創業必知！開公司有哪些成本？.html#ch-5" data-nav-jump="1-2 創業必知！開公司有哪些成本？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">股利、扣繳、二代健保與行事曆</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html">我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-1" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">何時要登記：起徵點與三階段</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-2" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">起徵點細節與例外</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-3" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">行號與小規模營業人</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-4" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">小規模申請實務限制</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-5" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">公司 vs 行號：何時開公司划算</span></a>
+<a class="toc-h3" href="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html#ch-6" data-nav-jump="2-1 我需要公司登記嗎？搞懂小規模營業人 vs 行號 vs 公司.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">公司型態：有限公司與股份有限公司</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-2 判斷開公司還是行號的 5 個面向.html" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html">判斷開公司還是行號的 5 個面向</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-1" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">五面向決策框架</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-2" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">面向一：營業地區</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-3" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">面向二：行業風險</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-4" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">面向三：營業額形態</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-5" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">面向四：負責人個人所得</span></a>
+<a class="toc-h3" href="2-2 判斷開公司還是行號的 5 個面向.html#ch-6" data-nav-jump="2-2 判斷開公司還是行號的 5 個面向.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">面向五：長期規劃與總結</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html">設立前準備：公司名稱、營業項目、負責人、資本額</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-1" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">三種登記名詞釐清</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-2" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">公司名稱：預查與保留</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-3" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">營業項目：填寫與特許</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-4" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">負責人：資格與提醒</span></a>
+<a class="toc-h3" href="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html#ch-5" data-nav-jump="2-3 設立前準備：公司名稱、營業項目、負責人、資本額.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">資本額：公司與行號建議</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html">設立前準備：登記地址 - 自有房屋、店面、還是商辦？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-1" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">四種登記地址總覽</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-2" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">已有營業登記的住宅</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-3" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">尚未登記的自有住宅</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-4" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">租約規定與地址隱私</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-5" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">外部辦公室與店面</span></a>
+<a class="toc-h3" href="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html#ch-6" data-nav-jump="2-4 設立前準備：登記地址 - 自有房屋、店面、還是商辦？.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">商務中心與縣市選擇</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html">設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-1" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">勞健退基本概念</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-2" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">負責人勞健保怎麼選</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-3" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">負責人勞保：工會 vs 公司</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-4" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">員工勞健保：5 人以下規定</span></a>
+<a class="toc-h3" href="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html#ch-5" data-nav-jump="2-5 設立前準備：老闆的勞健保 &amp; 雇用一名員工的實際成本.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">雇一名員工的真實成本</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html">財稅基礎：公司賺錢和花錢有哪些單據？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-1" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">銷項與進項：先搞懂買賣兩端</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-2" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">開立資格與電子發票選擇</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-3" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">賣東西：依對方有無統編開發票</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-4" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">賣給國外：外銷零稅率與證明</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-5" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">買東西：依對方身分拿對單據</span></a>
+<a class="toc-h3" href="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html#ch-6" data-nav-jump="3-1 財稅基礎：公司賺錢和花錢有哪些單據？.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">總結：買賣單據速查</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html">營業稅：什麼是營業稅？我要繳多少營業稅？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-1" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">營業稅是什麼：代收的 5% 消費稅</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-2" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">定價計算：未稅、含稅與稅額</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-3" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">銷項、進項與應繳公式</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-4" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">申報時程與 401 表</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-5" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">外銷零稅率、退稅與地址</span></a>
+<a class="toc-h3" href="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html#ch-6" data-nav-jump="3-2 營業稅：什麼是營業稅？我要繳多少營業稅？.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">重點複習：四大記憶點</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html">營業稅扣抵：三原則了解可扣抵的發票與單據</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-1" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">扣抵三原則：統編、稅額、非消費</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-2" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">非消費性質：情境不同結果不同</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-3" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">常見可扣與不可扣清單</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-4" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">特殊單據：海關、車票、餐費、機票</span></a>
+<a class="toc-h3" href="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html#ch-5" data-nav-jump="3-3 營業稅扣抵： 3 原則了解可扣抵的發票 _ 單據.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">實務：一人公司與拿發票考題</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html">營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-1" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">營收≠所得：20% 課在哪裡</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-2" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">兩種算所得：核實 vs 行業利潤率</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-3" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">營所稅額公式與開業未滿年</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-4" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">沒賺錢也要繳稅嗎？</span></a>
+<a class="toc-h3" href="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html#ch-5" data-nav-jump="4-1 營所稅：什麼是營所稅？公司沒賺錢也要繳稅嗎？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">有投資人的公司為何要查帳</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html">營所稅申報：書審 vs 查帳，選哪個最節稅？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-1" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">誰要申報？所得怎麼算出來</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-2" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">五種方式：核實與三種利潤率</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-3" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">案例試算：書審稅額與補稅風險</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-4" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">行業代號怎麼選</span></a>
+<a class="toc-h3" href="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html#ch-5" data-nav-jump="4-2 營所稅申報：書審 vs 查帳，選哪個最節稅？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">如何選查帳或書審</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html">行號的所得：行號不繳營所稅，所得如何計算？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-1" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">行號兩種型態：營業稅不同、營利所得相同</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-2" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">課稅所得怎麼算</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-3" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">實例：營收≠所得，稅額常比想像小</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-4" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">何時改開公司</span></a>
+<a class="toc-h3" href="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html#ch-5" data-nav-jump="4-3 行號的所得：行號不繳營所稅，所得如何計算？.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">合夥分散所得與無限清償</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-4 公司盈餘分配，要不要發股利呢？.html" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html">公司盈餘分配，要不要發股利呢？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-1" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">股利是什麼、何時發、怎麼算</span></a>
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-2" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">發或不發：用所得級距判斷</span></a>
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-3" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">股利與二代健保、負責人投保級距</span></a>
+<a class="toc-h3" href="4-4 公司盈餘分配，要不要發股利呢？.html#ch-4" data-nav-jump="4-4 公司盈餘分配，要不要發股利呢？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">員工酬勞與總結提醒</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html">實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-1" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">核心觀念：不要漏開發票</span></a>
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-2" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">進銷項落差大：為什麼容易被盯</span></a>
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-3" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">什麼是調帳？不送帳會怎樣</span></a>
+<a class="toc-h3" href="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html#ch-4" data-nav-jump="4-5 實務分享：被國稅局查帳怎麼辦？容易被調帳的狀況分享.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">依年營業額看風險與預留補稅</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html">懂稅才能節稅：從稅務邏輯找出節稅方法</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-1" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">營業稅三觀念：代收、扣抵、憑證條件</span></a>
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-2" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">營所稅：憑證齊全才能選對申報方式</span></a>
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-3" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">股利扣抵：8.5% 抵稅的節稅思路</span></a>
+<a class="toc-h3" href="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html#ch-4" data-nav-jump="5-1 懂稅才能節稅：從稅務邏輯找出節稅方法.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">行號高所得：改公司或加合夥人</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html">給老闆個人提醒：負責人薪水、二代健保補充保費</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-1" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">負責人要不要領薪水</span></a>
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-2" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">領薪的代價：二代與綜所稅</span></a>
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-3" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">負責人沒有就業保險與勞退</span></a>
+<a class="toc-h3" href="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html#ch-4" data-nav-jump="5-2 給老闆個人提醒：負責人薪水、二代健保補充保費.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">兩種二代健保：個人付 vs 公司付</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html">節稅解析 1：開第二家公司能節稅嗎？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-1" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">為什麼有人想開第二家？適用時機</span></a>
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-2" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">三大實務問題：區隔、成本、連帶審查</span></a>
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-3" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">危險玩法：一家書審、一家查帳虧損</span></a>
+<a class="toc-h3" href="5-3 節稅解析 1：開第二家公司能節稅嗎？.html#ch-4" data-nav-jump="5-3 節稅解析 1：開第二家公司能節稅嗎？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">結論：可節稅，但不簡單</span></a>
+</div></details>
+<details class="chap-drop active-chap" open>
+<summary><a class="chap-sum-link" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html">節稅解析 2：買車、買房該不該登記在公司名下？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-1" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">先問清楚：公司買資產真的能節稅嗎？</span></a>
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-2" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">公司買車：車種決定營業稅能不能扣</span></a>
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-3" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">油錢維修與機車：不必綁死「公司車」</span></a>
+<a class="toc-h3" href="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html#ch-4" data-nav-jump="5-4 節稅解析 2：買車、買房該不該登記在公司名下？.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">公司買房：房地合一、發票與貸款限制</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html">案例統整：自由工作者／接案者——開公司划算嗎？</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-1" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：自由工作者接案的稅務起點</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-2" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：個人接案的三種所得代號</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-3" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：副業 vs 全職接案的扣除差異</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-4" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">行動決策：100 萬門檻——個人收款還是開公司？</span></a>
+<a class="toc-h3" href="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html#ch-5" data-nav-jump="6-1 案例統整 1：自由工作者、接案者 - 開公司划算嗎？個人與公司的差異.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：開公司後的書審與營所稅</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html">案例統整：自媒體創作者——個人與公司的國內外所得大不同</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-1" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：自媒體創作者的收入與稅務起點</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-2" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：個人階段——YouTube 廣告仍是國內所得</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-3" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：670 萬海外所得免稅——為何不適用？</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-4" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">判斷三：公司階段——勞務使用地與觀眾比例</span></a>
+<a class="toc-h3" href="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html#ch-5" data-nav-jump="6-2 案例統整 2：自媒體創作者 - 個人與公司的國內外所得大不同.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：申報步驟與資料保留</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html">案例統整：實體店面經營——營業場所預審與租扣二代</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-1" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：實體店面經營的稅務與法規起點</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-2" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：地址一致性與房東登記意願</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-3" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：營業場所預審、建管與罰則</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-4" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">判斷三：敏感性行業與各縣市特殊規定</span></a>
+<a class="toc-h3" href="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html#ch-5" data-nav-jump="6-3 案例統整 3：實體店面經營 - 營業場所預審、房東的租扣二代.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：租扣二代試算與含稅／未稅談判</span></a>
+</div></details>
+<details class="chap-drop">
+<summary><a class="chap-sum-link" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html">案例統整：網拍電商——國外進貨與 Meta 廣告扣繳</a></summary>
+<div class="toc-kids">
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-1" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">◆</span><span class="toc-text">案例情境：網拍電商的金流透明化</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-2" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">◇</span><span class="toc-text">判斷一：銷售貨物的三階段門檻</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-3" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">›</span><span class="toc-text">判斷二：帳戶交易監控——不只靠平台</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-4" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">▹</span><span class="toc-text">判斷三：國外進貨缺進項——進銷差過大</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-5" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">●</span><span class="toc-text">行動方案：書審省稅 vs 調帳懲罰性稅率</span></a>
+<a class="toc-h3" href="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html#ch-6" data-nav-jump="6-4 案例統整 4：網拍電商經營 - 國外進貨、Meta 廣告費扣繳申報.html" data-jump-lecture><span class="toc-mark">○</span><span class="toc-text">行動方案：Meta 廣告費扣繳申報</span></a>
+</div></details></div>
+  </aside>
+  <div class="content">
+    <main class="note-wrap">
+      <p class="meta-line mb-3">學習講義 · 語音講解／左側目錄／Tabs／Chips／測驗 · 2026-08-17 00:29</p>
+      <header class="lecture-hero">
+<span class="unit-badge">單元 5-4</span>
+<h1 class='note-title mb-2'><a class='title-link' href='https://hahow.in/classroom/66c3038a2cd3b1749a99a884/lessons/67ab181267d47b89de876737/main' target='_blank' rel='noopener noreferrer'>節稅解析 2：買車、買房該不該登記在公司名下？</a></h1>
+<p class='source-line mb-3'><a href='https://hahow.in/classroom/66c3038a2cd3b1749a99a884/lessons/67ab181267d47b89de876737/main' target='_blank' rel='noopener noreferrer'>來源連結 ↗</a></p>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">公司購車</span>
+<span class="tag-chip chip-mint">公司買房</span>
+<span class="tag-chip chip-amber">營業稅扣抵</span>
+<span class="tag-chip chip-coral">折舊</span>
+<span class="tag-chip chip-violet">房地合一</span>
+</div>
+</header>
+<section class="milestone-wrap" aria-label="學習里程碑">
+<div class="section-kicker">學習路徑</div>
+<h2 class="section-title">里程碑</h2>
+<ol class="milestone-track">
+<li class="milestone-item"><a class="milestone-link" href="#ch-1"><span class="ms-dot">1</span><span class="ms-label">先問清楚</span><span class="ms-desc">公司買資產真能節稅嗎</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-2"><span class="ms-dot">2</span><span class="ms-label">公司買車</span><span class="ms-desc">車種決定能不能扣</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-3"><span class="ms-dot">3</span><span class="ms-label">油錢維修</span><span class="ms-desc">不必綁死公司車</span></a></li>
+<li class="milestone-item"><a class="milestone-link" href="#ch-4"><span class="ms-dot">4</span><span class="ms-label">公司買房</span><span class="ms-desc">房地合一與貸款限制</span></a></li>
+</ol></section>
+<div class="lecture-tabs">
+<ul class="nav nav-pills lecture-nav" role="tablist"><li class="nav-item" role="presentation"><button class="nav-link active" id="tab-overview-btn" data-bs-toggle="pill" data-bs-target="#tab-overview" type="button" role="tab">總覽</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-charts-btn" data-bs-toggle="pill" data-bs-target="#tab-charts" type="button" role="tab">圖表</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-path-btn" data-bs-toggle="pill" data-bs-target="#tab-path" type="button" role="tab">學習路徑</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-lecture-btn" data-bs-toggle="pill" data-bs-target="#tab-lecture" type="button" role="tab">章節講義</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-quick-btn" data-bs-toggle="pill" data-bs-target="#tab-quick" type="button" role="tab">速查卡片</button></li><li class="nav-item" role="presentation"><button class="nav-link" id="tab-quiz-btn" data-bs-toggle="pill" data-bs-target="#tab-quiz" type="button" role="tab">課後測驗</button></li></ul>
+<div class="tab-content lecture-tab-content">
+<div class="tab-pane fade show active" id="tab-overview" role="tabpanel">
+<section class="mb-4 panel panel-mint"><h2 class="section-title">學習目標</h2><ul class="mb-0">
+<li>能依車種與營所稅申報方式判斷公司購車是否划算</li>
+<li>能說明油錢維修與「是否公司車」無關的扣抵邏輯</li>
+<li>能說出公司買房的房地合一、發票與貸款限制風險</li>
+<li>理解貿然登記公司名下可能買時不能扣、賣時還要開發票</li>
+</ul></section>
+<section class="mb-4"><h2 class="section-title">重點摘要</h2>
+<div class="summary-chips">
+<div class="summary-chip chip-cyan">貿然用公司名義買車買房，可能買時不能扣營業稅、賣時還要開發票。</div>
+<div class="summary-chip chip-mint">貨車／客貨兩用車才適合公司購車；自用小客車通常不划算。</div>
+<div class="summary-chip chip-amber">油錢與維修費只要合理打統編，不一定要把車登記成公司車。</div>
+<div class="summary-chip chip-coral">公司買房除房地合一外還有盈餘分配與貸款成數限制，除非長期收租否則不建議。</div>
+</div>
+</section>
+<section class="mb-4 panel panel-violet"><h2 class="section-title">講義結構說明</h2><ul class="mb-0">
+<li>主論法：先釐清營業稅／營所稅效益，再分開評估車輛與不動產</li>
+<li>視覺：compare／cards／table／fact</li>
+<li>講義設計：車種對照 + 油錢扣抵 fact + 買房風險表</li>
+</ul></section>
+<p class="tab-hint">下一步：到「圖表」看互動視覺化，或到「章節講義」逐站精讀。</p>
+</div>
+<div class="tab-pane fade" id="tab-charts" role="tabpanel">
+<div class="structs-wrap viz-root" id="viz-root">
+  <p class="tab-hint mb-2">以下僅顯示本章有資料的圖表；每張圖獨立一格，可分別操作。</p>
+  <div class="viz-toolkit-badge"><span class="viz-pill">markmap</span><span class="viz-pill">Tabulator</span><span class="viz-pill">Grid.js</span><span class="viz-pill">Mermaid</span><span class="viz-pill">ECharts</span><span class="viz-pill">D3</span><span class="viz-pill">Cytoscape</span><span class="viz-pill">vis-network</span></div>
+  <script type="application/json" id="note-viz-data">{"title": "節稅解析 2：買車、買房該不該登記在公司名下？", "timeline": [], "compares": [{"headers": ["貨車／客貨兩用", "自用小客車"], "rows": [["可打統編、扣抵營業稅", "通常不能扣抵營業稅"], ["較適合登記公司車", "買進不能抵、賣出還有銷項，常不划算"], ["查帳且長期持有時折舊較有意義", "書審下折舊對營所稅幫助有限"]]}, {"headers": ["情境", "購入憑證", "出售影響", "建議"], "rows": [["向建設公司買商用", "對方開立發票，可扣營業稅", "賣出也要開發票；另有房地合一與盈餘分配", "僅適合長期持有收租"], ["向個人購買", "購入常無發票", "房屋部分仍要開發票，更不划算", "通常更不建議公司名義"], ["貸款與選址", "—", "有限貸令與地區限制；商辦影響可能較小", "先確認貸款可行性"]]}], "evolution": [{"stage": "常見動機", "content": "大筆支出想扣營業稅、報折舊，降低公司稅負。"}, {"stage": "潛在代價", "content": "買時未必能扣營業稅；賣出常需開發票，可能更不划算。"}, {"stage": "申報方式", "content": "書審時折舊對營所稅影響不大；查帳才較能反映費用。"}], "outline": [{"title": "先問清楚：公司買資產真的能節稅嗎？", "kids": ["貿然登記 → 可能買時不能扣、賣時要開發票", "營所稅效益看申報方式", "書審：折舊影響有限", "查帳：折舊較能反映費用"]}, {"title": "公司買車：車種決定營業稅能不能扣", "kids": ["貨車／客貨兩用 → 可扣營業稅，適合公司車", "自用小客車 → 通常不能扣，雙重不利", "書審 → 折舊不影響營所稅", "查帳 + 長期持有 → 折舊較有意義"]}, {"title": "油錢維修與機車：不必綁死「公司車」", "kids": ["油錢／維修 → 看統編與合理性，非看車主", "個人名下自用車 → 油錢維修仍可扣進項", "機車 → 無客貨差別，公司車+發票可扣", "合理且與營業有關才可列支"]}, {"title": "公司買房：房地合一、發票與貸款限制", "kids": ["通常不建議公司名義買房", "出售：房地合一 + 盈餘分配 + 股利所得", "向個人買 → 購入無發票、賣仍要開，更不划算", "有限貸令 → 貸款成數與地區限制"]}], "nodes": [{"id": "n0", "label": "先問清楚：公司買資產真的能節稅嗎？"}, {"id": "n1", "label": "公司買車：車種決定營業稅能不能扣"}, {"id": "n2", "label": "油錢維修與機車：不必綁死「公司車」"}, {"id": "n3", "label": "公司買房：房地合一、發票與貸款限制"}], "edges": [{"from": "n0", "to": "n1"}, {"from": "n1", "to": "n2"}, {"from": "n2", "to": "n3"}], "charts": [], "mermaids": []}</script>
+  <div class="viz-grid viz-grid-dense">
+    <article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">markmap</span>章節心智圖</div><div class="viz-cell-b"><div class="markmap-host" id="viz-markmap" aria-label="章節心智圖"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>對照表</div><div class="viz-cell-b"><div id="viz-tabulator-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Grid.js</span>對照表（可搜尋）</div><div class="viz-cell-b"><div id="viz-gridjs-compare"></div></div></article><article class="viz-cell viz-cell-wide"><div class="viz-cell-h"><span class="viz-lib">Tabulator</span>演進表</div><div class="viz-cell-b"><div id="viz-tabulator-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Mermaid</span>演進流程</div><div class="viz-cell-b"><div class="mermaid-host"><pre class="mermaid" id="viz-mermaid-evolve"></pre></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">ECharts</span>演進關係</div><div class="viz-cell-b"><div class="viz-box" id="viz-echarts-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">D3</span>演進樹狀圖</div><div class="viz-cell-b"><div class="d3-host viz-box" id="viz-d3-evolve"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">Cytoscape</span>章節關係網</div><div class="viz-cell-b"><div class="cy-host" id="viz-cytoscape"></div></div></article><article class="viz-cell"><div class="viz-cell-h"><span class="viz-lib">vis-network</span>概念網路</div><div class="viz-cell-b"><div class="vis-host" id="viz-vis-network"></div></div></article>
+  </div>
+</div>
+</div>
+<div class="tab-pane fade" id="tab-path" role="tabpanel">
+<div class="path-cards">
+<a class="path-card" href="#ch-1" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 1</div><div class="path-title">先問清楚</div><div class="path-desc">公司買資產真能節稅嗎</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-2" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 2</div><div class="path-title">公司買車</div><div class="path-desc">車種決定能不能扣</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-3" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 3</div><div class="path-title">油錢維修</div><div class="path-desc">不必綁死公司車</div><div class="path-go">前往講義 →</div></a>
+<a class="path-card" href="#ch-4" data-bs-toggle="pill" data-bs-target="#tab-lecture"><div class="path-idx">站 4</div><div class="path-title">公司買房</div><div class="path-desc">房地合一與貸款限制</div><div class="path-go">前往講義 →</div></a>
+</div>
+</div>
+<div class="tab-pane fade" id="tab-lecture" role="tabpanel">
+<article class="chapter-block" id="ch-1">
+<div class="chapter-head">
+<span class="milestone-badge">站 1｜先問清楚</span>
+<h2 class='chapter-title'><span class='chapter-num'>1</span>先問清楚：公司買資產真的能節稅嗎？</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">節稅評估</span>
+<span class="tag-chip chip-mint">營業稅</span>
+<span class="tag-chip chip-amber">營所稅</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-1" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「先問清楚：公司買資產真的能節稅嗎？」。首先，關於老闆的常見疑惑。當公司開始賺錢後，老闆常有的疑問是：買車、買房該不該登記在公司的名下呢？大家會有這個疑惑，通常是因為買車、買房是一大筆支出，會想要知道對於公司稅務有沒有幫助。接著，關於貿然登記的代價。但要特別小心的是，如果沒有事先分析就貿然登記在公司，很可能買的時候沒有辦法扣抵營業稅，賣出去時還要開立發票，就得不償失了。是否對營所稅有幫助，也是要看申報方式——書審下折舊對營所稅影響有限，查帳才較有機會反映在稅負。節稅不是「登記在公司就自動比較省」。要同時算進項扣抵、折舊效益與未來處分成本。先釐清資產用途、車種／不動產類型與公司申報方式。請特別記住這幾個重點。第1點，貿然登記 → 可能買時不能扣、賣時要開發票。第2點，營所稅效益看申報方式。第3點，書審：折舊影響有限。第4點，查帳：折舊較能反映費用。另外，關於實務提醒。先釐清資產用途、車種／不動產類型與公司申報方式，再決定名義。聽完可以自問：我理解不能只看「掛公司名就省稅」；我會先確認公司申報方式是書審還是查帳；我會把未來出售成本納入評估。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">老闆的常見疑惑</h3>
+<p class="lh-lg body-p">當公司開始賺錢後，老闆常有的疑問是：買車、買房該不該登記在公司的名下呢？大家會有這個疑惑，通常是因為買車、買房是一大筆支出，會想要知道對於公司稅務有沒有幫助。</p>
+<h3 class="subhead">貿然登記的代價</h3>
+<p class="lh-lg body-p">但要特別小心的是，如果沒有事先分析就貿然登記在公司，很可能買的時候沒有辦法扣抵營業稅，賣出去時還要開立發票，就得不償失了。是否對營所稅有幫助，也是要看申報方式——書審下折舊對營所稅影響有限，查帳才較有機會反映在稅負。</p>
+<ul class="lecture-list">
+<li>節稅不是「登記在公司就自動比較省」</li>
+<li>要同時算進項扣抵、折舊效益與未來處分成本</li>
+<li>先釐清資產用途、車種／不動產類型與公司申報方式</li>
+</ul>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">大筆支出登記公司名下，未必能節稅；可能買時不能扣、賣時要開發票。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">營所稅效益看書審 vs 查帳；書審折舊影響有限。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">先分析再決定，不要貿然登記。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">貿然登記 → 可能買時不能扣、賣時要開發票</span>
+<span class="tag-chip chip-mint">營所稅效益看申報方式</span>
+<span class="tag-chip chip-amber">書審：折舊影響有限</span>
+<span class="tag-chip chip-coral">查帳：折舊較能反映費用</span>
+</div>
+</div>
+<div class="row g-3 mb-3"><div class="col-md-4"><div class="card h-100 tip-card accent-cyan"><div class="card-body"><h3 class="h6 card-title">常見動機</h3><p class="card-text small mb-0">大筆支出想扣營業稅、報折舊，降低公司稅負。</p></div></div></div><div class="col-md-4"><div class="card h-100 tip-card accent-mint"><div class="card-body"><h3 class="h6 card-title">潛在代價</h3><p class="card-text small mb-0">買時未必能扣營業稅；賣出常需開發票，可能更不划算。</p></div></div></div><div class="col-md-4"><div class="card h-100 tip-card accent-amber"><div class="card-body"><h3 class="h6 card-title">申報方式</h3><p class="card-text small mb-0">書審時折舊對營所稅影響不大；查帳才較能反映費用。</p></div></div></div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我理解不能只看「掛公司名就省稅」</li>
+<li>我會先確認公司申報方式是書審還是查帳</li>
+<li>我會把未來出售成本納入評估</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>先釐清資產用途、車種／不動產類型與公司申報方式，再決定名義。</li>
+</ul></div>
+</article>
+<article class="chapter-block" id="ch-2">
+<div class="chapter-head">
+<span class="milestone-badge">站 2｜公司買車</span>
+<h2 class='chapter-title'><span class='chapter-num'>2</span>公司買車：車種決定營業稅能不能扣</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">客貨兩用</span>
+<span class="tag-chip chip-mint">貨車</span>
+<span class="tag-chip chip-amber">自用小客車</span>
+<span class="tag-chip chip-coral">折舊</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-2" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「公司買車：車種決定營業稅能不能扣」。首先，關於兩個常見動機：扣營業稅與折舊。很多創業者想要用公司名義買車，主要是為了兩個好處：扣抵營業稅和報折舊。買車時我們通常會先問你是買什麼車，因為車子根據不同的型號，有分成客車、貨車跟客貨兩用車，只有貨車跟客貨兩用車才可以扣抵營業稅。你要是買的是貨車或是客貨兩用車，就可以打統編、登記公司車、扣抵營業稅。如果負責人是買自己用的車，通常會是自用小客車，就不能扣抵營業稅；。怎麼區分是以行照所規定的為主。接著，關於折舊與書審／查帳。很多老闆想要登記公司車，除了扣抵營業稅之外，就是希望可以入固定資產折舊、列入費用。這時候會請負責人先判斷公司營所稅是書審申報還是查帳申報——假設是書審申報，折舊費用就不影響營所稅，所以節稅的力度也不高；。但如果你很確定走查帳申報的話，折舊費用就會影響到營所稅了。另外，關於賣車時的發票問題。但是使用公司名義買車，賣出時還需要開立發票。如果是自用小客車的話，你買進不能抵營業稅，賣出還有銷項稅額，就很不划算。不過如果你是做查帳申報的公司，而且打算長期使用這輛車、賣掉的可能性很低，開發票的問題也不大。總結來說，創業者要不要用公司名義購車，通常我們還是看車子是不是客貨兩用車或是貨車；。如果是才適合登記在公司的名下，否則就用個人名義購買就好。請特別記住這幾個重點。第1點，貨車／客貨兩用 → 可扣營業稅，適合公司車。第2點，自用小客車 → 通常不能扣，雙重不利。第3點，書審 → 折舊不影響營所稅。第4點，查帳 + 長期持有 → 折舊較有意義。再來，關於實務提醒。區分車種以行照記載為準，不要憑感覺判斷。聽完可以自問：我知道只有貨車／客貨兩用可扣營業稅；我理解自用小客車掛公司名的雙重不利；我會依申報方式評估折舊效益。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">兩個常見動機：扣營業稅與折舊</h3>
+<p class="lh-lg body-p">很多創業者想要用公司名義買車，主要是為了兩個好處：扣抵營業稅和報折舊。買車時我們通常會先問你是買什麼車，因為車子根據不同的型號，有分成客車、貨車跟客貨兩用車，只有貨車跟客貨兩用車才可以扣抵營業稅。</p>
+<p class="lh-lg body-p">你要是買的是貨車或是客貨兩用車，就可以打統編、登記公司車、扣抵營業稅。如果負責人是買自己用的車，通常會是自用小客車，就不能扣抵營業稅；怎麼區分是以行照所規定的為主。</p>
+<h3 class="subhead">折舊與書審／查帳</h3>
+<p class="lh-lg body-p">很多老闆想要登記公司車，除了扣抵營業稅之外，就是希望可以入固定資產折舊、列入費用。這時候會請負責人先判斷公司營所稅是書審申報還是查帳申報——假設是書審申報，折舊費用就不影響營所稅，所以節稅的力度也不高；但如果你很確定走查帳申報的話，折舊費用就會影響到營所稅了。</p>
+<h3 class="subhead">賣車時的發票問題</h3>
+<p class="lh-lg body-p">但是使用公司名義買車，賣出時還需要開立發票。如果是自用小客車的話，你買進不能抵營業稅，賣出還有銷項稅額，就很不划算。不過如果你是做查帳申報的公司，而且打算長期使用這輛車、賣掉的可能性很低，開發票的問題也不大。</p>
+<p class="lh-lg body-p">總結來說，創業者要不要用公司名義購車，通常我們還是看車子是不是客貨兩用車或是貨車；如果是才適合登記在公司的名下，否則就用個人名義購買就好。</p>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">只有貨車與客貨兩用車可扣營業稅；以行照為準。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">自用小客車→不能扣進項、賣出還有銷項，常不划算；查帳+長期持有→折舊較有意義。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">書審下折舊對營所稅幫助有限。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">貨車／客貨兩用 → 可扣營業稅，適合公司車</span>
+<span class="tag-chip chip-mint">自用小客車 → 通常不能扣，雙重不利</span>
+<span class="tag-chip chip-amber">書審 → 折舊不影響營所稅</span>
+<span class="tag-chip chip-coral">查帳 + 長期持有 → 折舊較有意義</span>
+</div>
+</div>
+<div class="row g-3 mb-3"><div class="col-md-6"><div class="card h-100 tip-card accent-cyan"><div class="card-header">貨車／客貨兩用</div><div class="card-body"><ul class="mb-0"><li>可打統編、扣抵營業稅</li><li>較適合登記公司車</li><li>查帳且長期持有時折舊較有意義</li></ul></div></div></div><div class="col-md-6"><div class="card h-100 tip-card accent-mint"><div class="card-header">自用小客車</div><div class="card-body"><ul class="mb-0"><li>通常不能扣抵營業稅</li><li>買進不能抵、賣出還有銷項，常不划算</li><li>書審下折舊對營所稅幫助有限</li></ul></div></div></div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我知道只有貨車／客貨兩用可扣營業稅</li>
+<li>我理解自用小客車掛公司名的雙重不利</li>
+<li>我會依申報方式評估折舊效益</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>區分車種以行照記載為準，不要憑感覺判斷。</li>
+</ul></div>
+<div class="callout callout-warn mb-3"><div class="callout-label">警告</div><div class="callout-body">自用小客車用公司名義購買，常是「進項不能扣、銷項還要繳」的雙重不利。</div></div>
+</article>
+<article class="chapter-block" id="ch-3">
+<div class="chapter-head">
+<span class="milestone-badge">站 3｜油錢維修</span>
+<h2 class='chapter-title'><span class='chapter-num'>3</span>油錢維修與機車：不必綁死「公司車」</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">油錢扣抵</span>
+<span class="tag-chip chip-mint">維修費</span>
+<span class="tag-chip chip-amber">機車</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-3" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「油錢維修與機車：不必綁死「公司車」」。首先，關於常見盲點：車沒掛公司就不能扣？。很多人的盲點其實是：如果我車子沒有登記成公司用，我的油錢、維修費是不是都不能扣抵營業稅了呢？這其實跟車子登記在誰的名下無關。就算是登記在自己名下的自用小客車，油錢和維修費用只要有打統編，都是可以作為公司的可以扣抵的進項。車子不一定要登記在公司名下，如果相關的花費只要合理，也都可以列為公司的費用。相關花費仍須合理、與營業有關，不是「有統編就能無限列支」。接著，關於機車的處理。除了汽車之外，機車也是大家常問的。購買機車的話就沒有客用或貨用的差別，購買機車登記成公司車、提供可以打統編的發票，就可以扣抵營業稅。不管車子是不是公司車，所有的油錢、維修費，只要是合理的花費，都可以打統編扣抵營業稅。請特別記住這幾個重點。第1點，油錢／維修 → 看統編與合理性，非看車主。第2點，個人名下自用車 → 油錢維修仍可扣進項。第3點，機車 → 無客貨差別，公司車+發票可扣。第4點，合理且與營業有關才可列支。另外，關於實務提醒。機車若要以公司名義購買並扣營業稅，記得取得可打統編的發票。聽完可以自問：我知道油錢維修不必綁公司車名義；我理解機車登記公司車的扣抵方式；我會確保花費合理且與營業有關。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">常見盲點：車沒掛公司就不能扣？</h3>
+<p class="lh-lg body-p">很多人的盲點其實是：如果我車子沒有登記成公司用，我的油錢、維修費是不是都不能扣抵營業稅了呢？這其實跟車子登記在誰的名下無關。就算是登記在自己名下的自用小客車，油錢和維修費用只要有打統編，都是可以作為公司的可以扣抵的進項。</p>
+<p class="lh-lg body-p">車子不一定要登記在公司名下，如果相關的花費只要合理，也都可以列為公司的費用。相關花費仍須合理、與營業有關，不是「有統編就能無限列支」。</p>
+<h3 class="subhead">機車的處理</h3>
+<p class="lh-lg body-p">除了汽車之外，機車也是大家常問的。購買機車的話就沒有客用或貨用的差別，購買機車登記成公司車、提供可以打統編的發票，就可以扣抵營業稅。</p>
+<p class="lh-lg body-p">不管車子是不是公司車，所有的油錢、維修費，只要是合理的花費，都可以打統編扣抵營業稅。</p>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">油錢、維修費能否扣抵，看統編與合理性，不是車子一定要掛公司名。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">個人名下自用車→油錢維修打統編仍可扣；機車→無客貨差別，公司車+發票可扣。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">花費須合理、與營業有關。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">油錢／維修 → 看統編與合理性，非看車主</span>
+<span class="tag-chip chip-mint">個人名下自用車 → 油錢維修仍可扣進項</span>
+<span class="tag-chip chip-amber">機車 → 無客貨差別，公司車+發票可扣</span>
+<span class="tag-chip chip-coral">合理且與營業有關才可列支</span>
+</div>
+</div>
+<div class="callout callout-fact mb-3"><div class="callout-label">✦ 費用扣抵關鍵</div><div class="callout-body">油錢、維修費能否扣抵，看的是統編與合理性，不是車子一定要掛公司名。</div></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我知道油錢維修不必綁公司車名義</li>
+<li>我理解機車登記公司車的扣抵方式</li>
+<li>我會確保花費合理且與營業有關</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>機車若要以公司名義購買並扣營業稅，記得取得可打統編的發票。</li>
+</ul></div>
+</article>
+<article class="chapter-block" id="ch-4">
+<div class="chapter-head">
+<span class="milestone-badge">站 4｜公司買房</span>
+<h2 class='chapter-title'><span class='chapter-num'>4</span>公司買房：房地合一、發票與貸款限制</h2>
+</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">房地合一</span>
+<span class="tag-chip chip-mint">盈餘分配</span>
+<span class="tag-chip chip-amber">有限貸令</span>
+</div>
+<details class="narration-box" data-tts-root id="narration-ch-4" open>
+  <summary><span class="narration-badge">聽讀</span>語音講解（適合用聽的）</summary>
+  <div class="narration-body">
+    <div class="narration-toolbar">
+      <button type="button" class="main" data-tts-play>▶ 朗讀</button>
+      <button type="button" data-tts-pause>⏸ 暫停</button>
+      <button type="button" data-tts-stop>⏹ 停止</button>
+      <label class="narration-rate">語速 <input type="range" data-tts-rate min="0.7" max="1.35" step="0.05" value="1" /></label>
+      <label class="narration-voice">語音 <select data-tts-voice></select></label>
+    </div>
+    <div class="narration-hint">預設優先 Google 中文語音（Chrome／Edge 較容易有）。可改選其他聲線；標 ★Google／★較自然 通常較好聽。</div>
+    <div class="narration-status" data-tts-status>預設 Google 語音（可改選）</div>
+    <div class="narration-script" data-tts-text>這一節我們用聽的方式複習「公司買房：房地合一、發票與貸款限制」。首先，關於為什麼通常不建議。很多創業者當公司經營一段時間後，負責人手頭有了比較充裕的現金時，可能就會開始考慮買房，這時候他們會猶豫要不要用公司名義來購買。通常我們都不建議以公司名義購買，主要是因為現在有房地合一稅，會有很多要注意的事情。接著，關於向建設公司 vs 向個人購買。如果你今天是跟建設公司買商用的不動產，對方是公司，它會開立發票給你，你也可以扣抵營業稅，因為你自己也是公司；。到時候你賣出去的時候，也要開立發票。但如果你今天是跟個人買的話，購入時就不會有發票，但賣出去的時候還是需要開立發票（土地的部分不用，但房屋的部分就會需要），就會很不划算。另外，關於出售時的雙重負擔與貸款限制。用公司購買不動產時，出售時一樣會有房地合一稅，還需要面臨盈餘分配的問題。若公司將來要出售不動產，交易所得還要再面對股利分配以及相關的所得稅處理。因此，除非你購買不動產是為了長期持有、並且用來收租、也沒有出售的打算，否則不建議用公司名義來購買不動產。以公司名義買房很常會有貸款成數限制的問題——因為有限貸令，會有貸款成數的限制；。地區的選擇也比較有限制，但如果你買的是商業區或商辦的話，可能就沒有影響。公司買房要把「持有目的」與「處分成本」一起算，不能只看當下現金流。請特別記住這幾個重點。第1點，通常不建議公司名義買房。第2點，出售：房地合一 + 盈餘分配 + 股利所得。第3點，向個人買 → 購入無發票、賣仍要開，更不划算。第4點，有限貸令 → 貸款成數與地區限制。再來，關於實務提醒。公司買房除稅務外，還要評估貸款成數與地址類型是否可行。聽完可以自問：我理解公司買房出售時的雙重稅務負擔；我能比較向建設公司 vs 向個人購買的差異；我知道有限貸令對公司購屋的影響。以上是這一節的聽讀重點，建議你對照畫面再掃一次。</div>
+  </div>
+</details>
+<h3 class="subhead">為什麼通常不建議</h3>
+<p class="lh-lg body-p">很多創業者當公司經營一段時間後，負責人手頭有了比較充裕的現金時，可能就會開始考慮買房，這時候他們會猶豫要不要用公司名義來購買。通常我們都不建議以公司名義購買，主要是因為現在有房地合一稅，會有很多要注意的事情。</p>
+<h3 class="subhead">向建設公司 vs 向個人購買</h3>
+<p class="lh-lg body-p">如果你今天是跟建設公司買商用的不動產，對方是公司，它會開立發票給你，你也可以扣抵營業稅，因為你自己也是公司；到時候你賣出去的時候，也要開立發票。</p>
+<p class="lh-lg body-p">但如果你今天是跟個人買的話，購入時就不會有發票，但賣出去的時候還是需要開立發票（土地的部分不用，但房屋的部分就會需要），就會很不划算。</p>
+<h3 class="subhead">出售時的雙重負擔與貸款限制</h3>
+<p class="lh-lg body-p">用公司購買不動產時，出售時一樣會有房地合一稅，還需要面臨盈餘分配的問題。若公司將來要出售不動產，交易所得還要再面對股利分配以及相關的所得稅處理。因此，除非你購買不動產是為了長期持有、並且用來收租、也沒有出售的打算，否則不建議用公司名義來購買不動產。</p>
+<p class="lh-lg body-p">以公司名義買房很常會有貸款成數限制的問題——因為有限貸令，會有貸款成數的限制；地區的選擇也比較有限制，但如果你買的是商業區或商辦的話，可能就沒有影響。公司買房要把「持有目的」與「處分成本」一起算，不能只看當下現金流。</p>
+<div class="callout callout-key mb-3"><div class="callout-label">重點</div><div class="callout-body">公司買房通常不建議；出售面臨房地合一＋盈餘分配＋股利所得。</div></div>
+<div class="callout callout-judge mb-3"><div class="callout-label">判斷／比較</div><div class="callout-body">向建設公司買商用→有發票可扣但賣也要開；向個人買→購入無發票、賣仍要開，更不划算。</div></div>
+<div class="callout callout-note mb-3"><div class="callout-label">注意</div><div class="callout-body">除非長期持有收租且不打算賣；另須注意有限貸令與地區限制。</div></div>
+<div class="kp-box"><div class="callout-label">關鍵知識點</div>
+<div class="chip-row">
+<span class="tag-chip chip-cyan">通常不建議公司名義買房</span>
+<span class="tag-chip chip-mint">出售：房地合一 + 盈餘分配 + 股利所得</span>
+<span class="tag-chip chip-amber">向個人買 → 購入無發票、賣仍要開，更不划算</span>
+<span class="tag-chip chip-coral">有限貸令 → 貸款成數與地區限制</span>
+</div>
+</div>
+<div class="table-responsive mb-3"><table class="table table-dark table-striped table-bordered"><thead><tr><th>情境</th><th>購入憑證</th><th>出售影響</th><th>建議</th></tr></thead><tbody><tr><td>向建設公司買商用</td><td>對方開立發票，可扣營業稅</td><td>賣出也要開發票；另有房地合一與盈餘分配</td><td>僅適合長期持有收租</td></tr><tr><td>向個人購買</td><td>購入常無發票</td><td>房屋部分仍要開發票，更不划算</td><td>通常更不建議公司名義</td></tr><tr><td>貸款與選址</td><td>—</td><td>有限貸令與地區限制；商辦影響可能較小</td><td>先確認貸款可行性</td></tr></tbody></table></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">學習檢核</div><ul class="mb-0 check-list">
+<li>我理解公司買房出售時的雙重稅務負擔</li>
+<li>我能比較向建設公司 vs 向個人購買的差異</li>
+<li>我知道有限貸令對公司購屋的影響</li>
+<li>我了解長期收租是不建議買房的少數例外</li>
+</ul></div>
+<div class="callout callout-tip mb-3"><div class="callout-label">提醒／小結</div><ul class="mb-0 callout-list">
+<li>公司買房除稅務外，還要評估貸款成數與地址類型是否可行。</li>
+<li>本單元為第五章最後一課；下章進入實務案例統整。</li>
+</ul></div>
+<div class="callout callout-warn mb-3"><div class="callout-label">警告</div><div class="callout-body">用公司名義買房，未來出售常是「房地合一＋盈餘分配」雙重負擔。</div></div>
+</article>
+</div>
+<div class="tab-pane fade" id="tab-quick" role="tabpanel">
+<div class="row g-3">
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 1 章</div>
+<h3 class="h6">先問清楚：公司買資產真的能節稅嗎？</h3>
+<ul class='mb-0 small'>
+<li>貿然登記 → 可能買時不能扣、賣時要開發票</li>
+<li>營所稅效益看申報方式</li>
+<li>書審：折舊影響有限</li>
+<li>查帳：折舊較能反映費用</li>
+</ul>
+<a class="small" href="#ch-1" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 2 章</div>
+<h3 class="h6">公司買車：車種決定營業稅能不能扣</h3>
+<ul class='mb-0 small'>
+<li>貨車／客貨兩用 → 可扣營業稅，適合公司車</li>
+<li>自用小客車 → 通常不能扣，雙重不利</li>
+<li>書審 → 折舊不影響營所稅</li>
+<li>查帳 + 長期持有 → 折舊較有意義</li>
+</ul>
+<a class="small" href="#ch-2" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 3 章</div>
+<h3 class="h6">油錢維修與機車：不必綁死「公司車」</h3>
+<ul class='mb-0 small'>
+<li>油錢／維修 → 看統編與合理性，非看車主</li>
+<li>個人名下自用車 → 油錢維修仍可扣進項</li>
+<li>機車 → 無客貨差別，公司車+發票可扣</li>
+<li>合理且與營業有關才可列支</li>
+</ul>
+<a class="small" href="#ch-3" data-jump-lecture>看完整講義</a>
+</div></div></div>
+<div class="col-md-6">
+<div class="quick-card tip-card accent-cyan">
+<div class="card-body">
+<div class="quick-kicker">第 4 章</div>
+<h3 class="h6">公司買房：房地合一、發票與貸款限制</h3>
+<ul class='mb-0 small'>
+<li>通常不建議公司名義買房</li>
+<li>出售：房地合一 + 盈餘分配 + 股利所得</li>
+<li>向個人買 → 購入無發票、賣仍要開，更不划算</li>
+<li>有限貸令 → 貸款成數與地區限制</li>
+</ul>
+<a class="small" href="#ch-4" data-jump-lecture>看完整講義</a>
+</div></div></div>
+</div></div>
+<div class="tab-pane fade" id="tab-quiz" role="tabpanel">
+<section class="quiz-wrap" aria-label="課後測驗">
+<div class="section-kicker">自我檢核</div>
+<h2 class="section-title">課後測驗</h2>
+<p class="quiz-intro">完成講義後自我檢核。答案以密碼樣式隱藏；著重車種／扣抵／買房風險辨別。</p>
+<div class="quiz-toolbar">
+<button type="button" class="btn btn-sm quiz-tool-btn" id="quiz-reveal-all">全部顯示答案</button><button type="button" class="btn btn-sm quiz-tool-btn" id="quiz-hide-all">全部隱藏答案</button>
+<span class="quiz-count">共 7 題・知識點 3・關鍵數據 4</span>
+</div>
+<ol class="quiz-list">
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q1</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">先問清楚</span>
+</div>
+<p class="quiz-q">為什麼「登記在公司名下」不一定能節稅？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>可能買時不能扣營業稅，賣時還要開發票</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>要先分析進項、折舊與處分成本。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q2</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">車種辨別</span>
+</div>
+<p class="quiz-q">哪類車較適合以公司名義購車並爭取營業稅扣抵？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>貨車／客貨兩用車</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>自用小客車通常不划算。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q3</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">車種辨別</span>
+</div>
+<p class="quiz-q">自用小客車以公司名義購買，常見問題是？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>營業稅多半不能扣，整體不划算</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>車種決定能不能扣。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q4</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">油錢維修</span>
+</div>
+<p class="quiz-q">油錢與維修費要扣抵，是否一定要把車登記成公司車？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>不必；只要合理且打統編即可評估扣抵</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>用途合理比「掛公司名」更關鍵。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q5</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">營所稅辨別</span>
+</div>
+<p class="quiz-q">書審申報下，折舊對營所稅的影響通常如何？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>影響有限（相對查帳）</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>查帳較有機會反映折舊效益。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q6</span>
+<span class="quiz-kind quiz-kind-know">知識點</span>
+<span class="quiz-topic">公司買房</span>
+</div>
+<p class="quiz-q">公司買房除稅負外，還要特別留意哪些風險面向？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>房地合一、未來出售開發票、盈餘分配與貸款成數限制</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>除非長期收租，否則多半不建議。</div>
+</li>
+<li class="quiz-item" data-quiz-item>
+<div class="quiz-item-head">
+<span class="quiz-no">Q7</span>
+<span class="quiz-kind quiz-kind-data">關鍵數據</span>
+<span class="quiz-topic">行動辨別</span>
+</div>
+<p class="quiz-q">什麼情境下較不建議把房登記在公司名下？</p>
+<div class="quiz-answer-row">
+<button type="button" class="quiz-reveal-btn" aria-pressed="false" data-reveal-answer>顯示答案</button>
+<div class="quiz-secret-box is-masked" data-secret-box>
+<span class="quiz-secret-text" data-secret-text>非長期收租、又未算清買／賣兩端稅務與貸款限制</span>
+</div></div>
+<div class="quiz-explain is-hidden" data-quiz-explain><span class="quiz-explain-label">解析</span>貿然登記常得不償失。</div>
+</li>
+</ol>
+</section></div>
+</div></div>
+    </main>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gridjs@6.2.0/dist/gridjs.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@2.1.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@2.1.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.noStyle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.3/standalone/umd/vis-timeline-graph2d.min.js"></script>
+<script>
+window.markmap = {
+  autoLoader: {
+    manual: true,
+    toolbar: true
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/markmap-autoloader@0.18.11"></script>
+<script>
+try {
+  if (window.mermaid) mermaid.initialize({ startOnLoad: true, theme: "dark", securityLevel: "loose" });
+} catch (e) {}
+(function(){
+  function setReveal(box, btn, explain, show){
+    if(!box || !btn) return;
+    box.classList.toggle('is-masked', !show);
+    btn.setAttribute('aria-pressed', show ? 'true' : 'false');
+    btn.textContent = show ? '隱藏答案' : '顯示答案';
+    if(explain) explain.classList.toggle('is-hidden', !show);
+  }
+  document.querySelectorAll('[data-reveal-answer]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const item = btn.closest('[data-quiz-item]');
+      const box = item && item.querySelector('[data-secret-box]');
+      const explain = item && item.querySelector('[data-quiz-explain]');
+      const show = btn.getAttribute('aria-pressed') !== 'true';
+      setReveal(box, btn, explain, show);
+    });
+  });
+  const allShow = document.getElementById('quiz-reveal-all');
+  const allHide = document.getElementById('quiz-hide-all');
+  if(allShow) allShow.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-quiz-item]').forEach(item=>{
+      setReveal(item.querySelector('[data-secret-box]'), item.querySelector('[data-reveal-answer]'), item.querySelector('[data-quiz-explain]'), true);
+    });
+  });
+  if(allHide) allHide.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-quiz-item]').forEach(item=>{
+      setReveal(item.querySelector('[data-secret-box]'), item.querySelector('[data-reveal-answer]'), item.querySelector('[data-quiz-explain]'), false);
+    });
+  });
+  if(!window.Chart) return;
+  const colors=["#5eb0ff","#3ecf8e","#e6b35a","#f07178","#b48ef0","#5ad0e6"];
+  document.querySelectorAll(".chart-box").forEach(box=>{
+    const canvas=box.querySelector("canvas");
+    const cfgEl=box.querySelector(".chart-config");
+    if(!canvas||!cfgEl) return;
+    let cfg; try{ cfg=JSON.parse(cfgEl.textContent); }catch(e){ return; }
+    const type=cfg.type||"bar";
+    const datasets=(cfg.datasets||[]).map((ds,i)=>({
+      ...ds,
+      backgroundColor: ds.backgroundColor || colors[i%colors.length]+"cc",
+      borderColor: ds.borderColor || colors[i%colors.length],
+      borderWidth: 1.5
+    }));
+    new Chart(canvas,{
+      type,
+      data:{ labels: cfg.labels||[], datasets },
+      options:{
+        responsive:true,
+        plugins:{ legend:{ labels:{ color:"#c9d7ea" } } },
+        scales:(type==="pie"||type==="doughnut")?{} : {
+          x:{ ticks:{ color:"#93a4b8" }, grid:{ color:"#2a3544" } },
+          y:{ ticks:{ color:"#93a4b8" }, grid:{ color:"#2a3544" } }
+        }
+      }
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  const body = document.body;
+  const key = 'tax-note-side-collapsed';
+  const backdrop = document.getElementById('side-backdrop');
+  const mq = window.matchMedia('(max-width:900px)');
+  const isMobile = () => mq.matches;
+  const edge = document.getElementById('edge-toggle');
+  const burger = document.getElementById('burger-fab');
+  function setCollapsed(v){
+    body.classList.toggle('side-collapsed', !!v);
+    try{ localStorage.setItem(key, v ? '1' : '0'); }catch(e){}
+  }
+  function openMobile(v){
+    body.classList.toggle('side-open-mobile', !!v);
+    if(backdrop) backdrop.hidden = !v;
+    body.style.overflow = v ? 'hidden' : '';
+    if(burger){
+      burger.setAttribute('aria-expanded', v ? 'true' : 'false');
+      burger.title = v ? '關閉目錄' : '打開目錄';
+      burger.setAttribute('aria-label', v ? '關閉目錄' : '打開目錄');
+    }
+  }
+  function syncViewport(){
+    if(isMobile()){
+      setCollapsed(true);
+      openMobile(false);
+    } else {
+      openMobile(false);
+      try{ setCollapsed(localStorage.getItem(key)==='1'); }
+      catch(e){ setCollapsed(false); }
+    }
+  }
+  syncViewport();
+  if(mq.addEventListener) mq.addEventListener('change', syncViewport);
+  else if(mq.addListener) mq.addListener(syncViewport);
+  if(edge) edge.addEventListener('click', ()=>{ if(isMobile()) openMobile(false); else setCollapsed(true); });
+  if(burger) burger.addEventListener('click', (e)=>{
+    e.preventDefault(); e.stopPropagation();
+    if(isMobile()) openMobile(!body.classList.contains('side-open-mobile'));
+    else setCollapsed(false);
+  });
+  if(backdrop) backdrop.addEventListener('click', ()=> openMobile(false));
+
+  document.querySelectorAll('[data-nav-jump], [data-jump-lecture], .milestone-link, .path-card').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const href = a.getAttribute('href')||'';
+      const hashIdx = href.indexOf('#');
+      if(hashIdx < 0) return;
+      const hash = href.slice(hashIdx);
+      const file = href.slice(0, hashIdx);
+      const cur = decodeURIComponent(location.pathname.split('/').pop()||'');
+      if(file && file !== cur && !hash.startsWith('#ch-') && !hash.startsWith('#sec-')) return;
+      if(file && file !== cur) return;
+      const btn = document.getElementById('tab-lecture-btn');
+      if(btn && window.bootstrap){
+        e.preventDefault();
+        bootstrap.Tab.getOrCreateInstance(btn).show();
+        if(isMobile()) openMobile(false);
+        setTimeout(()=>{ const t=document.querySelector(hash); if(t) t.scrollIntoView({behavior:'smooth', block:'start'}); }, 160);
+      } else if(isMobile()) {
+        openMobile(false);
+      }
+    });
+  });
+})();
+</script>
+<script>
+(function(){
+  function parsePayload(){
+    const el = document.getElementById('note-viz-data');
+    if(!el) return {};
+    try { return JSON.parse(el.textContent || '{}'); } catch(e){ return {}; }
+  }
+  const data = parsePayload();
+  const timeline = Array.isArray(data.timeline) ? data.timeline : [];
+  const compares = Array.isArray(data.compares) ? data.compares : [];
+  const evolution = Array.isArray(data.evolution) ? data.evolution : [];
+  const outline = Array.isArray(data.outline) ? data.outline : [];
+  const nodes = Array.isArray(data.nodes) ? data.nodes : [];
+  const edges = Array.isArray(data.edges) ? data.edges : [];
+  const charts = Array.isArray(data.charts) ? data.charts : [];
+  const mermaids = Array.isArray(data.mermaids) ? data.mermaids : [];
+
+  const state = {
+    ready: false,
+    echarts: [],
+    cy: null,
+    network: null,
+    timeline: null,
+    markmapSvg: null
+  };
+
+  function showEmpty(id, on){
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('d-none', !on);
+  }
+  function short(s, n){
+    s = String(s||'');
+    return s.length > n ? s.slice(0, n-1) + '…' : s;
+  }
+  function isNarrow(){ return window.matchMedia('(max-width:767px)').matches; }
+  function tableH(desktop){ return isNarrow() ? Math.max(180, Math.min(260, Math.round(window.innerHeight*0.32))) + 'px' : desktop; }
+  function boxSize(el){
+    if(!el) return { w: 320, h: 240 };
+    const w = Math.max(el.clientWidth || el.offsetWidth || 0, 280);
+    const h = Math.max(el.clientHeight || el.offsetHeight || 0, 200);
+    return { w, h };
+  }
+  function chartsTabVisible(){
+    const pane = document.getElementById('tab-charts');
+    if(!pane) return true;
+    return pane.classList.contains('active') || pane.classList.contains('show');
+  }
+
+  function buildOutlineMd(){
+    let md = '# 講義大綱\n';
+    if(outline.length){
+      outline.forEach((o,i)=>{
+        const title = String(o.title||('節 '+(i+1))).replace(/\n/g,' ');
+        md += `\n## ${i+1}. ${title}`;
+        (o.kids||[]).forEach(k=>{
+          md += `\n- ${String(k).replace(/\n/g,' ')}`;
+        });
+      });
+    } else if(nodes.length){
+      nodes.forEach(n=>{ md += `\n## ${n.label||n.id}`; });
+    } else {
+      md += '\n## （尚無大綱）\n- 請見章節講義';
+    }
+    return md;
+  }
+
+  function waitMarkmapReady(){
+    return new Promise((resolve)=>{
+      const al = window.markmap && markmap.autoLoader;
+      if(!al){ resolve(false); return; }
+      if(al.ready && typeof al.ready.then === 'function'){
+        al.ready.then(()=>resolve(true)).catch(()=>resolve(!!al.renderAll));
+        return;
+      }
+      let n = 0;
+      const t = setInterval(()=>{
+        n++;
+        const ok = !!(window.markmap && markmap.autoLoader && (markmap.autoLoader.render || markmap.autoLoader.renderAll));
+        if(ok || n > 50){ clearInterval(t); resolve(ok); }
+      }, 120);
+    });
+  }
+
+  async function renderMarkmap(){
+    const host = document.getElementById('viz-markmap');
+    if(!host) return;
+    const md = buildOutlineMd();
+    host.innerHTML = '';
+    const el = document.createElement('div');
+    el.className = 'markmap';
+    const tpl = document.createElement('script');
+    tpl.type = 'text/template';
+    tpl.textContent = md;
+    el.appendChild(tpl);
+    host.appendChild(el);
+
+    const ok = await waitMarkmapReady();
+    const al = window.markmap && markmap.autoLoader;
+    if(!ok || !al){
+      host.innerHTML = '<p class="viz-empty">心智圖套件尚未載入完成，請重新整理頁面。</p>';
+      return;
+    }
+    try {
+      if(typeof al.render === 'function') await al.render(el);
+      else if(typeof al.renderAllUnder === 'function') await al.renderAllUnder(host);
+      else if(typeof al.renderAll === 'function') await al.renderAll();
+      // 強制 SVG 填滿容器
+      const svg = host.querySelector('svg');
+      if(svg){
+        svg.style.width = '100%';
+        svg.style.height = '100%';
+        state.markmapSvg = svg;
+      }
+      // 觸發 fit：模擬 resize
+      setTimeout(()=> window.dispatchEvent(new Event('resize')), 60);
+    } catch(e){
+      console.warn('markmap render', e);
+      host.innerHTML = '<p class="viz-empty">心智圖渲染失敗：' + String(e && e.message || e) + '</p>';
+    }
+  }
+
+  function fitAll(){
+    state.echarts.forEach(c=>{ try{ c.resize(); }catch(e){} });
+    if(state.cy){ try{ state.cy.resize(); state.cy.fit(undefined, 24); }catch(e){} }
+    if(state.network){ try{ state.network.redraw(); state.network.fit(); }catch(e){} }
+    if(state.timeline){ try{ state.timeline.redraw(); }catch(e){} }
+    if(window.Plotly){
+      document.querySelectorAll('#viz-plotly-timeline .js-plotly-plot, #viz-plotly-timeline').forEach(el=>{
+        try{ Plotly.Plots.resize(el); }catch(e){}
+      });
+    }
+    const host = document.getElementById('viz-markmap');
+    const svg = host && host.querySelector('svg');
+    if(svg){
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+    }
+    // D3 重畫交由 init 內的資料；窄螢幕時僅調整既有 svg 寬度
+    const d3svg = document.querySelector('#viz-d3-evolve svg');
+    if(d3svg){
+      const wrap = document.getElementById('viz-d3-evolve');
+      const { w } = boxSize(wrap);
+      d3svg.setAttribute('width', String(w));
+    }
+  }
+
+  function initViz(){
+    if(state.ready){ fitAll(); return; }
+    state.ready = true;
+
+    /* —— markmap —— */
+    renderMarkmap();
+
+    /* —— timeline —— */
+    if(timeline.length){
+      const rows = timeline.map(r=>({ when:r.when||r[0]||'', what:r.what||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-timeline')){
+        new Tabulator('#viz-tabulator-timeline', {
+          data: rows, layout:'fitDataStretch', height: tableH('220px'),
+          columns:[
+            {title:'時點', field:'when', minWidth:88, widthGrow:1, headerFilter: isNarrow()?false:'input'},
+            {title:'事件／規範重點', field:'what', minWidth:160, widthGrow:3, headerFilter: isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      if(window.Chart){
+        const ctx = document.getElementById('viz-chartjs-timeline');
+        if(ctx){
+          new Chart(ctx, {
+            type:'bar',
+            data:{
+              labels: rows.map(r=>short(r.when, isNarrow()?8:12)),
+              datasets:[{ label:'事件數', data: rows.map(()=>1), backgroundColor:'rgba(94,200,255,.55)' }]
+            },
+            options:{
+              responsive:true, maintainAspectRatio:false,
+              plugins:{ legend:{ labels:{ color:'#c9d7ea', boxWidth:12 } } },
+              scales:{
+                x:{ ticks:{ color:'#93a4b8', maxRotation:45, minRotation:0, autoSkip:true }, grid:{ color:'#2a3544' } },
+                y:{ ticks:{ color:'#93a4b8', stepSize:1 }, grid:{ color:'#2a3544' }, beginAtZero:true }
+              }
+            }
+          });
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-timeline');
+        if(el){
+          const chart = echarts.init(el, 'dark');
+          chart.setOption({
+            backgroundColor:'transparent',
+            grid:{ left:36, right:16, top:24, bottom: isNarrow()?64:40, containLabel:true },
+            tooltip:{ trigger:'axis' },
+            xAxis:{ type:'category', data: rows.map(r=>short(r.when, isNarrow()?8:14)), axisLabel:{ color:'#9fb0c6', hideOverlap:true } },
+            yAxis:{ type:'value', show:false },
+            series:[{
+              type:'line', smooth:true, symbolSize:10,
+              data: rows.map((_,i)=>i+1),
+              areaStyle:{ color:'rgba(94,200,255,.15)' },
+              lineStyle:{ color:'#5ec8ff' },
+              itemStyle:{ color:'#3ee0a2' }
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.vis && vis.Timeline){
+        const el = document.getElementById('viz-vis-timeline');
+        if(el){
+          const items = new vis.DataSet(rows.map((r,i)=>{
+            const y = String(r.when).match(/(19|20)\d{2}/);
+            const start = y ? (y[0]+'-01-01') : (`2020-0${(i%9)+1}-01`);
+            return { id:i+1, content: short(r.what, isNarrow()?22:40), start };
+          }));
+          state.timeline = new vis.Timeline(el, items, {
+            stack:true, horizontalScroll:true, zoomKey:'ctrlKey',
+            orientation:'top', margin:{ item:8 },
+            height: isNarrow() ? 200 : 240
+          });
+        }
+      }
+      if(window.Plotly){
+        const el = document.getElementById('viz-plotly-timeline');
+        if(el){
+          Plotly.newPlot(el, [{
+            type:'scatter', mode:'lines+markers',
+            x: rows.map(r=>r.when), y: rows.map((_,i)=>i+1),
+            text: rows.map(r=>r.what),
+            marker:{ color:'#5ec8ff', size:10 },
+            line:{ color:'#3ee0a2' }
+          }], {
+            paper_bgcolor:'rgba(0,0,0,0)', plot_bgcolor:'rgba(0,0,0,0)',
+            font:{ color:'#c9d7ea', size: isNarrow()?11:12 },
+            margin:{ t:20,r:12,b: isNarrow()?70:40, l:36 },
+            yaxis:{ title:'序', gridcolor:'#2a3544' },
+            xaxis:{ gridcolor:'#2a3544', tickangle: isNarrow()?-35:0 }
+          }, {responsive:true, displayModeBar:false});
+        }
+      }
+    }
+
+    /* —— compare —— */
+    const firstCompare = compares[0] || null;
+    if(firstCompare){
+      const headers = firstCompare.headers || firstCompare[0] || [];
+      const body = firstCompare.rows || firstCompare[1] || [];
+      const fields = headers.map((h,i)=> 'c'+i);
+      const dataRows = body.map(r=>{
+        const o={}; fields.forEach((f,i)=>{ o[f]= (r&&r[i]!=null)? String(r[i]) : ''; }); return o;
+      });
+      if(window.Tabulator && document.getElementById('viz-tabulator-compare')){
+        new Tabulator('#viz-tabulator-compare', {
+          data: dataRows, layout:'fitDataStretch', height: tableH('240px'),
+          columns: headers.map((h,i)=>({
+            title:String(h), field:fields[i], minWidth:100, widthGrow:1,
+            headerFilter: isNarrow()?false:'input', formatter:'textarea'
+          }))
+        });
+      }
+      if(window.gridjs && document.getElementById('viz-gridjs-compare')){
+        new gridjs.Grid({
+          columns: headers.map(String),
+          data: body.map(r=> (r||[]).map(c=> String(c??''))),
+          search: !isNarrow(), sort: true,
+          pagination: { enabled:true, limit: isNarrow()?5:8 },
+          style: { table:{ 'font-size': isNarrow()?'12px':'13px' } }
+        }).render(document.getElementById('viz-gridjs-compare'));
+      }
+    }
+
+    /* —— evolution —— */
+    if(evolution.length){
+      const rows = evolution.map(r=>({ stage:r.stage||r[0]||'', content:r.content||r[1]||'' }));
+      if(window.Tabulator && document.getElementById('viz-tabulator-evolve')){
+        new Tabulator('#viz-tabulator-evolve', {
+          data: rows, layout:'fitDataStretch', height: tableH('200px'),
+          columns:[
+            {title:'階段', field:'stage', minWidth:90, widthGrow:1, headerFilter:isNarrow()?false:'input'},
+            {title:'重點內容', field:'content', minWidth:140, widthGrow:3, headerFilter:isNarrow()?false:'input', formatter:'textarea'}
+          ]
+        });
+      }
+      const mEl = document.getElementById('viz-mermaid-evolve');
+      if(mEl && window.mermaid){
+        const dir = isNarrow() ? 'TD' : 'LR';
+        let code = 'flowchart ' + dir + '\n';
+        rows.forEach((r,i)=>{
+          const id = 'S'+(i+1);
+          const label = short(r.stage, isNarrow()?14:18).replace(/"/g,"'");
+          code += `  ${id}["${label}"]\n`;
+          if(i>0) code += `  S${i} --> ${id}\n`;
+        });
+        mEl.removeAttribute('data-processed');
+        mEl.textContent = code;
+        try { mermaid.run({ nodes: [mEl] }); } catch(e){
+          try { mermaid.init(undefined, mEl); } catch(_e){}
+        }
+      }
+      if(window.echarts){
+        const el = document.getElementById('viz-echarts-evolve');
+        if(el){
+          const { w, h } = boxSize(el);
+          const chart = echarts.init(el, 'dark');
+          const n = rows.length || 1;
+          chart.setOption({
+            backgroundColor:'transparent',
+            tooltip:{ formatter: p => (p.data && (p.data.name + '<br/>' + (p.data.value||''))) || '' },
+            series:[{
+              type:'graph', layout:'none', roam:true,
+              label:{ show:true, color:'#e8eef7', fontSize: isNarrow()?10:12 },
+              edgeSymbol:['none','arrow'],
+              data: rows.map((r,i)=>({
+                name: short(r.stage, isNarrow()?10:12),
+                x: isNarrow() ? (w*0.5) : (40 + i * Math.max(70, (w-80)/Math.max(n-1,1))),
+                y: isNarrow() ? (30 + i * Math.max(42, (h-60)/Math.max(n-1,1))) : (h*0.45),
+                value: r.content
+              })),
+              links: rows.slice(1).map((_,i)=>({ source:i, target:i+1 }))
+            }]
+          });
+          state.echarts.push(chart);
+        }
+      }
+      if(window.d3){
+        const el = document.getElementById('viz-d3-evolve');
+        if(el){
+          el.innerHTML = '';
+          const { w } = boxSize(el);
+          const height = Math.max(el.clientHeight || 240, 200);
+          const svg = d3.select(el).append('svg').attr('width', w).attr('height', height);
+          const root = { name:'演進', children: rows.map(r=>({ name: short(r.stage, isNarrow()?12:16), children:[{ name: short(r.content, isNarrow()?20:28) }] })) };
+          const hier = d3.hierarchy(root);
+          d3.tree().size([height-36, Math.max(120, w-120)])(hier);
+          const g = svg.append('g').attr('transform','translate(56,18)');
+          g.selectAll('.link').data(hier.links()).enter().append('path')
+            .attr('class','link').attr('fill','none')
+            .attr('d', d3.linkHorizontal().x(d=>d.y).y(d=>d.x));
+          const node = g.selectAll('.node').data(hier.descendants()).enter().append('g')
+            .attr('class','node').attr('transform', d=>`translate(${d.y},${d.x})`);
+          node.append('circle').attr('r',4);
+          node.append('text').attr('dy',3).attr('x', d=> d.children? -8:8)
+            .attr('text-anchor', d=> d.children? 'end':'start').text(d=>d.data.name);
+        }
+      }
+    }
+
+    /* —— graphs —— */
+    if(document.getElementById('viz-cytoscape') || document.getElementById('viz-vis-network')){
+      const gNodes = nodes.length ? nodes : outline.map((o,i)=>({ id:'n'+i, label: short(o.title||('節'+(i+1)), 18) }));
+      const gEdges = edges.length ? edges : gNodes.slice(1).map((n,i)=>({ from: gNodes[i].id, to: n.id }));
+      if(window.cytoscape && gNodes.length && document.getElementById('viz-cytoscape')){
+        state.cy = cytoscape({
+          container: document.getElementById('viz-cytoscape'),
+          elements: [
+            ...gNodes.map(n=>({ data:{ id:String(n.id), label:n.label||String(n.id) } })),
+            ...gEdges.map((e,i)=>({ data:{ id:'e'+i, source:String(e.from||e.source), target:String(e.to||e.target) } }))
+          ],
+          style:[
+            { selector:'node', style:{ 'background-color':'#5ec8ff', 'label':'data(label)', 'color':'#e8eef7', 'font-size': isNarrow()?'9px':'10px', 'text-wrap':'wrap', 'text-max-width': isNarrow()?64:80 } },
+            { selector:'edge', style:{ 'width':2, 'line-color':'#3ee0a2', 'target-arrow-color':'#3ee0a2', 'target-arrow-shape':'triangle', 'curve-style':'bezier' } }
+          ],
+          layout:{ name:'cose', animate:false, padding:16 }
+        });
+      }
+      if(window.vis && vis.Network && gNodes.length && document.getElementById('viz-vis-network')){
+        const el = document.getElementById('viz-vis-network');
+        const ns = new vis.DataSet(gNodes.map(n=>({ id:n.id, label:n.label||String(n.id) })));
+        const es = new vis.DataSet(gEdges.map((e,i)=>({ id:i, from:e.from||e.source, to:e.to||e.target })));
+        state.network = new vis.Network(el, { nodes:ns, edges:es }, {
+          nodes:{ shape:'dot', size: isNarrow()?11:14, font:{ color:'#e8eef7', size: isNarrow()?11:13 }, color:{ background:'#5ec8ff', border:'#3ee0a2' } },
+          edges:{ color:'#6ee7f5', arrows:'to' },
+          physics:{ stabilization:true },
+          interaction:{ zoomView:true, dragView:true }
+        });
+      }
+    }
+
+    /* —— extra（HTML 已為每張圖建獨立格） —— */
+    if(charts.length && window.Chart){
+      charts.forEach((c, i)=>{
+        const canvas = document.getElementById('viz-extra-chart-'+i);
+        if(!canvas) return;
+        const cfg = c.config || {};
+        new Chart(canvas, {
+          type: cfg.type || c.type || 'bar',
+          data: cfg.data || { labels:c.labels||[], datasets:c.datasets||[] },
+          options: Object.assign({
+            responsive:true, maintainAspectRatio:false,
+            plugins:{ legend:{ labels:{ color:'#c9d7ea' } } },
+            scales:{
+              x:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } },
+              y:{ ticks:{ color:'#93a4b8' }, grid:{ color:'#2a3544' } }
+            }
+          }, cfg.options||{})
+        });
+      });
+    }
+    const mHost = document.getElementById('viz-extra-mermaids');
+    if(mHost && mermaids.length){
+      mermaids.forEach((code)=>{
+        const wrap = document.createElement('div');
+        wrap.className = 'mb-3 mermaid-host';
+        const pre = document.createElement('pre');
+        pre.className = 'mermaid';
+        pre.textContent = code;
+        wrap.appendChild(pre);
+        mHost.appendChild(wrap);
+      });
+      if(window.mermaid){
+        try { mermaid.run({ querySelector: '#viz-extra-mermaids .mermaid' }); } catch(e){}
+      }
+    }
+
+    setTimeout(fitAll, 80);
+    setTimeout(fitAll, 320);
+  }
+
+  function requestInit(){
+    // 等一幀確保 tab 已顯示、容器有寬度
+    requestAnimationFrame(()=> requestAnimationFrame(initViz));
+  }
+
+  // 圖表 tab 顯示後才初始化（避免隱藏 tab 寬度為 0）
+  const chartsBtn = document.getElementById('tab-charts-btn');
+  if(chartsBtn){
+    chartsBtn.addEventListener('shown.bs.tab', ()=> requestInit());
+  }
+  document.querySelectorAll('[data-bs-toggle="pill"]').forEach(btn=>{
+    btn.addEventListener('shown.bs.tab', (ev)=>{
+      const target = (ev.target && ev.target.getAttribute('data-bs-target')) || '';
+      if(target === '#tab-charts') requestInit();
+      else if(state.ready) setTimeout(fitAll, 50);
+    });
+  });
+
+  // 若圖表本來就是作用中（或沒有 tabs），直接初始化
+  if(chartsTabVisible()){
+    requestInit();
+  }
+
+  let resizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+  });
+  if(window.visualViewport){
+    visualViewport.addEventListener('resize', ()=>{
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(()=>{ if(state.ready) fitAll(); }, 120);
+    });
+  }
+})();
+</script>
+<script>
+(function(){
+  if(!('speechSynthesis' in window)){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      const st = root.querySelector('[data-tts-status]');
+      if(st) st.textContent = '此瀏覽器不支援語音播放，仍可閱讀講解稿。';
+      root.querySelectorAll('button[data-tts-play],button[data-tts-pause],button[data-tts-stop]').forEach(b=> b.disabled = true);
+      root.querySelectorAll('[data-tts-voice]').forEach(s=> s.disabled = true);
+    });
+    return;
+  }
+  const synth = window.speechSynthesis;
+  const STORE_KEY = 'note-tts-voice-uri-v2';
+  let currentRoot = null;
+  let currentUtter = null;
+  let voicesReady = false;
+
+  function voiceScore(v){
+    const blob = ((v.name||'') + ' ' + (v.lang||'')).toLowerCase();
+    let s = 0;
+    if(/zh|chinese|中文|國語|台|hong|澳門|yue/.test(blob)) s += 100;
+    // 預設優先 Google 中文語音
+    if(/google/.test(blob)) s += 200;
+    if(/zh-tw|taiwan|國語（台灣）|國語 \(台灣\)|chinese \(taiwan\)/.test(blob)) s += 90;
+    if(/hanhan|hsia.?chen|yunjhe|yun-jie|zhiwei|meijia|tingting/.test(blob)) s += 70;
+    if(/zh-cn|xiaoxiao|xiaoyi|yunxi|yunyang|huihui|普通话|國語（中國）/.test(blob)) s += 50;
+    if(/natural|neural|online|自然|神經|雲端/.test(blob)) s += 35;
+    if(/microsoft|edge/.test(blob)) s += 8;
+    if(/desktop|sapi|espeak|compact/.test(blob)) s -= 15;
+    return s;
+  }
+  function listVoices(){
+    const all = synth.getVoices() || [];
+    const zh = all.filter(v => voiceScore(v) >= 100).sort((a,b)=> voiceScore(b)-voiceScore(a));
+    if(zh.length) return zh;
+    return all.slice().sort((a,b)=> voiceScore(b)-voiceScore(a));
+  }
+  function voiceKey(v){
+    return (v.voiceURI || (v.name + '|' + v.lang) || '').trim();
+  }
+  function savedVoiceKey(){
+    try{ return localStorage.getItem(STORE_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveVoiceKey(key){
+    try{ localStorage.setItem(STORE_KEY, key || ''); }catch(e){}
+  }
+  function findVoiceByKey(key){
+    if(!key) return null;
+    const voices = synth.getVoices() || [];
+    return voices.find(v => voiceKey(v) === key) || null;
+  }
+  function defaultVoice(){
+    const voices = listVoices();
+    if(!voices.length) return null;
+    const saved = findVoiceByKey(savedVoiceKey());
+    if(saved) return saved;
+    const googleTw = voices.find(v => /google/i.test(v.name) && /zh-tw|taiwan|台灣|台湾/i.test(v.name + v.lang));
+    const googleZh = voices.find(v => /google/i.test(v.name) && /zh|chinese|中文|國語|普通话/i.test(v.name + v.lang));
+    const googleAny = voices.find(v => /google/i.test(v.name));
+    return googleTw || googleZh || googleAny || voices[0];
+  }
+  function fillVoiceSelects(){
+    const voices = listVoices();
+    const preferred = defaultVoice();
+    const preferredKey = preferred ? voiceKey(preferred) : '';
+    document.querySelectorAll('[data-tts-voice]').forEach(sel=>{
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if(!voices.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = '（尚無可用語音）';
+        sel.appendChild(opt);
+        return;
+      }
+      voices.forEach(v=>{
+        const opt = document.createElement('option');
+        opt.value = voiceKey(v);
+        let tag = '';
+        if(/google/i.test(v.name)) tag = ' ★Google';
+        else if(/natural|neural|online|自然/i.test(v.name)) tag = ' ★較自然';
+        opt.textContent = (v.name || '語音') + '（' + (v.lang || '?') + '）' + tag;
+        sel.appendChild(opt);
+      });
+      const want = prev || preferredKey || voiceKey(voices[0]);
+      if([...sel.options].some(o => o.value === want)) sel.value = want;
+      else sel.selectedIndex = 0;
+    });
+    voicesReady = true;
+  }
+  function selectedVoice(root){
+    const sel = root && root.querySelector('[data-tts-voice]');
+    const key = sel && sel.value;
+    return findVoiceByKey(key) || defaultVoice();
+  }
+  function setStatus(root, text){
+    const st = root && root.querySelector('[data-tts-status]');
+    if(st) st.textContent = text || '';
+  }
+  function setSpeaking(root, on){
+    const box = root && root.querySelector('[data-tts-text]');
+    if(box) box.classList.toggle('is-speaking', !!on);
+  }
+  function stopAll(){
+    try{ synth.cancel(); }catch(e){}
+    if(currentRoot){
+      setSpeaking(currentRoot, false);
+      setStatus(currentRoot, '使用系統語音朗讀（可自選聲線）');
+    }
+    currentRoot = null;
+    currentUtter = null;
+  }
+  function playRoot(root){
+    const textEl = root.querySelector('[data-tts-text]');
+    const text = (textEl && (textEl.innerText || textEl.textContent) || '').trim();
+    if(!text){ setStatus(root, '尚無講解稿'); return; }
+    if(!voicesReady) fillVoiceSelects();
+    stopAll();
+    const u = new SpeechSynthesisUtterance(text);
+    const voice = selectedVoice(root);
+    if(voice){
+      u.voice = voice;
+      u.lang = voice.lang || 'zh-TW';
+      saveVoiceKey(voiceKey(voice));
+    }else{
+      u.lang = 'zh-TW';
+    }
+    const rateEl = root.querySelector('[data-tts-rate]');
+    u.rate = rateEl ? Number(rateEl.value || 1) : 1;
+    u.pitch = 1;
+    u.onstart = ()=>{
+      currentRoot = root;
+      setSpeaking(root, true);
+      setStatus(root, '播放中… ' + ((voice && voice.name) || ''));
+    };
+    u.onend = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放結束');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    u.onerror = ()=>{
+      setSpeaking(root, false);
+      setStatus(root, '播放中斷（可改選其他語音）');
+      currentRoot = null;
+      currentUtter = null;
+    };
+    currentUtter = u;
+    // Chrome 偶發 cancel 後立刻 speak 會失敗
+    setTimeout(()=> synth.speak(u), 40);
+  }
+
+  function bindRoots(){
+    document.querySelectorAll('[data-tts-root]').forEach(root=>{
+      if(root.dataset.ttsBound) return;
+      root.dataset.ttsBound = '1';
+      const play = root.querySelector('[data-tts-play]');
+      const pause = root.querySelector('[data-tts-pause]');
+      const stop = root.querySelector('[data-tts-stop]');
+      const voiceSel = root.querySelector('[data-tts-voice]');
+      if(play) play.addEventListener('click', ()=>{
+        if(synth.paused && currentRoot === root){ synth.resume(); setStatus(root, '繼續播放…'); return; }
+        playRoot(root);
+      });
+      if(pause) pause.addEventListener('click', ()=>{
+        if(synth.speaking && !synth.paused){ synth.pause(); setStatus(root, '已暫停'); }
+      });
+      if(stop) stop.addEventListener('click', ()=> stopAll());
+      if(voiceSel) voiceSel.addEventListener('change', ()=>{
+        saveVoiceKey(voiceSel.value);
+        document.querySelectorAll('[data-tts-voice]').forEach(other=>{
+          if(other !== voiceSel) other.value = voiceSel.value;
+        });
+        setStatus(root, '已選語音，按朗讀試聽');
+      });
+    });
+  }
+
+  fillVoiceSelects();
+  bindRoots();
+  try{
+    synth.getVoices();
+    synth.addEventListener('voiceschanged', ()=>{ fillVoiceSelects(); });
+  }catch(e){}
+})();
+</script>
+</body>
+</html>

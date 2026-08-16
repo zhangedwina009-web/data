@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>任務腳本產生器</title>
+  <style>
+    :root {
+      --bg: #10151c;
+      --card: #1a2330;
+      --line: #334155;
+      --text: #eef3f9;
+      --muted: #94a3b8;
+      --accent: #3b9eff;
+      --good: #22c55e;
+      --font: "Segoe UI", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+      --mono: Consolas, "Cascadia Mono", monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      background: radial-gradient(900px 400px at 0% 0%, #1e3a5f66, transparent 60%), var(--bg);
+      min-height: 100vh;
+    }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 28px 20px 48px; }
+    h1 { margin: 0 0 6px; font-size: 1.55rem; }
+    .sub { color: var(--muted); margin: 0 0 20px; line-height: 1.55; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.05rem;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .card.import { border-color: #3b82f688; background: linear-gradient(180deg, #15233a, var(--card)); }
+    label.field { display: block; font-size: .86rem; color: var(--muted); margin: 0 0 6px; }
+    input[type="text"], input[type="number"], textarea, select {
+      width: 100%; background: #0b1220; color: var(--text);
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 10px 12px; font: inherit; margin-bottom: 10px; outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 3px #3b9eff33;
+    }
+    textarea { min-height: 120px; resize: vertical; }
+    textarea.mono { font-family: var(--mono); font-size: .84rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .row .full { grid-column: 1 / -1; }
+    @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+    .hint { font-size: .8rem; color: var(--muted); margin: -2px 0 10px; line-height: 1.45; }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    button {
+      border: 1px solid var(--line); border-radius: 10px;
+      padding: 10px 14px; font: inherit; cursor: pointer;
+      background: #243044; color: var(--text);
+    }
+    button.main { background: linear-gradient(180deg, #3b9eff, #2563eb); border: 0; color: #fff; font-weight: 700; }
+    button.ok { background: linear-gradient(180deg, #34d399, #16a34a); border: 0; color: #fff; font-weight: 700; }
+    button.warn { background: linear-gradient(180deg, #fbbf24, #d97706); border: 0; color: #111; font-weight: 700; }
+    button.danger { background: transparent; color: #fca5a5; border-color: #7f1d1d; }
+    button:hover { filter: brightness(1.08); }
+    .pill {
+      display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px;
+      background: #1d4ed855; color: #93c5fd; border: 1px solid #3b82f655; margin-left: 6px;
+    }
+    .item {
+      border: 1px solid var(--line); border-radius: 12px; padding: 12px;
+      margin-bottom: 10px; background: #121a26;
+    }
+    .item-head {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px; margin-bottom: 8px; color: #93c5fd; font-size: .9rem;
+    }
+    .action {
+      border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px;
+      margin-bottom: 10px; background: #121a26;
+    }
+    .action > .top { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .action > .top input { width: auto; accent-color: var(--accent); margin: 0; }
+    .action .body { margin-top: 12px; display: none; }
+    .action.on .body { display: block; }
+    .action.on { border-color: #3b82f6aa; background: #152033; }
+    #preview {
+      width: 100%; min-height: 280px; background: #081018; color: #bbf7d0;
+      border: 1px solid var(--line); border-radius: 10px; padding: 12px;
+      font-family: var(--mono); font-size: .84rem; line-height: 1.45; white-space: pre;
+    }
+    .status { margin-top: 8px; color: var(--good); min-height: 1.2em; font-size: .9rem; }
+    .status.err { color: #fca5a5; }
+    code { background: #0b1220; padding: 1px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p style="margin:0 0 14px;">
+      <a href="../index.html" style="color:#93c5fd;text-decoration:none;">← 回首頁</a>
+    </p>
+    <h1>任務腳本產生器</h1>
+    <p class="sub">
+      匯入你的格式：<code>[{ "存檔名稱", "素材連結" }, …]</code>
+      → 再用 UI 設定要執行的動作 → 下載完整 JSON。
+    </p>
+
+    <!-- 匯入 -->
+    <div class="card import">
+      <h2>1. 匯入簡易 JSON <span class="pill">你的格式</span></h2>
+      <p class="hint">支援陣列：每一筆只要 <code>存檔名稱</code> + <code>素材連結</code>。</p>
+      <textarea id="import-box" class="mono" placeholder='[
+  {
+    "存檔名稱": "1-1 標題",
+    "素材連結": "https://..."
+  }
+]'></textarea>
+      <div class="btns">
+        <button type="button" class="warn" id="btn-import">匯入</button>
+        <button type="button" id="btn-file">選檔…</button>
+        <button type="button" id="btn-demo">填入你的範例</button>
+        <input type="file" id="file" accept=".json,application/json,text/plain" hidden />
+      </div>
+      <div class="status" id="import-status"></div>
+    </div>
+
+    <!-- 清單 -->
+    <div class="card">
+      <h2>2. 素材清單 <span class="pill" id="count-pill">0 筆</span></h2>
+      <p class="hint">匯入後可微調；也可手動新增一筆。</p>
+      <div id="list"></div>
+      <div class="btns">
+        <button type="button" id="btn-add">＋ 新增一筆</button>
+        <button type="button" class="danger" id="btn-clear">清空清單</button>
+      </div>
+    </div>
+
+    <!-- 執行 UI -->
+    <div class="card">
+      <h2>3. 執行動作 <span class="pill">依序執行，可含前置</span></h2>
+      <p class="hint">順序固定：開網址 →（可選）點擊前置 → 等待 → 爬蟲／截圖…</p>
+
+      <!-- 前置點擊 -->
+      <div class="action on" id="box-click">
+        <label class="top"><input type="checkbox" id="do-click" checked /> 前置：點擊按鈕（例如「逐字稿」）</label>
+        <div class="body">
+          <p class="hint">
+            <strong>建議用座標（最穩）</strong>：雙擊 <code>取得滑鼠座標.ahk</code>
+            → 滑鼠移到「逐字稿」上 → 按 <code>F8</code> → 把 X/Y 貼下方。<br />
+            文字／class 自動找按鈕較不穩，座標失敗時可改用。
+          </p>
+          <div class="row">
+            <div>
+              <label class="field">點擊方式</label>
+              <select id="click-by">
+                <option value="座標" selected>座標 X,Y（建議）</option>
+                <option value="文字">按鈕文字</option>
+                <option value="class">class（不加點）</option>
+                <option value="class+文字">class + 文字</option>
+              </select>
+            </div>
+            <div>
+              <label class="field">點擊後等待（毫秒）</label>
+              <input type="number" id="click-wait" value="2000" min="0" step="100" />
+            </div>
+            <div>
+              <label class="field">座標 X</label>
+              <input type="number" id="click-x" value="" placeholder="F8 取得" />
+            </div>
+            <div>
+              <label class="field">座標 Y</label>
+              <input type="number" id="click-y" value="" placeholder="F8 取得" />
+            </div>
+            <div>
+              <label class="field">按鈕文字（非座標時用）</label>
+              <input type="text" id="click-text" value="逐字稿" placeholder="逐字稿" />
+            </div>
+            <div>
+              <label class="field">class（非座標時用，不加點）</label>
+              <input type="text" id="click-class" value="sc-1gj548b-1 ivefmA" placeholder="sc-1gj548b-1 ivefmA" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="action on" id="box-scrape">
+        <label class="top"><input type="checkbox" id="do-scrape" checked /> 爬蟲（從 body 抓 class）</label>
+        <div class="body">
+          <p class="hint">
+            class 請直接貼 F12 Elements 看到的名稱，<strong>不要加點</strong>。<br />
+            例：<code>sc-jqnqvi-1 dyUpZz</code>（中間空白＝兩個 class）<br />
+            抓的是<strong>文字</strong>（不是 HTML）。勾「含底下全部」＝該 class 裡所有可見字；改勾「只取內文」會去掉按鈕／選單。
+          </p>
+          <div class="row">
+            <div>
+              <label class="field">定位方式</label>
+              <select id="scrape-by">
+                <option value="class" selected>class（建議）</option>
+                <option value="id">id</option>
+                <option value="css">css（進階才用）</option>
+              </select>
+            </div>
+            <div>
+              <label class="field" id="scrape-value-label">class 名稱（不加點）</label>
+              <input type="text" id="scrape-value" value="sc-jqnqvi-1 dyUpZz" placeholder="sc-jqnqvi-1 dyUpZz" />
+            </div>
+          </div>
+          <label class="top" style="font-weight:500">
+            <input type="radio" name="scrape-mode" id="scrape-children" value="all" checked />
+            含底下全部文字（class 裡所有可見字）
+          </label>
+          <label class="top" style="font-weight:500">
+            <input type="radio" name="scrape-mode" id="scrape-body" value="body" />
+            只取內文（去掉按鈕、連結、選單列）
+          </label>
+        </div>
+      </div>
+
+      <div class="action" id="box-shot">
+        <label class="top"><input type="checkbox" id="do-shot" /> 截圖</label>
+        <div class="body">
+          <div class="row">
+            <div>
+              <label class="field">模式</label>
+              <select id="shot-mode">
+                <option value="單頁">單頁</option>
+                <option value="整頁" selected>整頁</option>
+                <option value="滾動">滾動</option>
+                <option value="多頁">多頁</option>
+              </select>
+            </div>
+            <div id="page-method-wrap" style="display:none">
+              <label class="field">翻頁方式</label>
+              <select id="page-method">
+                <option value="點按鈕">點按鈕</option>
+                <option value="鍵盤">鍵盤</option>
+              </select>
+            </div>
+          </div>
+          <div id="page-extra" style="display:none">
+            <div class="row">
+              <div>
+                <label class="field">最多頁數</label>
+                <input type="number" id="max-pages" value="5" min="1" />
+              </div>
+              <div id="click-wrap">
+                <label class="field">下一頁（選擇器或文字）</label>
+                <input type="text" id="next-btn" value="下一頁" />
+              </div>
+              <div id="key-wrap" style="display:none">
+                <label class="field">按鍵</label>
+                <select id="page-key">
+                  <option value="ArrowRight">右方向鍵</option>
+                  <option value="PageDown">PageDown</option>
+                  <option value="Space">空白鍵</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <label class="field">只截區塊（可空）</label>
+          <input type="text" id="shot-selector" placeholder=".main" />
+        </div>
+      </div>
+
+      <div class="action" id="box-ai">
+        <label class="top"><input type="checkbox" id="do-ai" /> AI 整理</label>
+        <div class="body">
+          <label class="field">整理說明</label>
+          <textarea id="ai-text" style="min-height:70px">去除雜訊，整理成標題、重點、正文。繁體中文。</textarea>
+        </div>
+      </div>
+
+      <div class="action" id="box-app">
+        <label class="top"><input type="checkbox" id="do-app" /> 開啟程式</label>
+        <div class="body">
+          <label class="field">程式路徑</label>
+          <input type="text" id="app-path" value="notepad.exe" />
+          <label class="field">參數（可空）</label>
+          <input type="text" id="app-args" />
+        </div>
+      </div>
+
+      <div class="btns">
+        <button type="button" class="main" id="btn-gen">產生完整 JSON</button>
+        <button type="button" class="ok" id="btn-dl">下載 JSON</button>
+        <button type="button" id="btn-copy">複製</button>
+        <button type="button" id="btn-simple">只匯出素材清單（不含執行）</button>
+      </div>
+      <div class="status" id="status"></div>
+    </div>
+
+    <div class="card">
+      <h2>4. JSON 預覽</h2>
+      <textarea id="preview" readonly></textarea>
+    </div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let items = [];
+
+    const DEMO = [
+      {
+        存檔名稱: "1-1 給創業者的財稅地圖：從個人到公司",
+        素材連結: "https://hahow.in/classroom/66c3038a2cd3b1749a99a884/lessons/66d932bf00abb5920b50687d/main",
+      },
+      {
+        存檔名稱: "1-2 創業必知！開公司有哪些成本？",
+        素材連結: "https://hahow.in/classroom/66c3038a2cd3b1749a99a884/lessons/66fa2145d26399cfb18bc9ac/main",
+      },
+    ];
+
+    function setStatus(id, msg, err = false) {
+      const el = $(id);
+      el.textContent = msg || "";
+      el.classList.toggle("err", !!err);
+    }
+
+    function bindToggle(checkId, boxId) {
+      const check = $(checkId);
+      const box = $(boxId);
+      const sync = () => box.classList.toggle("on", check.checked);
+      check.addEventListener("change", () => { sync(); gen(false); });
+      sync();
+    }
+    bindToggle("do-click", "box-click");
+    bindToggle("do-scrape", "box-scrape");
+    bindToggle("do-shot", "box-shot");
+    bindToggle("do-ai", "box-ai");
+    bindToggle("do-app", "box-app");
+
+    function syncShotUi() {
+      const multi = $("shot-mode").value === "多頁";
+      $("page-method-wrap").style.display = multi ? "block" : "none";
+      $("page-extra").style.display = multi ? "block" : "none";
+      const key = $("page-method").value === "鍵盤";
+      $("click-wrap").style.display = multi && !key ? "block" : "none";
+      $("key-wrap").style.display = multi && key ? "block" : "none";
+    }
+    $("shot-mode").addEventListener("change", () => { syncShotUi(); gen(false); });
+    $("page-method").addEventListener("change", () => { syncShotUi(); gen(false); });
+    syncShotUi();
+
+    function normalizeList(data) {
+      // 允許：陣列，或單物件，或舊格式
+      let arr = data;
+      if (!Array.isArray(data)) {
+        if (data && typeof data === "object") arr = [data];
+        else throw new Error("請使用陣列格式 [{存檔名稱, 素材連結}, …]");
+      }
+      return arr.map((row, i) => {
+        if (!row || typeof row !== "object") throw new Error(`第 ${i + 1} 筆不是物件`);
+        const name = row.存檔名稱 ?? row.name ?? "";
+        const url =
+          row.素材連結 ??
+          row.url ??
+          (Array.isArray(row.素材?.連結) ? row.素材.連結[0] : "") ??
+          "";
+        if (!name && !url) throw new Error(`第 ${i + 1} 筆缺少存檔名稱與素材連結`);
+        return {
+          存檔名稱: String(name || `未命名_${i + 1}`),
+          素材連結: String(url || ""),
+        };
+      });
+    }
+
+    function renderList() {
+      const root = $("list");
+      $("count-pill").textContent = `${items.length} 筆`;
+      root.innerHTML = "";
+      if (!items.length) {
+        root.innerHTML = `<p class="hint">尚未匯入。請先貼上你的 JSON 陣列。</p>`;
+        return;
+      }
+      items.forEach((it, idx) => {
+        const el = document.createElement("div");
+        el.className = "item";
+        el.innerHTML = `
+          <div class="item-head">
+            <span>#${idx + 1}</span>
+            <button type="button" class="danger" data-del>刪除</button>
+          </div>
+          <label class="field">存檔名稱</label>
+          <input type="text" data-k="存檔名稱" value="" />
+          <label class="field">素材連結</label>
+          <input type="text" data-k="素材連結" value="" />
+        `;
+        el.querySelector('[data-k="存檔名稱"]').value = it.存檔名稱;
+        el.querySelector('[data-k="素材連結"]').value = it.素材連結;
+        el.querySelectorAll("[data-k]").forEach((input) => {
+          input.addEventListener("input", () => {
+            items[idx][input.dataset.k] = input.value;
+            gen(false);
+          });
+        });
+        el.querySelector("[data-del]").addEventListener("click", () => {
+          items.splice(idx, 1);
+          renderList();
+          gen(false);
+        });
+        root.appendChild(el);
+      });
+    }
+
+    /** class：去掉多餘的點，還原成「a b」形式 */
+    function cleanClassValue(raw) {
+      let v = String(raw || "").trim();
+      v = v.replace(/^class\s*=\s*["']?/i, "").replace(/["']$/, "");
+      v = v.replace(/^\./, "");
+      // 誤填 .a.b → a b
+      if (!/\s/.test(v) && (v.match(/\./g) || []).length >= 1) {
+        v = v.replace(/\./g, " ").replace(/\s+/g, " ").trim();
+      }
+      return v;
+    }
+
+    function syncScrapeLabel() {
+      const by = $("scrape-by").value;
+      const lab = $("scrape-value-label");
+      const inp = $("scrape-value");
+      if (by === "class") {
+        lab.textContent = "class 名稱（不加點）";
+        inp.placeholder = "sc-jqnqvi-1 dyUpZz";
+      } else if (by === "id") {
+        lab.textContent = "id（可加或不加 #）";
+        inp.placeholder = "content";
+      } else {
+        lab.textContent = "CSS 選擇器";
+        inp.placeholder = "#main .content";
+      }
+    }
+
+    function buildExec() {
+      const 執行 = [];
+
+      // 1) 前置點擊（例如逐字稿）
+      if ($("do-click").checked) {
+        const clickBy = $("click-by").value;
+        const clickText = $("click-text").value.trim();
+        const clickClass = cleanClassValue($("click-class").value);
+        const waitMs = Number($("click-wait").value) || 0;
+        const cx = $("click-x").value.trim();
+        const cy = $("click-y").value.trim();
+        if (clickBy === "座標") {
+          // 不跳 alert；有填才寫入，沒填就略過點擊
+          if (cx !== "" && cy !== "" && Number(cx) >= 0 && Number(cy) >= 0) {
+            執行.push({
+              動作: "點擊",
+              定位: "座標",
+              X: Number(cx),
+              Y: Number(cy),
+              等待毫秒: waitMs,
+            });
+          }
+        } else if (clickBy === "文字") {
+          執行.push({
+            動作: "點擊",
+            定位: "文字",
+            值: clickText,
+            文字: clickText,
+            等待毫秒: waitMs,
+          });
+        } else if (clickBy === "class") {
+          執行.push({
+            動作: "點擊",
+            定位: "class",
+            值: clickClass,
+            等待毫秒: waitMs,
+          });
+        } else {
+          執行.push({
+            動作: "點擊",
+            定位: "class",
+            值: clickClass,
+            文字: clickText,
+            等待毫秒: waitMs,
+          });
+        }
+      }
+
+      // 2) 爬蟲
+      if ($("do-scrape").checked) {
+        const by = $("scrape-by").value;
+        let value = $("scrape-value").value.trim();
+        if (by === "class") value = cleanClassValue(value);
+        if (by === "id") value = value.replace(/^#/, "");
+        執行.push({
+          動作: "爬蟲",
+          定位: by,
+          值: value,
+          範圍: "body",
+          含底下全部: $("scrape-children").checked,
+          只取內文: $("scrape-body") ? $("scrape-body").checked : false,
+        });
+      }
+      if ($("do-shot").checked) {
+        const item = { 動作: "截圖", 模式: $("shot-mode").value };
+        const sel = $("shot-selector").value.trim();
+        if (sel) item.區塊 = sel;
+        if (item.模式 === "多頁") {
+          item.翻頁方式 = $("page-method").value;
+          item.最多頁數 = Number($("max-pages").value) || 1;
+          if (item.翻頁方式 === "點按鈕") item.下一頁 = $("next-btn").value.trim();
+          if (item.翻頁方式 === "鍵盤") item.按鍵 = $("page-key").value;
+        }
+        執行.push(item);
+      }
+      if ($("do-ai").checked) {
+        執行.push({ 動作: "AI整理", 說明: $("ai-text").value.trim() });
+      }
+      if ($("do-app").checked) {
+        const item = { 動作: "開啟程式", 路徑: $("app-path").value.trim() };
+        const args = $("app-args").value.trim();
+        if (args) item.參數 = args;
+        執行.push(item);
+      }
+      return 執行;
+    }
+
+    function build(full = true) {
+      if (!full) {
+        return items.map((it) => ({
+          存檔名稱: it.存檔名稱,
+          素材連結: it.素材連結,
+        }));
+      }
+      const 執行 = buildExec();
+      return items.map((it) => {
+        const row = {
+          存檔名稱: it.存檔名稱,
+          素材連結: it.素材連結,
+        };
+        if (執行.length) row.執行 = 執行;
+        return row;
+      });
+    }
+
+    function gen(show = true, full = true) {
+      const data = build(full);
+      $("preview").value = JSON.stringify(data, null, 2);
+      if (show) {
+        setStatus(
+          "status",
+          full
+            ? `已產生完整 JSON（${items.length} 筆＋UI 執行）`
+            : `已產生素材清單（${items.length} 筆，不含執行）`
+        );
+      }
+      return $("preview").value;
+    }
+
+    function applyExecToUi(list) {
+      if (!Array.isArray(list) || !list.length) return;
+      $("do-click").checked = false;
+      $("do-scrape").checked = false;
+      $("do-shot").checked = false;
+      $("do-ai").checked = false;
+      $("do-app").checked = false;
+      for (const item of list) {
+        const act = item.動作 || "";
+        if (act === "點擊") {
+          $("do-click").checked = true;
+          const by = item.定位 || "文字";
+          if (by === "座標" || item.X != null) {
+            $("click-by").value = "座標";
+            if (item.X != null) $("click-x").value = item.X;
+            if (item.Y != null) $("click-y").value = item.Y;
+            if (item.值 && String(item.值).includes(",")) {
+              const [a, b] = String(item.值).split(",");
+              $("click-x").value = a.trim();
+              $("click-y").value = b.trim();
+            }
+          } else if (by === "class" && item.文字) {
+            $("click-by").value = "class+文字";
+            $("click-class").value = cleanClassValue(item.值 || "");
+            $("click-text").value = item.文字;
+          } else if (by === "class") {
+            $("click-by").value = "class";
+            if (item.值) $("click-class").value = cleanClassValue(item.值);
+          } else {
+            $("click-by").value = "文字";
+            $("click-text").value = item.文字 || item.值 || "逐字稿";
+          }
+          if (item.等待毫秒 != null) $("click-wait").value = item.等待毫秒;
+        } else if (act === "爬蟲") {
+          $("do-scrape").checked = true;
+          if (item.定位) $("scrape-by").value = item.定位;
+          if (item.值 != null) {
+            let v = String(item.值);
+            if ((item.定位 || "class") === "class") v = cleanClassValue(v);
+            $("scrape-value").value = v;
+          }
+          if (item.只取內文 === true) {
+            if ($("scrape-body")) $("scrape-body").checked = true;
+          } else if (typeof item.含底下全部 === "boolean") {
+            if (item.含底下全部) $("scrape-children").checked = true;
+            else if ($("scrape-body")) $("scrape-body").checked = true;
+          }
+        } else if (act === "截圖") {
+          $("do-shot").checked = true;
+          if (item.模式) $("shot-mode").value = item.模式;
+          if (item.區塊) $("shot-selector").value = item.區塊;
+          if (item.翻頁方式) $("page-method").value = item.翻頁方式;
+          if (item.最多頁數) $("max-pages").value = item.最多頁數;
+          if (item.下一頁) $("next-btn").value = item.下一頁;
+          if (item.按鍵) $("page-key").value = item.按鍵;
+        } else if (act === "AI整理") {
+          $("do-ai").checked = true;
+          if (item.說明) $("ai-text").value = item.說明;
+        } else if (act === "開啟程式") {
+          $("do-app").checked = true;
+          if (item.路徑) $("app-path").value = item.路徑;
+          if (item.參數) $("app-args").value = item.參數;
+        }
+      }
+      ["do-click", "do-scrape", "do-shot", "do-ai", "do-app"].forEach((id) => {
+        $(id).dispatchEvent(new Event("change"));
+      });
+      syncScrapeLabel();
+      syncShotUi();
+    }
+
+    function doImport() {
+      const raw = $("import-box").value.trim();
+      if (!raw) return setStatus("import-status", "請先貼上 JSON", true);
+      try {
+        const data = JSON.parse(raw);
+        items = normalizeList(data);
+        renderList();
+        // 若匯入的是完整 JSON（含執行），套到 UI；class 會清掉多餘的點
+        const arr = Array.isArray(data) ? data : [data];
+        const firstExec = arr.find((x) => Array.isArray(x?.執行) && x.執行.length)?.執行;
+        if (firstExec) {
+          applyExecToUi(firstExec);
+          setStatus("import-status", `匯入成功：${items.length} 筆，執行已套到下方 UI`);
+        } else {
+          setStatus("import-status", `匯入成功：${items.length} 筆。請往下用 UI 設定執行`);
+        }
+        gen(false);
+      } catch (e) {
+        setStatus("import-status", "匯入失敗：" + e.message, true);
+      }
+    }
+
+    $("btn-import").addEventListener("click", doImport);
+    $("btn-file").addEventListener("click", () => $("file").click());
+    $("file").addEventListener("change", async (ev) => {
+      const f = ev.target.files?.[0];
+      if (!f) return;
+      $("import-box").value = await f.text();
+      doImport();
+      ev.target.value = "";
+    });
+    $("btn-demo").addEventListener("click", () => {
+      $("import-box").value = JSON.stringify(DEMO, null, 2);
+      setStatus("import-status", "已填入範例，按「匯入」");
+    });
+    $("btn-add").addEventListener("click", () => {
+      items.push({ 存檔名稱: "", 素材連結: "" });
+      renderList();
+      gen(false);
+    });
+    $("btn-clear").addEventListener("click", () => {
+      if (!items.length || confirm("確定清空全部？")) {
+        items = [];
+        renderList();
+        gen(false);
+      }
+    });
+
+    function download(full = true) {
+      if (!items.length) return setStatus("status", "請先匯入素材清單", true);
+      const text = gen(false, full);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type: "application/json;charset=utf-8" }));
+      a.download = full ? "任務_完整.json" : "任務_素材清單.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+      setStatus("status", "已下載 " + a.download);
+    }
+
+    async function copy() {
+      const text = gen(false, true);
+      try { await navigator.clipboard.writeText(text); }
+      catch { $("preview").select(); document.execCommand("copy"); }
+      setStatus("status", "已複製");
+    }
+
+    $("btn-gen").addEventListener("click", () => gen(true, true));
+    $("btn-dl").addEventListener("click", () => download(true));
+    $("btn-simple").addEventListener("click", () => download(false));
+    $("btn-copy").addEventListener("click", copy);
+
+    [
+      "click-by", "click-text", "click-class", "click-wait", "click-x", "click-y",
+      "scrape-by", "scrape-value", "scrape-children", "scrape-body",
+      "shot-mode", "shot-selector", "max-pages", "next-btn", "page-key",
+      "ai-text", "app-path", "app-args",
+    ].forEach((id) => {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener(el.type === "checkbox" || el.tagName === "SELECT" ? "change" : "input", () => gen(false));
+    });
+    $("scrape-by").addEventListener("change", () => { syncScrapeLabel(); gen(false); });
+    $("scrape-value").addEventListener("blur", () => {
+      if ($("scrape-by").value === "class") {
+        $("scrape-value").value = cleanClassValue($("scrape-value").value);
+        gen(false);
+      }
+    });
+
+    // 預填你的範例到匯入框，方便直接按匯入
+    $("import-box").value = JSON.stringify(DEMO, null, 2);
+    syncScrapeLabel();
+    renderList();
+    gen(false);
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "meta": {
+    "title": "多頁：用鍵盤翻頁後截圖（例如右鍵／PageDown）",
+    "tags": ["paginate", "key"]
+  },
+  "task": {
+    "output": {
+      "name": "簡報截圖",
+      "dir": "output"
+    },
+    "materials": {
+      "urls": ["https://example.com/slides/1"]
+    },
+    "actions": [
+      {
+        "type": "open_url",
+        "params": { "url_index": 0 }
+      },
+      {
+        "type": "screenshot",
+        "params": {
+          "mode": "multi_page",
+          "filename": "slide_{{page}}",
+          "paginate": {
+            "method": "key",
+            "max_pages": 10,
+            "delay_ms": 800,
+            "key": {
+              "keys": ["ArrowRight"],
+              "repeat": 1
+            }
+          }
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>筆記工具箱</title>
+  <style>
+    :root {
+      --bg: #10151c;
+      --card: #1a2330;
+      --line: #334155;
+      --text: #eef3f9;
+      --muted: #94a3b8;
+      --accent: #3b9eff;
+      --mint: #34d399;
+      --violet: #a78bfa;
+      --font: "Segoe UI", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--font);
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(900px 420px at 0% 0%, #1e3a5f66, transparent 60%),
+        radial-gradient(700px 360px at 100% 10%, #3b1d6a44, transparent 55%),
+        var(--bg);
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 36px 20px 56px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.5rem, 4vw, 1.9rem); }
+    .sub { color: var(--muted); margin: 0 0 28px; line-height: 1.6; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    @media (min-width: 720px) {
+      .hero-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .choice {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 20px;
+      min-height: 168px;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .choice:hover {
+      transform: translateY(-2px);
+      border-color: #3b9eff88;
+      box-shadow: 0 12px 28px #00000044;
+      color: inherit;
+    }
+    .choice.create {
+      background: linear-gradient(165deg, #152a44, var(--card) 55%);
+      border-color: #3b82f688;
+    }
+    .choice.browse {
+      background: linear-gradient(165deg, #1a2f2a, var(--card) 55%);
+      border-color: #34d39966;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      padding: .22rem .65rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+    }
+    .choice.create .badge { background: #1d4ed855; color: #93c5fd; border-color: #3b82f655; }
+    .choice.browse .badge { background: #065f4655; color: #6ee7b7; border-color: #34d39955; }
+    .choice h2 { margin: 0; font-size: 1.25rem; }
+    .choice p { margin: 0; color: var(--muted); line-height: 1.55; flex: 1; }
+    .choice .go { color: var(--accent); font-weight: 700; font-size: .92rem; }
+    .choice.browse .go { color: var(--mint); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+    .card h2 {
+      margin: 0 0 12px;
+      font-size: 1.02rem;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tools {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 640px) {
+      .tools { grid-template-columns: 1fr 1fr; }
+    }
+    .tool {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: #121a26;
+    }
+    .tool:hover { border-color: #a78bfa88; color: inherit; }
+    .tool strong { display: block; margin-bottom: 4px; }
+    .tool span { color: var(--muted); font-size: .86rem; line-height: 1.45; }
+    .hint {
+      font-size: .82rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+    code {
+      background: #0b1220;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: .85em;
+    }
+    .tree {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.7;
+    }
+    .tree strong { color: #cbd5e1; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>筆記工具箱</h1>
+    <p class="sub">選擇要新增筆記，或瀏覽已經產生的講義。其餘腳本／爬蟲工具在下方。</p>
+
+    <div class="hero-grid">
+      <a class="choice create" href="apps/note_generator.html">
+        <span class="badge">NEW</span>
+        <h2>新增筆記</h2>
+        <p>從 <code>output</code> 素材或貼上文字，產生結構化 HTML 講義（卡片／對照／圖表／測驗）。</p>
+        <div class="go">打開筆記產生器 →</div>
+      </a>
+      <a class="choice browse" href="notes/index.html">
+        <span class="badge">LIBRARY</span>
+        <h2>瀏覽筆記</h2>
+        <p>依資料夾查看已生成的講義（簡單開公司、公司治理…），點檔名即可閱讀。</p>
+        <div class="go">打開筆記庫 →</div>
+      </a>
+    </div>
+
+    <div class="card">
+      <h2>其他工具</h2>
+      <div class="tools">
+        <a class="tool" href="apps/ahk-script-generator.html">
+          <strong>任務腳本產生器</strong>
+          <span>匯入 <code>[{存檔名稱, 素材連結}]</code>，勾選動作後下載 JSON。</span>
+        </a>
+        <a class="tool" href="docs/README.md">
+          <strong>使用說明</strong>
+          <span>啟動方式、JSON 格式、各工具對照表。</span>
+        </a>
+        <a class="tool" href="output/">
+          <strong>素材資料夾 output</strong>
+          <span>爬蟲／截圖結果，供筆記產生器選檔。</span>
+        </a>
+        <a class="tool" href="docs/部署到_Vercel.md">
+          <strong>部署到 Vercel</strong>
+          <span>把講義站上線（靜態）；本機產生器仍在本機跑。</span>
+        </a>
+        <a class="tool" href="docs/如何使用_從JSON到結果.md">
+          <strong>從 JSON 到結果</strong>
+          <span>任務執行流程與常見問題。</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>目錄結構</h2>
+      <ul class="tree">
+        <li><strong>index.html</strong> ← 你在這裡（入口）</li>
+        <li><strong>apps/</strong> 前端：筆記產生器、腳本產生器</li>
+        <li><strong>notes/</strong> 已生成講義（含瀏覽頁）</li>
+        <li><strong>output/</strong> 素材文字／截圖</li>
+        <li><strong>tools/</strong> AutoHotkey 輔助腳本</li>
+        <li><strong>docs/</strong> 說明與 schema</li>
+        <li><strong>*.py</strong> 本機伺服器／轉換／重渲腳本</li>
+      </ul>
+      <p class="hint" style="margin-top:12px">
+        建議雙擊根目錄 <code>啟動工具.ahk</code>，或執行
+        <code>python note_generator_server.py</code> 後用瀏覽器開本頁。
+      </p>
+    </div>
+  </div>
+</body>
+</html>

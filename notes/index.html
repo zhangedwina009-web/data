@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>瀏覽筆記</title>
+<style>
+:root{
+  --bg:#10151c; --card:#1a2330; --line:#334155; --text:#eef3f9; --muted:#94a3b8; --accent:#3b9eff; --mint:#34d399;
+  --font:"Segoe UI","Microsoft JhengHei","Noto Sans TC",sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; font-family:var(--font); color:var(--text);
+  background:radial-gradient(900px 400px at 0% 0%,#1e3a5f66,transparent 60%),var(--bg);
+  min-height:100vh;
+}
+.wrap{max-width:720px;margin:0 auto;padding:28px 18px 48px;}
+.top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:22px;}
+h1{margin:0 0 6px;font-size:clamp(1.35rem,3.5vw,1.7rem);}
+.sub{margin:0;color:var(--muted);line-height:1.5;}
+.nav{display:flex;gap:8px;flex-wrap:wrap;}
+.nav a{
+  display:inline-flex;align-items:center;text-decoration:none;color:#071018;font-weight:700;
+  background:linear-gradient(180deg,#3b9eff,#2563eb);border-radius:10px;padding:.55rem .9rem;
+}
+.nav a.ghost{background:transparent;color:var(--text);border:1px solid var(--line);}
+.folder-grid{
+  display:grid;grid-template-columns:1fr;gap:12px;
+}
+@media (min-width:560px){
+  .folder-grid{grid-template-columns:1fr 1fr;}
+}
+.folder-btn{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  text-decoration:none;color:inherit;
+  background:linear-gradient(165deg,#152a44,var(--card) 60%);
+  border:1px solid #3b82f688;border-radius:14px;
+  padding:1.1rem 1.15rem;min-height:74px;
+  transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+}
+.folder-btn:hover{
+  transform:translateY(-2px);border-color:#5ec8ff;box-shadow:0 10px 24px #00000044;color:inherit;
+}
+.folder-name{font-size:1.08rem;font-weight:750;line-height:1.35;overflow-wrap:anywhere;}
+.folder-go{color:var(--accent);font-weight:700;font-size:.9rem;white-space:nowrap;}
+.empty{color:var(--muted);padding:.4rem .2rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>瀏覽筆記</h1>
+      <p class="sub">選擇資料夾進入 · 更新於 2026-08-17 00:29</p>
+    </div>
+    <div class="nav">
+      <a class="ghost" href="../index.html">← 回首頁</a>
+      <a href="../apps/note_generator.html">新增筆記</a>
+    </div>
+  </div>
+  <div class="folder-grid"><a class="folder-btn" href="公司治理/index.html"><span class="folder-name">公司治理</span><span class="folder-go">開啟 →</span></a><a class="folder-btn" href="簡單開公司/index.html"><span class="folder-name">簡單開公司</span><span class="folder-go">開啟 →</span></a></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>教學筆記產生器</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    :root { --panel: #151c27; --line: #2c3a4d; }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(900px 400px at 0% 0%, #1a335555, transparent 55%), #0c1016;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(8px);
+      background: rgba(12,16,22,.9);
+      border-bottom: 1px solid var(--line);
+    }
+    .step-card { background: var(--panel); border: 1px solid var(--line); border-radius: 1rem; }
+    .step-num {
+      width: 1.75rem; height: 1.75rem; border-radius: 999px;
+      display:inline-flex; align-items:center; justify-content:center;
+      background:#2f74b5; color:#fff; font-size:.85rem; font-weight:700;
+    }
+    .file-box {
+      max-height: 240px; overflow: auto;
+      border: 1px solid var(--line); border-radius: .75rem; background: #10161f;
+    }
+    .file-item {
+      display:grid; grid-template-columns: auto 1fr; gap:.5rem;
+      padding:.55rem .75rem; border-bottom:1px solid #243041; cursor:pointer;
+    }
+    .file-item:last-child { border-bottom:0; }
+    .file-item:hover { background:#1a2433; }
+    #previewFrame {
+      width:100%; min-height:70vh; border:1px solid var(--line);
+      border-radius:1rem; background:#0e1218;
+    }
+    #statusBox { white-space: pre-wrap; min-height: 3rem; }
+    .progress { height: .55rem; }
+  </style>
+</head>
+<body>
+  <header class="topbar py-2">
+    <div class="container-xxl d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div>
+        <div class="fw-semibold">教學筆記產生器</div>
+        <div class="small text-secondary">素材 → HTML 筆記（卡片／對照／圖表）</div>
+      </div>
+      <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-outline-secondary btn-sm" href="../index.html">← 首頁</a>
+        <a class="btn btn-outline-success btn-sm" href="../notes/index.html">瀏覽筆記</a>
+        <button class="btn btn-primary" id="btn-gen" type="button">開始生成</button>
+        <button class="btn btn-danger" id="btn-stop" type="button" disabled>停止</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container-xxl py-3 py-lg-4">
+    <div class="row g-3">
+      <div class="col-lg-5">
+        <!-- Step 1 -->
+        <section class="step-card p-3 p-md-4 mb-3">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="step-num">1</span>
+            <h2 class="h5 mb-0">選擇素材</h2>
+          </div>
+          <ul class="nav nav-pills mb-3" role="tablist">
+            <li class="nav-item"><button class="nav-link active" type="button" id="tab-files">從 output 選檔</button></li>
+            <li class="nav-item"><button class="nav-link" type="button" id="tab-paste">貼上文字</button></li>
+          </ul>
+
+          <div id="panel-files">
+            <div class="input-group mb-2">
+              <input class="form-control" id="path-input" value="output" placeholder="output 或資料夾路徑" />
+              <button class="btn btn-outline-secondary" type="button" id="btn-list">載入</button>
+            </div>
+            <div class="d-flex flex-wrap gap-2 mb-2">
+              <button class="btn btn-sm btn-outline-primary" type="button" id="btn-output">output</button>
+              <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-all">全選</button>
+              <button class="btn btn-sm btn-outline-secondary" type="button" id="btn-none">清除</button>
+              <span class="small text-secondary align-self-center" id="sel-count">已選 0</span>
+            </div>
+            <div class="file-box mb-3" id="file-list"><div class="text-secondary text-center p-4">按「output」載入檔案</div></div>
+
+            <div class="mb-1 small text-secondary">多檔怎麼產出？</div>
+            <div class="btn-group w-100" role="group">
+              <input type="radio" class="btn-check" name="batch-mode" id="mode-separate" value="separate" checked />
+              <label class="btn btn-outline-light" for="mode-separate">一檔一篇 HTML</label>
+              <input type="radio" class="btn-check" name="batch-mode" id="mode-merge" value="merge" />
+              <label class="btn btn-outline-light" for="mode-merge">合併一篇</label>
+            </div>
+          </div>
+
+          <div id="panel-paste" class="d-none">
+            <label class="form-label small text-secondary">標題</label>
+            <input class="form-control mb-2" id="title" placeholder="可留空，由 AI 決定" />
+            <label class="form-label small text-secondary">素材</label>
+            <textarea class="form-control" id="content" rows="10" placeholder="貼上逐字稿…"></textarea>
+          </div>
+        </section>
+
+        <!-- Step 2 -->
+        <section class="step-card p-3 p-md-4 mb-3">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="step-num">2</span>
+            <h2 class="h5 mb-0">設定</h2>
+          </div>
+          <div class="row g-2">
+            <div class="col-7">
+              <label class="form-label small text-secondary">模型（記憶體不夠請選 2b）</label>
+              <select class="form-select" id="model"><option value="">載入中…</option></select>
+              <div class="form-text">OOM 時改選 gemma2:2b，不要用 4b。</div>
+            </div>
+            <div class="col-5">
+              <label class="form-label small text-secondary">風格</label>
+              <select class="form-select" id="style">
+                <option value="詳細" selected>詳細</option>
+                <option value="精簡">精簡</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label small text-secondary">輸出資料夾</label>
+              <div class="input-group">
+                <input class="form-control" id="out-dir" value="notes" />
+                <button class="btn btn-outline-secondary" type="button" id="btn-out-default">notes</button>
+                <button class="btn btn-outline-secondary" type="button" id="btn-out-ensure">確認</button>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-link btn-sm px-0 mt-2" type="button" id="btn-refresh-models">重新載入模型</button>
+        </section>
+
+        <!-- Step 3 status -->
+        <section class="step-card p-3 p-md-4">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="step-num">3</span>
+            <h2 class="h5 mb-0">進度</h2>
+          </div>
+          <div class="progress mb-2 d-none" id="progress-wrap">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="progress-bar" style="width:0%"></div>
+          </div>
+          <div class="alert alert-secondary mb-0 small" id="statusBox">就緒：選檔 → 設定 → 開始生成</div>
+        </section>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+          <h2 class="h5 mb-0">HTML 預覽</h2>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" id="btn-dl-md" disabled>下載 MD</button>
+            <button class="btn btn-outline-secondary" id="btn-dl-html" disabled>下載 HTML</button>
+            <button class="btn btn-outline-primary" id="btn-open-notes" disabled>開成品</button>
+          </div>
+        </div>
+        <iframe id="previewFrame" title="筆記預覽"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let fileItems = [];
+    let lastMarkdown = "";
+    let lastHtml = "";
+    let lastTitle = "教學筆記";
+    let lastSavedHtml = "";
+    let activeAbort = null;
+    let stopRequested = false;
+    const OUT_KEY = "note_gen_out_dir";
+    const MODE_KEY = "note_gen_batch_mode";
+
+    function getOutDir() { return ($("out-dir").value || "").trim() || "notes"; }
+    function getBatchMode() {
+      const el = document.querySelector('input[name="batch-mode"]:checked');
+      return el ? el.value : "separate";
+    }
+    function persist() {
+      try {
+        localStorage.setItem(OUT_KEY, getOutDir());
+        localStorage.setItem(MODE_KEY, getBatchMode());
+      } catch (_) {}
+    }
+    function restore() {
+      try {
+        $("out-dir").value = localStorage.getItem(OUT_KEY) || "notes";
+        const m = localStorage.getItem(MODE_KEY) || "separate";
+        const el = document.querySelector(`input[name="batch-mode"][value="${m}"]`);
+        if (el) el.checked = true;
+      } catch (_) {}
+    }
+
+    function setStatus(msg, kind) {
+      const el = $("statusBox");
+      el.textContent = msg;
+      el.className = "alert mb-0 small " + (
+        kind === "err" ? "alert-danger" : kind === "ok" ? "alert-success" : "alert-secondary"
+      );
+    }
+    function setBusy(busy) {
+      $("btn-gen").disabled = busy;
+      $("btn-stop").disabled = !busy;
+      $("progress-wrap").classList.toggle("d-none", !busy);
+    }
+    function setProgress(pct) {
+      $("progress-bar").style.width = Math.max(0, Math.min(100, pct)) + "%";
+    }
+    function beginJob() {
+      stopRequested = false;
+      if (activeAbort) try { activeAbort.abort(); } catch (_) {}
+      activeAbort = new AbortController();
+      setBusy(true);
+      setProgress(8);
+      return activeAbort.signal;
+    }
+    function endJob() { activeAbort = null; setBusy(false); setProgress(0); }
+    function requestStop() {
+      stopRequested = true;
+      if (activeAbort) try { activeAbort.abort(); } catch (_) {}
+      setStatus("已要求停止…", "err");
+    }
+
+    async function api(path, opts = {}) {
+      const r = await fetch(path, opts);
+      if (opts.signal?.aborted) {
+        const e = new Error("已停止"); e.name = "AbortError"; throw e;
+      }
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(data.error || ("HTTP " + r.status));
+      return data;
+    }
+
+    function showHtml(htmlDoc) {
+      lastHtml = htmlDoc || "";
+      const frame = $("previewFrame");
+      frame.srcdoc = lastHtml || "<!doctype html><body style='background:#0e1218;color:#999;font-family:sans-serif;padding:2rem'>尚無預覽</body>";
+      $("btn-dl-html").disabled = !lastHtml;
+      $("btn-dl-md").disabled = !lastMarkdown;
+    }
+
+    function updateSelCount() {
+      const n = selectedPaths().length;
+      $("sel-count").textContent = "已選 " + n;
+    }
+
+    function selectedPaths() {
+      return [...$("file-list").querySelectorAll("input[type=checkbox]:checked")]
+        .map((el) => fileItems[Number(el.dataset.i)]?.path)
+        .filter(Boolean);
+    }
+
+    function renderFileList(files) {
+      fileItems = files || [];
+      const box = $("file-list");
+      if (!fileItems.length) {
+        box.innerHTML = '<div class="text-secondary text-center p-4">沒有 .txt</div>';
+        updateSelCount();
+        return;
+      }
+      box.innerHTML = fileItems.map((f, i) => `
+        <label class="file-item">
+          <input class="form-check-input mt-1" type="checkbox" data-i="${i}" />
+          <div>
+            <div class="fw-semibold small">${escapeHtml(f.name)}</div>
+            <div class="text-secondary" style="font-size:.75rem">${escapeHtml(f.mtime)} · ${Math.round(f.size/1024)} KB</div>
+          </div>
+        </label>
+      `).join("");
+      box.querySelectorAll("input").forEach((cb) => cb.addEventListener("change", updateSelCount));
+      updateSelCount();
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function preferModel(models) {
+      const rank = (name) => {
+        const n = String(name).toLowerCase();
+        if (n.includes("gemma2:2b")) return 0;
+        if (n.includes("2b")) return 1;
+        if (n.includes("3b")) return 2;
+        if (n.includes("4b")) return 8;
+        if (n.includes("7b") || n.includes("8b")) return 9;
+        return 5;
+      };
+      return [...models].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
+    }
+
+    async function loadModels() {
+      const sel = $("model");
+      sel.innerHTML = '<option value="">載入中…</option>';
+      try {
+        const data = await api("/api/models");
+        const models = preferModel(data.models || []);
+        if (!models.length) {
+          sel.innerHTML = '<option value="">無模型</option>';
+          setStatus(data.error || "請先啟動 Ollama 並 pull 模型", "err");
+          return;
+        }
+        sel.innerHTML = models.map((m) => `<option value="${m}">${m}</option>`).join("");
+        // 預設選最省記憶體的
+        sel.value = models[0];
+        const tip = String(models[0]).includes("2b")
+          ? `已預設較小模型：${models[0]}。選檔後按「開始生成」。`
+          : `已連線。若出現 out-of-memory，請改選名稱含 2b 的模型。`;
+        setStatus(tip, "ok");
+      } catch (e) {
+        sel.innerHTML = '<option value="">無法連線</option>';
+        setStatus(String(e.message || e), "err");
+      }
+    }
+
+    async function loadList(path) {
+      setStatus("載入檔案…");
+      const data = await api("/api/list?path=" + encodeURIComponent(path || "output"));
+      renderFileList(data.files || []);
+      setStatus(`已載入 ${data.files?.length || 0} 個檔案。勾選後按「開始生成」。`, "ok");
+      switchTab("files");
+    }
+
+    function switchTab(name) {
+      $("panel-files").classList.toggle("d-none", name !== "files");
+      $("panel-paste").classList.toggle("d-none", name !== "paste");
+      $("tab-files").classList.toggle("active", name === "files");
+      $("tab-paste").classList.toggle("active", name === "paste");
+    }
+
+    function download(filename, text, type) {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([text], { type }));
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    async function generateOneFile(model, title, content, source_path, signal, onProgress) {
+      const style = $("style").value;
+      const headers = { "Content-Type": "application/json" };
+      const report = (pct, msg) => {
+        if (typeof onProgress === "function") onProgress(pct, msg);
+        else { setProgress(pct); setStatus(msg); }
+      };
+
+      report(8, "Pass 1／3：產生大綱（分主題）…");
+      const outData = await api("/api/outline", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ model, title, content, style }),
+        signal,
+      });
+      const outline = outData.outline || {};
+      const specs = outline.chapters || [];
+      const total = Math.max(1, specs.length);
+      report(18, `大綱完成：${outline.title || title || "筆記"}（${total} 章）\n開始逐章生成…`);
+
+      const chapters = [];
+      for (let i = 0; i < specs.length; i++) {
+        if (stopRequested || signal.aborted) {
+          const e = new Error("已停止"); e.name = "AbortError"; throw e;
+        }
+        const spec = specs[i];
+        const pct = 18 + ((i + 0.35) / total) * 70;
+        report(pct, `Pass 2／3：第 ${i + 1}/${total} 章\n${spec.title || "章節"}`);
+        const chData = await api("/api/chapter", {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            model, content, style,
+            note_title: outline.title || title,
+            chapter: spec,
+            index: i + 1,
+            total,
+          }),
+          signal,
+        });
+        chapters.push(chData.chapter);
+        // 逐章即時預覽（未存檔的組合預覽可選；這裡只更新狀態）
+        report(18 + ((i + 1) / total) * 70, `已完成第 ${i + 1}/${total} 章`);
+      }
+
+      if (stopRequested || signal.aborted) {
+        const e = new Error("已停止"); e.name = "AbortError"; throw e;
+      }
+      report(92, "Pass 3／3：組合 HTML…");
+      return api("/api/assemble", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          outline, chapters, content,
+          title: outline.title || title,
+          save: true, source_path,
+          out_dir: getOutDir(),
+        }),
+        signal,
+      });
+    }
+
+    async function runGenerate() {
+      const model = $("model").value;
+      if (!model) throw new Error("請先選模型");
+
+      const filesMode = !$("panel-files").classList.contains("d-none");
+      const paths = filesMode ? selectedPaths() : [];
+      const mode = getBatchMode();
+      persist();
+
+      if (filesMode && paths.length > 1 && mode === "merge") {
+        const signal = beginJob();
+        setStatus(`合併 ${paths.length} 檔 → 讀取素材…`);
+        setProgress(5);
+        try {
+          const parts = [];
+          for (let i = 0; i < paths.length; i++) {
+            if (stopRequested || signal.aborted) break;
+            const p = paths[i];
+            const read = await api("/api/read", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ path: p }),
+              signal,
+            });
+            parts.push(`===== 檔案：${read.name} =====\n${(read.content || "").trim()}`);
+          }
+          if (stopRequested || signal.aborted) throw Object.assign(new Error("已停止"), { name: "AbortError" });
+          const combined = parts.join("\n\n");
+          const title = $("title").value.trim() || `合併筆記（${paths.length}篇）`;
+          const data = await generateOneFile(
+            model, title, combined, "", signal,
+            (pct, msg) => { setProgress(pct); setStatus(`合併一篇｜${msg}`); }
+          );
+          lastMarkdown = data.markdown || "";
+          lastTitle = data.saved?.title || title;
+          lastSavedHtml = data.saved?.html || "";
+          showHtml(data.html || "");
+          $("btn-open-notes").disabled = !lastSavedHtml;
+          setProgress(100);
+          setStatus(`完成（合併 1 篇 HTML）\n${lastSavedHtml}`, "ok");
+        } catch (e) {
+          if (e.name === "AbortError" || stopRequested) setStatus("已停止", "err");
+          else throw e;
+        } finally { endJob(); }
+        return;
+      }
+
+      if (filesMode && paths.length > 1) {
+        const signal = beginJob();
+        const okList = [], bad = [];
+        try {
+          for (let i = 0; i < paths.length; i++) {
+            if (stopRequested || signal.aborted) break;
+            const p = paths[i];
+            const name = p.split(/[/\\]/).pop();
+            setProgress((i / paths.length) * 100);
+            setStatus(`一檔一篇：${i + 1}/${paths.length}\n${name}`);
+            try {
+              const read = await api("/api/read", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ path: p }),
+                signal,
+              });
+              const data = await generateOneFile(
+                model,
+                read.name.replace(/\.txt$/i, ""),
+                read.content || "",
+                p,
+                signal,
+                (pct, msg) => {
+                  setProgress(((i + pct / 100) / paths.length) * 100);
+                  setStatus(`檔案 ${i + 1}/${paths.length}｜${msg}\n${name}`);
+                }
+              );
+              okList.push(data);
+              lastMarkdown = data.markdown || "";
+              lastTitle = data.saved?.title || name;
+              lastSavedHtml = data.saved?.html || "";
+              showHtml(data.html || "");
+              $("btn-open-notes").disabled = !lastSavedHtml;
+            } catch (e) {
+              if (e.name === "AbortError" || stopRequested) break;
+              bad.push({ path: p, error: String(e.message || e) });
+            }
+          }
+          setProgress(100);
+          let msg = (stopRequested ? "已停止。" : "完成。") +
+            `成功 ${okList.length}/${paths.length} 篇 HTML`;
+          if (bad.length) msg += `，失敗 ${bad.length}`;
+          if (okList[0]?.saved) msg += "\n" + okList.map((r, i) => `${i+1}. ${r.saved?.html || ""}`).join("\n");
+          if (bad.length) msg += "\n" + bad.map((b) => b.error).join("\n");
+          setStatus(msg, bad.length || stopRequested ? "err" : "ok");
+        } finally { endJob(); }
+        return;
+      }
+
+      // 單檔或貼上
+      let title = $("title").value.trim();
+      let content = $("content").value.trim();
+      let source_path = "";
+      if (filesMode && paths.length === 1) {
+        const read = await api("/api/read", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ path: paths[0] }),
+        });
+        title = read.name.replace(/\.txt$/i, "");
+        content = read.content || "";
+        source_path = paths[0];
+        $("title").value = title;
+        $("content").value = content;
+      }
+      if (!content) throw new Error("請勾選一個檔，或改到「貼上文字」");
+
+      const signal = beginJob();
+      setStatus("大綱 + 逐章生成中…");
+      setProgress(5);
+      try {
+        const data = await generateOneFile(model, title, content, source_path, signal);
+        lastMarkdown = data.markdown || "";
+        lastTitle = data.saved?.title || title || "教學筆記";
+        lastSavedHtml = data.saved?.html || "";
+        showHtml(data.html || "");
+        $("btn-open-notes").disabled = !lastSavedHtml;
+        setProgress(100);
+        const n = (data.note?.chapters || []).length;
+        setStatus(`完成（大綱 + ${n} 章 → HTML）\n${lastSavedHtml || "(未存檔)"}`, "ok");
+      } catch (e) {
+        if (e.name === "AbortError" || stopRequested) setStatus("已停止", "err");
+        else throw e;
+      } finally { endJob(); }
+    }
+
+    $("tab-files").onclick = () => switchTab("files");
+    $("tab-paste").onclick = () => switchTab("paste");
+    $("btn-output").onclick = () => loadList("output").catch((e) => setStatus(String(e.message||e), "err"));
+    $("btn-list").onclick = () => loadList($("path-input").value.trim() || "output").catch((e) => setStatus(String(e.message||e), "err"));
+    $("btn-all").onclick = () => {
+      $("file-list").querySelectorAll("input[type=checkbox]").forEach((c) => { c.checked = true; });
+      updateSelCount();
+      setStatus(`已全選。模式：${getBatchMode() === "merge" ? "合併一篇" : "一檔一篇 HTML"}`, "ok");
+    };
+    $("btn-none").onclick = () => {
+      $("file-list").querySelectorAll("input[type=checkbox]").forEach((c) => { c.checked = false; });
+      updateSelCount();
+    };
+    $("btn-gen").onclick = () => runGenerate().catch((e) => setStatus(String(e.message||e), "err"));
+    $("btn-stop").onclick = () => requestStop();
+    $("btn-refresh-models").onclick = () => loadModels();
+    $("btn-out-default").onclick = () => { $("out-dir").value = "notes"; persist(); };
+    $("btn-out-ensure").onclick = async () => {
+      try {
+        const data = await api("/api/ensure-out", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ out_dir: getOutDir() }),
+        });
+        $("out-dir").value = data.out_dir;
+        persist();
+        setStatus("輸出資料夾：\n" + data.out_dir, "ok");
+      } catch (e) { setStatus(String(e.message||e), "err"); }
+    };
+    $("btn-dl-md").onclick = () => { if (lastMarkdown) download((lastTitle||"note")+".md", lastMarkdown, "text/markdown;charset=utf-8"); };
+    $("btn-dl-html").onclick = () => { if (lastHtml) download((lastTitle||"note")+".html", lastHtml, "text/html;charset=utf-8"); };
+    $("btn-open-notes").onclick = () => {
+      if (lastSavedHtml) window.open("/api/open-saved?path=" + encodeURIComponent(lastSavedHtml), "_blank");
+    };
+    document.querySelectorAll('input[name="batch-mode"]').forEach((el) => el.addEventListener("change", persist));
+    $("out-dir").addEventListener("change", persist);
+
+    restore();
+    showHtml("");
+    loadModels();
+    loadList("output").catch(() => {});
+  </script>
+</body>
+</html>
