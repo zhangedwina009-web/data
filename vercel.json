@@ -49,6 +49,8 @@
     { "source": "/notes/simpany", "destination": "/notes/simpany/index.html" },
     { "source": "/notes/simpany/", "destination": "/notes/simpany/index.html" },
     { "source": "/notes/governance", "destination": "/notes/governance/index.html" },
-    { "source": "/notes/governance/", "destination": "/notes/governance/index.html" }
+    { "source": "/notes/governance/", "destination": "/notes/governance/index.html" },
+    { "source": "/notes/:n(\\d+-\\d+)", "destination": "/notes/simpany/:n.html" },
+    { "source": "/notes/:n(ch\\d+)", "destination": "/notes/governance/:n.html" }
   ]
 }
